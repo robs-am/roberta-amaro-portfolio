@@ -32,7 +32,9 @@
     "tech": "Tecnologias",
     "repo": "Repositório",
     "demo": "Ver site",
-    "newTab": "(abre em nova aba)"
+    "newTab": "(abre em nova aba)",
+    "showMore": "Ver mais",
+    "showLess": "Ver menos"
   },
   "NotFound": {
     "title": "Página não encontrada",

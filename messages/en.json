@@ -32,7 +32,9 @@
     "tech": "Technologies",
     "repo": "Repository",
     "demo": "Visit site",
-    "newTab": "(opens in a new tab)"
+    "newTab": "(opens in a new tab)",
+    "showMore": "Show more",
+    "showLess": "Show less"
   },
   "NotFound": {
     "title": "Page not found",

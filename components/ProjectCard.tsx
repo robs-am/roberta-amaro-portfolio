@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { localize, type Locale, type Project } from "@/data/types";
+import { ProjectDescription } from "./ProjectDescription";
 
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
@@ -23,7 +24,10 @@ export async function ProjectCard({
   const [primary, secondary] = links;
 
   return (
-    <article data-reveal className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
+    <article
+      data-reveal
+      className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-[transform,border-color] duration-300 ease-expressive hover:border-accent/60 focus-within:border-accent/60 motion-safe:hover:-translate-y-1 motion-safe:focus-within:-translate-y-1"
+    >
       <div className="aspect-video overflow-hidden border-b border-border">
         {project.image ? (
           <Image
@@ -32,10 +36,13 @@ export async function ProjectCard({
             height={project.image.height}
             alt={localize(project.image.alt, locale)}
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-300 ease-expressive motion-safe:group-hover:scale-[1.03] motion-safe:group-focus-within:scale-[1.03]"
           />
         ) : (
-          <div aria-hidden="true" className="project-panel h-full w-full" />
+          <div
+            aria-hidden="true"
+            className="project-panel h-full w-full transition-transform duration-300 ease-expressive motion-safe:group-hover:scale-[1.03] motion-safe:group-focus-within:scale-[1.03]"
+          />
         )}
       </div>
 
@@ -44,7 +51,11 @@ export async function ProjectCard({
           {localize(project.category, locale)}
         </p>
         <h3 className="mt-3 text-lg font-semibold">{title}</h3>
-        <p className="mt-2 flex-1 leading-7 text-muted">{localize(project.description, locale)}</p>
+        <ProjectDescription
+          text={localize(project.description, locale)}
+          showMoreLabel={t("showMore")}
+          showLessLabel={t("showLess")}
+        />
         <ul aria-label={t("tech")} className="mt-4 flex flex-wrap gap-2">
           {project.tech.map((tech) => (
             <li
