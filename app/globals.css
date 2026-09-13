@@ -22,7 +22,8 @@
   --hero-distance: 12px;
   --hero-blur: 6px;
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --reveal-hold: 250ms;
+  /* Matches the hero's full sequence (last line's delay + its own duration) so later sections don't reveal mid-animation. */
+  --reveal-hold: calc(var(--duration-hero) + 2 * var(--hero-stagger));
 }
 
 .dark {
