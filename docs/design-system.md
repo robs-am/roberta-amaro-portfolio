@@ -34,9 +34,9 @@ Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` r
 
 | Token | Classe Tailwind | Claro | Escuro | Uso |
 |---|---|---|---|---|
-| `--background` | `bg-background` | `#f1ede6` | `#181818` | fundo da página |
-| `--card` | `bg-card` | `#fffdf8` | `#202020` | cards e blocos de conteúdo |
-| `--elevated` | `bg-elevated` | `#faf8f5` | `#262626` | superfícies internas e hover |
+| `--background` | `bg-background` | `#f1ede6` | `#14181c` | fundo da página |
+| `--card` | `bg-card` | `#fffdf8` | `#1c2227` | cards e blocos de conteúdo |
+| `--elevated` | `bg-elevated` | `#faf8f5` | `#232a30` | superfícies internas e hover |
 | `--foreground` | `text-foreground` | `#2a2622` | `#f5f5f4` | texto principal |
 | `--muted` | `text-muted` | `#5f574d` | `#bcbcbc` | texto secundário (datas, empresa, descrições) |
 | `--accent` | `text-accent`, `bg-accent` | `#2a5c68` | `#7eb3c1` | destaque: links, traço decorativo do hero, pills, botão principal |
@@ -54,13 +54,13 @@ Razão de contraste WCAG dos pares de texto usados hoje:
 
 | Par (texto / fundo) | Claro | Escuro |
 |---|---|---|
-| `foreground` / `background` | 12.87 | 16.28 |
-| `foreground` / `card` | 14.77 | 14.94 |
-| `muted` / `background` | 6.09 | 9.35 |
-| `muted` / `card` | 6.99 | 8.58 |
-| `accent` / `background` | 4.76 | 7.70 |
-| `accent` / `card` | 5.46 | 7.06 |
-| `accent` / pill (`bg-accent/10` sobre `card`) | 4.78 | 5.90 |
+| `foreground` / `background` | 12.87 | 16.35 |
+| `foreground` / `card` | 14.77 | 14.72 |
+| `muted` / `background` | 6.09 | 9.39 |
+| `muted` / `card` | 6.99 | 8.46 |
+| `accent` / `background` | 4.76 | 7.73 |
+| `accent` / `card` | 5.46 | 6.96 |
+| `accent` / pill (`bg-accent/10` sobre `card`) | 4.78 | 5.81 |
 | `accent-foreground` / `accent` | 5.46 | 6.52 |
 
 Os pares mais apertados são os de `accent` no tema claro. Não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
