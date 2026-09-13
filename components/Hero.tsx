@@ -23,8 +23,18 @@ export async function Hero({ locale }: { locale: Locale }) {
       <p className="mt-3 text-sm font-semibold tracking-wide text-foreground uppercase">
         {localize(profile.role, locale)}
       </p>
-      <p className="mt-8 max-w-2xl leading-7 text-foreground/90">
+      <p className="mt-8 max-w-2xl text-pretty leading-7 text-foreground/90">
         {localize(profile.bio, locale)}
+      </p>
+      <p className="mt-2 max-w-2xl text-pretty leading-7 text-foreground/90">
+        {localize(profile.focus, locale)}{" "}
+        {profile.interests.map((interest, index) => (
+          <span key={localize(interest, locale)}>
+            {index > 0 && (index === profile.interests.length - 1 ? ` ${t("and")} ` : ", ")}
+            <span className="font-semibold text-highlight">{localize(interest, locale)}</span>
+          </span>
+        ))}
+        .
       </p>
       {links.length > 0 && (
         <ul className="mt-6 flex gap-2">

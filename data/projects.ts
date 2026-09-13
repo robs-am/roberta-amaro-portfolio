@@ -72,11 +72,11 @@ export const projects = [
     demoUrl: "https://www.candide.com.br",
     image: {
       src: "/projects/candide.webp",
-      width: 1437,
-      height: 808,
+      width: 1440,
+      height: 900,
       alt: {
-        pt: "Página inicial do e-commerce da Candide, com menu de categorias de brinquedos (Funko, Bonecas, Carrinhos, Blocos de Montar) e banner da linha Guerreiras do K-Pop, da Netflix",
-        en: "Candide e-commerce home page, with a toy category menu (Funko, Dolls, Toy Cars, Building Blocks) and a banner for Netflix's KPop Demon Hunters toy line",
+        pt: "Página inicial do e-commerce da Candide, com menu de categorias de brinquedos e banner da linha Bluey, com as pelúcias da família Heeler",
+        en: "Candide e-commerce home page, with a toy category menu and a banner for the Bluey line, featuring plush toys of the Heeler family",
       },
     },
   },

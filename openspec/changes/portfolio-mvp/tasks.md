@@ -43,7 +43,9 @@
 - [x] 5.4 Criar `components/ExperienceSection.tsx` como timeline vertical (linha, ponto em `--accent`, período, cargo em Jost, empresa, descrição), com ordenação por data decrescente, datas formatadas por idioma e "Atual"/"Present"; verificar em `/pt` e `/en` a ordem, o formato das datas e o término da experiência atual, e que a timeline não gera rolagem horizontal em 360px
 - [x] 5.5 Criar `data/projects.ts` com pelo menos 3 projetos fictícios com `category`, cobrindo: com repo e demo, só com repo, com imagem e sem imagem (imagem em `public/projects/`); verificar com `pnpm exec tsc --noEmit`
 - [x] 5.6 Criar `components/ProjectCard.tsx` vertical (painel `aspect-video` com imagem ou fundo decorativo `aria-hidden`, pill com `category`, título em Jost, descrição, tecnologias, primeiro link disponível como botão em `--accent` e o outro como link de texto, `target="_blank" rel="noopener noreferrer"`) e `components/ProjectsSection.tsx` (grade 1/2/3 colunas); verificar que o card sem imagem tem painel decorativo da mesma altura e sem conteúdo para leitor de tela, e que o card sem demo mostra só o repositório como botão
-- [ ] 5.7 (pendência) Adicionar links de contato (e-mail, LinkedIn, GitHub) e/ou botão de CV no hero; aguardando Roberta definir os dados reais (endereços, URLs, arquivo de CV) antes de implementar
+- [x] 5.7 Adicionar links de contato (e-mail, LinkedIn, GitHub) no hero, com ícone em stroke (Tabler Icons) e rótulo acessível; botão de CV fica de fora por enquanto (sem arquivo definido)
+- [x] 5.8 Escrever o conteúdo real do hero (`data/profile.ts`): cargo e bio de verdade no lugar do texto de exemplo, em `pt` e `en`; verificar que o texto muda entre os dois idiomas
+- [ ] 5.9 (pendência) Escrever a descrição real de cada projeto (`data/projects.ts`): o que a Roberta especificamente fez em cada um (Tommy Hilfiger, Liritty, Candide, Creamy, Skelt), no lugar do lorem ipsum, em `pt` e `en`; verificar com `pnpm exec tsc --noEmit` e que a truncagem (`ver mais`) do `ProjectDescription` continua funcionando com o texto novo
 
 ## 6. Animações
 

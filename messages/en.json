@@ -30,7 +30,8 @@
     "email": "Email",
     "linkedin": "LinkedIn",
     "github": "GitHub",
-    "newTab": "(opens in a new tab)"
+    "newTab": "(opens in a new tab)",
+    "and": "and"
   },
   "Experience": {
     "title": "Experience",

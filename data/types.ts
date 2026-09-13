@@ -8,6 +8,10 @@ export type Profile = {
   name: string;
   role: Localized;
   bio: Localized;
+  /** Lead-in text for the second bio line, ending right before the interest list (no trailing space or punctuation). */
+  focus: Localized;
+  /** Highlighted interest terms, rendered as a comma/"and" list after `focus`. */
+  interests: Localized[];
   email?: string;
   linkedinUrl?: string;
   githubUrl?: string;
