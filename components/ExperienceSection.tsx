@@ -27,13 +27,13 @@ export async function ExperienceSection({ locale }: { locale: Locale }) {
       </h2>
       <ol className="mt-10 ml-1.5 space-y-6 border-l border-accent/30 pl-6 sm:pl-8">
         {sorted.map((item) => (
-          <li key={item.id} className="relative">
+          <li key={item.id} className="relative max-w-3xl">
             <span
               aria-hidden="true"
               className="absolute -left-6 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent ring-4 ring-background sm:-left-8"
             />
-            <div className="rounded-xl border border-border bg-card px-5 py-4 md:grid md:grid-cols-[11rem_1fr] md:gap-6">
-              <p className="text-sm text-muted md:pt-1">
+            <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
+              <p className="text-sm text-muted">
                 <time dateTime={item.start}>{formatMonth(item.start)}</time>
                 {" – "}
                 {item.end ? (
@@ -42,11 +42,9 @@ export async function ExperienceSection({ locale }: { locale: Locale }) {
                   t("present")
                 )}
               </p>
-              <div>
-                <h3 className="mt-1 text-lg font-semibold md:mt-0">{localize(item.role, locale)}</h3>
-                <p className="text-sm font-medium text-accent">{item.company}</p>
-                <p className="mt-2 leading-7">{localize(item.description, locale)}</p>
-              </div>
+              <h3 className="mt-2 text-lg font-semibold">{localize(item.role, locale)}</h3>
+              <p className="text-sm font-medium text-accent">{item.company}</p>
+              <p className="mt-3 leading-7">{localize(item.description, locale)}</p>
             </div>
           </li>
         ))}

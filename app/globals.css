@@ -74,6 +74,12 @@
   mask-image: linear-gradient(to bottom, #000 60%, transparent);
 }
 
+.project-panel {
+  background:
+    radial-gradient(circle at 16% 0%, color-mix(in oklab, var(--glow-1) 45%, transparent), transparent 55%),
+    color-mix(in oklab, var(--accent) 12%, var(--card));
+}
+
 .glow-blob {
   position: absolute;
   border-radius: 9999px;

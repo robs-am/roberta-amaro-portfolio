@@ -1,7 +1,33 @@
 import type { Project } from "./types";
 
-// Sample content: replace with real projects.
+// Real projects first; the entries after Tommy Hilfiger are sample content.
 export const projects = [
+  {
+    id: "tommy-hilfiger",
+    category: {
+      pt: "E-commerce",
+      en: "E-commerce",
+    },
+    title: {
+      pt: "Tommy Hilfiger",
+      en: "Tommy Hilfiger",
+    },
+    description: {
+      pt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      en: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    tech: ["VTEX", "React", "Tailwind CSS"],
+    demoUrl: "https://br.tommy.com/",
+    image: {
+      src: "/projects/tommy-hilfiger.webp",
+      width: 1280,
+      height: 720,
+      alt: {
+        pt: "Página inicial do e-commerce da Tommy Hilfiger, com faixa de frete grátis, menu Feminino, Masculino e Kids e uma foto de campanha com modelos em um terraço com prédios ao fundo",
+        en: "Tommy Hilfiger e-commerce home page, with a free shipping banner, Women, Men and Kids navigation and a campaign photo of models on a rooftop with city buildings behind them",
+      },
+    },
+  },
   {
     id: "painel-financeiro",
     category: {
