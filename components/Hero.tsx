@@ -3,7 +3,7 @@ import { localize, type Locale } from "@/data/types";
 
 export function Hero({ locale }: { locale: Locale }) {
   return (
-    <section className="py-16 sm:py-24">
+    <section className="hero-reveal py-16 sm:py-24">
       <h1 className="text-4xl font-bold sm:text-5xl">
         {profile.name}
       </h1>

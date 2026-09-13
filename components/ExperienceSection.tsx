@@ -22,12 +22,12 @@ export async function ExperienceSection({ locale }: { locale: Locale }) {
       aria-labelledby="experience-title"
       className="scroll-mt-20 border-t border-border py-16"
     >
-      <h2 id="experience-title" className="text-2xl font-semibold">
+      <h2 id="experience-title" data-reveal className="text-2xl font-semibold">
         {t("title")}
       </h2>
       <ol className="mt-10 ml-1.5 space-y-6 border-l border-accent/30 pl-6 sm:pl-8">
         {sorted.map((item) => (
-          <li key={item.id} className="relative max-w-3xl">
+          <li key={item.id} data-reveal className="relative max-w-3xl">
             <span
               aria-hidden="true"
               className="absolute -left-6 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent ring-4 ring-background sm:-left-8"

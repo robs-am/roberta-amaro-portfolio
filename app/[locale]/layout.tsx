@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
 import { BackgroundGlow } from "@/components/BackgroundGlow";
 import { Header } from "@/components/Header";
+import { RevealObserver } from "@/components/RevealObserver";
 import { ThemeClassSync } from "@/components/ThemeClassSync";
 import type { Locale } from "@/data/types";
 import { routing } from "@/i18n/routing";
@@ -81,6 +82,7 @@ export default async function LocaleLayout({
           >
             <Header />
             {children}
+            <RevealObserver />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

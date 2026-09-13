@@ -23,7 +23,7 @@ export async function ProjectCard({
   const [primary, secondary] = links;
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
+    <article data-reveal className="flex flex-col overflow-hidden rounded-xl border border-border bg-card">
       <div className="aspect-video overflow-hidden border-b border-border">
         {project.image ? (
           <Image

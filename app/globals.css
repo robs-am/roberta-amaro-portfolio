@@ -14,6 +14,15 @@
   --glow-1: #7eb3c1;
   --glow-2: #94c4fc;
   --glow-opacity: 0.45;
+  --duration-reveal: 600ms;
+  --reveal-stagger: 80ms;
+  --reveal-distance: 16px;
+  --duration-hero: 900ms;
+  --hero-stagger: 150ms;
+  --hero-distance: 12px;
+  --hero-blur: 6px;
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --reveal-hold: 350ms;
 }
 
 .dark {
@@ -78,6 +87,51 @@
   background:
     radial-gradient(circle at 16% 0%, color-mix(in oklab, var(--glow-1) 45%, transparent), transparent 55%),
     color-mix(in oklab, var(--accent) 12%, var(--card));
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    translate: 0 var(--hero-distance);
+    filter: blur(var(--hero-blur));
+  }
+}
+
+@keyframes reveal-fallback {
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-reveal > * {
+    animation: hero-in var(--duration-hero) var(--ease-soft) both;
+  }
+
+  .hero-reveal > :nth-child(2) {
+    animation-delay: var(--hero-stagger);
+  }
+
+  .hero-reveal > :nth-child(3) {
+    animation-delay: calc(var(--hero-stagger) * 2);
+  }
+}
+
+/* Content is only hidden when JavaScript can reveal it; the fallback shows it anyway after 3s. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity var(--duration-reveal) var(--ease-expressive),
+      translate var(--duration-reveal) var(--ease-expressive);
+    transition-delay: calc(var(--reveal-index, 0) * var(--reveal-stagger));
+  }
+
+  [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    translate: 0 var(--reveal-distance);
+    animation: reveal-fallback 0s 3s forwards;
+  }
 }
 
 .glow-blob {

@@ -12,7 +12,7 @@ export async function ProjectsSection({ locale }: { locale: Locale }) {
       aria-labelledby="projects-title"
       className="scroll-mt-20 border-t border-border py-16"
     >
-      <h2 id="projects-title" className="text-2xl font-semibold">
+      <h2 id="projects-title" data-reveal className="text-2xl font-semibold">
         {t("title")}
       </h2>
       <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
