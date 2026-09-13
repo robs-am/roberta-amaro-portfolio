@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useHeaderScrolled } from "./HeaderScrollContext";
 import { navItems } from "./navItems";
 
 export function DesktopNav({
@@ -11,6 +12,7 @@ export function DesktopNav({
   labels: Record<(typeof navItems)[number]["key"], string>;
 }) {
   const [activeHref, setActiveHref] = useState<string | null>(null);
+  const scrolled = useHeaderScrolled();
 
   useEffect(() => {
     const sections = navItems
@@ -31,6 +33,8 @@ export function DesktopNav({
     return () => observer.disconnect();
   }, []);
 
+  const inactiveClass = scrolled ? "text-muted hover:text-foreground" : "text-foreground/90 hover:text-foreground";
+
   return (
     <nav aria-label={navLabel} className="hidden md:block">
       <ul className="flex gap-2 text-base font-medium">
@@ -40,9 +44,7 @@ export function DesktopNav({
               href={item.href}
               aria-current={activeHref === item.href ? "true" : undefined}
               className={`rounded-full px-3 py-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-                activeHref === item.href
-                  ? "bg-accent/10 text-foreground"
-                  : "text-muted hover:text-foreground"
+                activeHref === item.href ? "bg-accent/10 text-foreground" : inactiveClass
               }`}
             >
               {labels[item.key]}

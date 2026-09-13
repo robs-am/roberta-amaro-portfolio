@@ -12,8 +12,8 @@
   --accent-foreground: #fffdf8;
   --border: rgba(67, 126, 142, 0.22);
   --glow-1: #7eb3c1;
-  --glow-2: #b8a3f5;
-  --glow-opacity: 0.45;
+  --glow-2: #7cc0f0;
+  --glow-opacity: 0.8;
   --duration-reveal: 600ms;
   --reveal-stagger: 80ms;
   --reveal-distance: 16px;
@@ -36,8 +36,9 @@
   --accent-foreground: #0f2a31;
   --border: rgba(126, 179, 193, 0.18);
   --glow-1: #0f7482;
-  --glow-2: #7c5cff;
-  --glow-opacity: 0.85;
+  --glow-2: #2f8fe0;
+  /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
+  --glow-opacity: 0.5;
 }
 
 @theme inline {
@@ -139,7 +140,7 @@
 .glow-blob {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(150px);
+  filter: blur(170px);
   opacity: var(--glow-opacity);
   transform: translate3d(
     calc(var(--glow-x, 0) * var(--glow-depth, 0) * 1px),

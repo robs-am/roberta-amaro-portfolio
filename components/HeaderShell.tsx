@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { HeaderScrollProvider } from "./HeaderScrollContext";
 
 export function HeaderShell({ children }: { children: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
@@ -36,7 +37,7 @@ export function HeaderShell({ children }: { children: ReactNode }) {
           : "border-transparent bg-transparent"
       }`}
     >
-      {children}
+      <HeaderScrollProvider scrolled={scrolled}>{children}</HeaderScrollProvider>
     </header>
   );
 }

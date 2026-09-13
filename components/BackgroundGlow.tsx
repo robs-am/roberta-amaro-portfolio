@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, type CSSProperties } from "react";
 
-const EASING = 0.12;
-const MAX_DEPTH = 240;
+const EASING = 0.18;
+const MAX_DEPTH = 340;
 const SETTLE_PX = 0.1;
 
 const blobs = [
-  { className: "right-[-20%] top-[-40%] h-[95%] w-[70%] bg-glow-2", depth: 105 },
-  { className: "left-[20%] top-[-50%] h-[85%] w-[55%] bg-glow-1", depth: 170 },
-  { className: "right-[5%] top-[5%] h-[50%] w-[35%] bg-glow-1", depth: MAX_DEPTH },
+  { className: "right-[-15%] top-[-40%] h-[115%] w-[85%] bg-glow-2", depth: 150 },
+  { className: "left-[-5%] top-[-55%] h-[105%] w-[65%] bg-glow-1", depth: 240 },
+  { className: "right-[30%] top-[10%] h-[55%] w-[40%] bg-glow-1", depth: MAX_DEPTH },
 ];
 
 export function BackgroundGlow() {
@@ -72,7 +72,7 @@ export function BackgroundGlow() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[80vh] overflow-hidden"
+      className="glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[95vh] overflow-hidden"
     >
       {blobs.map((blob) => (
         <div

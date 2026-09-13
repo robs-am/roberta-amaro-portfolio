@@ -43,7 +43,7 @@ Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` r
 | `--accent-foreground` | `text-accent-foreground` | `#fffdf8` | `#0f2a31` | texto sobre fundo `bg-accent` |
 | `--border` | `border-border` | `rgba(67,126,142,0.22)` | `rgba(126,179,193,0.18)` | bordas e divisórias (decorativo, nunca texto) |
 | `--glow-1` | `bg-glow-1` | `#7eb3c1` | `#0f7482` | brilho de fundo, tom teal (decorativo) |
-| `--glow-2` | `bg-glow-2` | `#b8a3f5` | `#7c5cff` | brilho de fundo, tom roxo/violeta (decorativo) |
+| `--glow-2` | `bg-glow-2` | `#7cc0f0` | `#2f8fe0` | brilho de fundo, tom azul (decorativo) |
 
 Opacidades sobre tokens funcionam normalmente (`bg-background/85`, `bg-accent/10`).
 
@@ -63,6 +63,26 @@ Razão de contraste WCAG dos pares de texto usados hoje:
 | `accent-foreground` / `accent` | 5.46 | 6.52 |
 
 Os pares mais apertados são os de `accent` no tema claro. Não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
+
+### Texto sobre o brilho
+
+Dois lugares ficam diretamente sobre o `BackgroundGlow`: o hero e o `Header` enquanto está transparente (antes de rolar ~8px). Para eles o par relevante não é `texto / background`, e sim `texto / background composto com o brilho no ponto mais claro` (pior caso: dois blobs se sobrepondo, sem atenuação do blur).
+
+**Importante:** misturar o brilho com o `background` não necessariamente ajuda o contraste em nenhum tema — no escuro o brilho é mais claro que o fundo (reduz contraste de texto claro), e no claro o brilho é mais *escuro* que o fundo (reduz contraste de texto escuro, o oposto do que se poderia supor). Em ambos os casos, `muted` e `accent` não sobram contraste suficiente sobre o brilho em opacidade vívida. Por isso, tanto o cargo/bio do hero quanto os links inativos da nav usam `foreground` (não `muted`/`accent`) enquanto estão sobre o brilho — a nav troca para `text-muted` normal assim que o header ganha fundo sólido ao rolar (`useHeaderScrolled`, em `HeaderScrollContext.tsx`). A hierarquia visual nesses estados fica só por tamanho/peso de fonte e pelo pill do link ativo, não por cor.
+
+Com isso, o único par que precisa passar no pior caso é `foreground`:
+
+| Tema | `--glow-opacity` | `foreground` no pior caso (2 blobs sobrepostos) |
+|---|---|---|
+| Escuro | 0.65 | 4.26 (falha) |
+| Escuro | 0.55 | 4.93 |
+| Escuro | **0.5 (valor em uso)** | **5.36** |
+| Claro | **0.8 (valor em uso)** | **7.59** |
+| Claro | 0.4 | 8.91 |
+
+A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **4.68 no escuro** e **6.21 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
+
+Se `--glow-1`, `--glow-2` ou `--glow-opacity` de qualquer tema mudarem, recalcule esse pior caso antes de assumir que o texto continua legível — cores mais claras de `--glow-2` custam mais opacidade no escuro. Se `muted`/`accent` voltarem a aparecer sobre o brilho em algum ponto, a opacidade segura cai bem mais (no claro, `muted` só passa com `--glow-opacity` em torno de 0.3 ou menos com as cores atuais).
 
 ## Tipografia
 
@@ -84,13 +104,13 @@ Em `app/globals.css`, `h1`, `h2` e `h3` recebem automaticamente:
 
 | Elemento | Classes | Onde |
 |---|---|---|
-| Nome (`h1`) | `text-4xl sm:text-5xl font-bold` | hero |
+| Nome (`h1`) | `text-5xl font-bold lg:text-7xl` | hero |
 | Título de página (`h1`) | `text-3xl font-bold` | página 404 |
 | Título de seção (`h2`) | `text-2xl font-semibold` | Experiências, Projetos |
 | Título de card (`h3`) | `text-lg font-semibold` | card de projeto |
 | Cargo (`h3`) | `font-semibold` | item de experiência |
-| Título profissional | `text-lg font-medium text-accent` | hero |
-| Texto corrido | `leading-7` (+ `text-muted` quando secundário) | descrições, bio |
+| Título profissional (eyebrow) | `text-sm font-semibold uppercase tracking-wide text-foreground` | hero |
+| Texto corrido | `leading-7` (+ `text-muted` quando secundário) | descrições, bio — exceto a bio do hero, que fica sobre o brilho e por isso usa `text-foreground/90` |
 | Texto auxiliar | `text-sm text-muted` | datas, empresa, links do header |
 
 ## Movimento
