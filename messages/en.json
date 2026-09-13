@@ -1,0 +1,38 @@
+{
+  "Metadata": {
+    "title": "Roberta Amaro | Front-end Developer",
+    "description": "Roberta Amaro's portfolio: professional experience and projects."
+  },
+  "Header": {
+    "navLabel": "Main navigation",
+    "nav": {
+      "experience": "Experience",
+      "projects": "Projects"
+    },
+    "language": {
+      "label": "Language",
+      "pt": "Portuguese",
+      "en": "English"
+    },
+    "theme": {
+      "toDark": "Switch to dark theme",
+      "toLight": "Switch to light theme"
+    }
+  },
+  "Experience": {
+    "title": "Experience",
+    "present": "Present"
+  },
+  "Projects": {
+    "title": "Projects",
+    "tech": "Technologies",
+    "repo": "Repository",
+    "demo": "Live demo",
+    "newTab": "(opens in a new tab)"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist.",
+    "back": "Back to home"
+  }
+}

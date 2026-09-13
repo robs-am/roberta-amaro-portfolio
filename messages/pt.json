@@ -1,0 +1,38 @@
+{
+  "Metadata": {
+    "title": "Roberta Amaro | Desenvolvedora Front-end",
+    "description": "Portfólio de Roberta Amaro: experiências profissionais e projetos."
+  },
+  "Header": {
+    "navLabel": "Navegação principal",
+    "nav": {
+      "experience": "Experiências",
+      "projects": "Projetos"
+    },
+    "language": {
+      "label": "Idioma",
+      "pt": "Português",
+      "en": "Inglês"
+    },
+    "theme": {
+      "toDark": "Ativar tema escuro",
+      "toLight": "Ativar tema claro"
+    }
+  },
+  "Experience": {
+    "title": "Experiências",
+    "present": "Atual"
+  },
+  "Projects": {
+    "title": "Projetos",
+    "tech": "Tecnologias",
+    "repo": "Repositório",
+    "demo": "Demonstração",
+    "newTab": "(abre em nova aba)"
+  },
+  "NotFound": {
+    "title": "Página não encontrada",
+    "description": "O endereço que você procurou não existe.",
+    "back": "Voltar para o início"
+  }
+}
