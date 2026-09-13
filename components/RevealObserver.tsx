@@ -9,6 +9,11 @@ function toMilliseconds(value: string) {
   return 0;
 }
 
+function heroAnimationTime(hero: Element | null) {
+  const time = hero?.firstElementChild?.getAnimations()[0]?.currentTime;
+  return typeof time === "number" ? time : null;
+}
+
 export function RevealObserver() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -31,11 +36,15 @@ export function RevealObserver() {
         .querySelectorAll("[data-reveal]:not([data-revealed])")
         .forEach((element) => observer.observe(element));
 
-    // Let the hero entrance take focus before revealing what is already on screen.
-    const hold = document.querySelector(".hero-reveal")
+    // Let the hero entrance take focus first. The hold counts from when the hero animation started
+    // (first paint), not from hydration, which can take seconds on slow devices or in dev.
+    const hero = document.querySelector(".hero-reveal");
+    const elapsed = heroAnimationTime(hero);
+    const hold = hero
       ? toMilliseconds(getComputedStyle(document.documentElement).getPropertyValue("--reveal-hold"))
       : 0;
-    const timer = window.setTimeout(observeAll, hold);
+    const remaining = elapsed === null ? 0 : Math.max(0, hold - elapsed);
+    const timer = window.setTimeout(observeAll, remaining);
 
     return () => {
       window.clearTimeout(timer);

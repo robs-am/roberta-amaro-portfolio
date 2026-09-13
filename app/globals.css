@@ -22,7 +22,7 @@
   --hero-distance: 12px;
   --hero-blur: 6px;
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --reveal-hold: 350ms;
+  --reveal-hold: 250ms;
 }
 
 .dark {
