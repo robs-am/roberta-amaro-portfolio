@@ -5,6 +5,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/Header";
+import { ThemeClassSync } from "@/components/ThemeClassSync";
 import type { Locale } from "@/data/types";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
@@ -68,6 +69,7 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <body className="min-h-dvh bg-background font-sans text-foreground">
+        <ThemeClassSync />
         <NextIntlClientProvider>
           <ThemeProvider
             attribute="class"

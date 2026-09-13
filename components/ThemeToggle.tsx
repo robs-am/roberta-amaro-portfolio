@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { flushSync } from "react-dom";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 
@@ -22,10 +23,25 @@ export function ThemeToggle() {
 
   const isDark = resolvedTheme === "dark";
 
+  function toggleTheme() {
+    const nextTheme = isDark ? "light" : "dark";
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!("startViewTransition" in document) || reduceMotion) {
+      setTheme(nextTheme);
+      return;
+    }
+
+    // next-themes swaps the class in an effect; flushSync applies it before the browser takes the new snapshot.
+    document.startViewTransition(() => {
+      flushSync(() => setTheme(nextTheme));
+    });
+  }
+
   return (
     <button
       type="button"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={toggleTheme}
       aria-label={isDark ? t("toLight") : t("toDark")}
       className="inline-flex size-9 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >

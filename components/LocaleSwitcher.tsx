@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -9,6 +10,12 @@ export function LocaleSwitcher() {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    for (const option of routing.locales) {
+      if (option !== locale) router.prefetch(pathname, { locale: option });
+    }
+  }, [locale, pathname, router]);
 
   return (
     <div
