@@ -2,6 +2,8 @@ import { getTranslations } from "next-intl/server";
 import { profile } from "@/data/profile";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "./LocaleSwitcher";
+import { MobileMenu } from "./MobileMenu";
+import { navItems } from "./navItems";
 import { ThemeToggle } from "./ThemeToggle";
 
 const navLinkClass =
@@ -11,34 +13,29 @@ export async function Header() {
   const t = await getTranslations("Header");
 
   return (
-    <header className="sticky top-0 z-10 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
+    <header className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-4 py-3 sm:px-6">
         <Link
           href="/"
           className="rounded-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           {profile.name}
         </Link>
-        <nav
-          aria-label={t("navLabel")}
-          className="order-last w-full sm:order-none sm:w-auto"
-        >
+        <nav aria-label={t("navLabel")} className="hidden md:block">
           <ul className="flex gap-6 text-sm font-medium">
-            <li>
-              <a href="#experience" className={navLinkClass}>
-                {t("nav.experience")}
-              </a>
-            </li>
-            <li>
-              <a href="#projects" className={navLinkClass}>
-                {t("nav.projects")}
-              </a>
-            </li>
+            {navItems.map((item) => (
+              <li key={item.href}>
+                <a href={item.href} className={navLinkClass}>
+                  {t(`nav.${item.key}`)}
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
         <div className="flex items-center gap-2">
           <LocaleSwitcher />
           <ThemeToggle />
+          <MobileMenu />
         </div>
       </div>
     </header>

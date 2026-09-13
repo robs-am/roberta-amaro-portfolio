@@ -10,7 +10,7 @@ export async function ProjectsSection({ locale }: { locale: Locale }) {
     <section
       id="projects"
       aria-labelledby="projects-title"
-      className="scroll-mt-28 border-t border-border py-16 sm:scroll-mt-20"
+      className="scroll-mt-20 border-t border-border py-16"
     >
       <h2 id="projects-title" className="text-2xl font-semibold">
         {t("title")}

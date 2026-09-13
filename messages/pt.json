@@ -9,6 +9,10 @@
       "experience": "Experiências",
       "projects": "Projetos"
     },
+    "menu": {
+      "open": "Abrir menu",
+      "close": "Fechar menu"
+    },
     "language": {
       "label": "Idioma",
       "pt": "Português",

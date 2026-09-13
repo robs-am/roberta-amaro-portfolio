@@ -22,6 +22,7 @@
 - [x] 3.5 Verificar ausência de flash: com tema escuro salvo, recarregar com throttling de rede lento no DevTools e confirmar que o tema claro nunca aparece
 - [ ] 3.6 Criar `components/BackgroundGlow.tsx` (client) conforme o design (manchas em `--glow-*`, `pointermove` + `requestAnimationFrame` com interpolação e parada ao acomodar, ativo só com `pointer: fine` e sem movimento reduzido, `aria-hidden` e `pointer-events-none`) e renderizá-lo no layout; verificar que o brilho acompanha o mouse suavemente, fica parado com movimento reduzido e com emulação de toque no DevTools, não deixa `requestAnimationFrame` rodando no painel Performance com o ponteiro parado e não bloqueia cliques em links sobre ele
 - [ ] 3.7 Ajustar opacidade e blur do brilho nos dois temas; verificar que o texto do hero mantém contraste AA sobre a área mais clara do brilho
+- [ ] 3.8 (pendência) Refinar a sensação de movimento do brilho com a autora (velocidade da interpolação, amplitude do deslocamento, profundidade entre manchas) e atualizar os valores finais de `--accent`, `--glow-*` e `--glow-opacity` no `design.md` e em `docs/design-system.md`; verificar no navegador que a movimentação foi aprovada
 
 ## 4. Estrutura da página
 
@@ -29,8 +30,8 @@
 - [ ] 4.2 Criar `components/Header.tsx` fixo no topo, translúcido com `backdrop-blur` sobre o brilho, com links `#experience` e `#projects`, `LocaleSwitcher` e `ThemeToggle`; verificar que continua visível e legível após rolar
 - [ ] 4.3 Adicionar rolagem suave condicionada a `prefers-reduced-motion: no-preference` e `scroll-margin-top` nas seções; verificar que o título da seção não fica sob o header e que, com movimento reduzido emulado no DevTools, a rolagem é instantânea
 - [ ] 4.4 Criar `app/[locale]/page.tsx` com as seções na ordem Hero, `#experience`, `#projects`; verificar que `/en#experience` abre na seção de experiências
-- [ ] 4.5 Criar `app/[locale]/not-found.tsx` simples e a rota `app/[locale]/[...rest]/page.tsx`; verificar que `/pt/fr` exibe essa página com status 404
-- [ ] 4.6 Adicionar `Header.menu.open` e `Header.menu.close` em `messages/pt.json` e `messages/en.json` e criar `components/navItems.ts` com a lista única de links (`#experience`, `#projects`) usada pela nav desktop; verificar que as mensagens têm as mesmas chaves nos dois idiomas e que a nav desktop continua igual
+- [x] 4.5 Criar `app/[locale]/not-found.tsx` simples e a rota `app/[locale]/[...rest]/page.tsx`; verificar que `/pt/fr` exibe essa página com status 404
+- [x] 4.6 Adicionar `Header.menu.open` e `Header.menu.close` em `messages/pt.json` e `messages/en.json` e criar `components/navItems.ts` com a lista única de links (`#experience`, `#projects`) usada pela nav desktop; verificar que as mensagens têm as mesmas chaves nos dois idiomas e que a nav desktop continua igual
 - [ ] 4.7 Criar `components/MobileMenu.tsx` (client) com botão hambúrguer de 40×40px (três barras que viram X), `aria-expanded`, `aria-controls` e rótulo traduzido, e painel abaixo do header com os links de `navItems` empilhados (área de toque mínima de 44px); no `Header`, nav desktop com `hidden md:block`, `MobileMenu` com `md:hidden` e header mobile em uma linha (nome; idioma, tema e menu); verificar em 360px que o botão substitui os links, com seletor e tema visíveis e sem rolagem horizontal, e em 1024px que os links aparecem e o botão some
 - [ ] 4.8 Fechar o menu ao acionar um link, com Esc (foco volta ao botão), com `pointerdown` fora do header e quando `(min-width: 768px)` passar a valer, e desativar a animação das barras e do painel com movimento reduzido; verificar cada caso no navegador e que Tab percorre os links do menu aberto
 
