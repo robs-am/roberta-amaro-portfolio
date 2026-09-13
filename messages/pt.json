@@ -3,6 +3,9 @@
     "title": "Roberta Amaro | Desenvolvedora Front-end",
     "description": "Portfólio de Roberta Amaro: experiências profissionais e projetos."
   },
+  "Common": {
+    "skipToContent": "Pular para o conteúdo principal"
+  },
   "Header": {
     "navLabel": "Navegação principal",
     "nav": {

@@ -3,6 +3,9 @@
     "title": "Roberta Amaro | Front-end Developer",
     "description": "Roberta Amaro's portfolio: professional experience and projects."
   },
+  "Common": {
+    "skipToContent": "Skip to main content"
+  },
   "Header": {
     "navLabel": "Main navigation",
     "nav": {

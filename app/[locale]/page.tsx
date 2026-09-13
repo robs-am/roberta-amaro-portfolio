@@ -10,7 +10,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   if (!hasLocale(routing.locales, locale)) notFound();
 
   return (
-    <main className="mx-auto max-w-5xl px-4 sm:px-6">
+    <main id="main-content" className="mx-auto max-w-5xl px-4 sm:px-6">
       <Hero locale={locale} />
       <ExperienceSection locale={locale} />
       <ProjectsSection locale={locale} />
