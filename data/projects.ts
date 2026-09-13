@@ -4,6 +4,10 @@ import type { Project } from "./types";
 export const projects = [
   {
     id: "painel-financeiro",
+    category: {
+      pt: "Aplicação web",
+      en: "Web app",
+    },
     title: {
       pt: "Painel Financeiro",
       en: "Finance Dashboard",
@@ -27,6 +31,10 @@ export const projects = [
   },
   {
     id: "cli-tarefas",
+    category: {
+      pt: "Ferramenta CLI",
+      en: "CLI tool",
+    },
     title: {
       pt: "CLI de Tarefas",
       en: "Task CLI",
@@ -40,6 +48,10 @@ export const projects = [
   },
   {
     id: "landing-evento",
+    category: {
+      pt: "Landing page",
+      en: "Landing page",
+    },
     title: {
       pt: "Landing Page de Evento",
       en: "Event Landing Page",

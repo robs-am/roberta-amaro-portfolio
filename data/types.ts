@@ -23,6 +23,7 @@ export type Experience = {
 
 export type Project = {
   id: string;
+  category: Localized;
   title: Localized;
   description: Localized;
   tech: string[];
