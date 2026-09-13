@@ -47,12 +47,18 @@ Depois que o visitante escolher um idioma manualmente, visitas seguintes à raiz
 - **WHEN** um visitante com navegador em `pt-BR` troca para inglês e depois acessa `/` novamente
 - **THEN** é redirecionado para `/en`
 
-### Requirement: Idioma não suportado na URL
-Um prefixo de idioma que não seja `pt` nem `en` MUST resultar em página não encontrada (HTTP 404).
+### Requirement: Caminho sem idioma suportado
+Um caminho que não comece com `/pt` ou `/en` MUST ser redirecionado para o mesmo caminho sob o idioma detectado. Quando o caminho resultante não existir, o site MUST responder com página não encontrada (HTTP 404) no idioma ativo, marcada para não ser indexada por buscadores.
 
 #### Scenario: Prefixo inexistente
-- **WHEN** o visitante acessa `/fr`
-- **THEN** o site responde com página não encontrada e status 404
+- **WHEN** o visitante sem preferência de idioma acessa `/fr`
+- **THEN** é redirecionado para `/pt/fr`
+- **AND** a página responde "Página não encontrada" com status 404
+
+#### Scenario: Página inexistente dentro de um idioma
+- **WHEN** o visitante acessa `/en/qualquer-coisa`
+- **THEN** a página responde "Page not found" com status 404
+- **AND** o documento contém a instrução `noindex`
 
 ### Requirement: Seletor de idioma
 O header MUST oferecer um controle que troca a página para o outro idioma, indica qual idioma está ativo e é operável por teclado. A troca MUST manter o visitante na mesma página e preservar a seção âncora atual da URL, quando houver.

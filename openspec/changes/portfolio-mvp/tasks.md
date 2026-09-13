@@ -8,10 +8,10 @@
 ## 2. Internacionalização
 
 - [x] 2.1 Criar `i18n/routing.ts` (locales `pt`/`en`, default `pt`, `localePrefix: 'always'`), `i18n/request.ts` e `i18n/navigation.ts`; verificar com `pnpm exec tsc --noEmit`
-- [ ] 2.2 Criar o proxy do next-intl (`proxy.ts` ou `middleware.ts`, conforme a versão do Next.js) com matcher que ignora assets; verificar que `/` redireciona para `/pt` e, com `Accept-Language: en-US` (via `curl -I -H`), para `/en`
-- [ ] 2.3 Criar `messages/pt.json` e `messages/en.json` com as strings de UI (nav, títulos de seção, rótulos acessíveis, título e descrição da página, "Atual"/"Present", rótulos de links); verificar que ambos têm exatamente as mesmas chaves
-- [ ] 2.4 Criar `app/[locale]/layout.tsx` com `NextIntlClientProvider`, `generateStaticParams`, `setRequestLocale`, `notFound()` para locale inválido e `<html lang>` mapeado (`pt-BR`/`en`); verificar que `/fr` retorna 404 e que `/en` tem `lang="en"`
-- [ ] 2.5 Implementar `generateMetadata` com título, descrição e `alternates.languages` (hreflang) por idioma; verificar no HTML de `/pt` o `<title>` em português e os links `hreflang` para `/pt` e `/en`
+- [x] 2.2 Criar o proxy do next-intl (`proxy.ts` ou `middleware.ts`, conforme a versão do Next.js) com matcher que ignora assets; verificar que `/` redireciona para `/pt` e, com `Accept-Language: en-US` (via `curl -I -H`), para `/en`
+- [x] 2.3 Criar `messages/pt.json` e `messages/en.json` com as strings de UI (nav, títulos de seção, rótulos acessíveis, título e descrição da página, "Atual"/"Present", rótulos de links); verificar que ambos têm exatamente as mesmas chaves
+- [x] 2.4 Criar `app/[locale]/layout.tsx` com `NextIntlClientProvider`, `generateStaticParams`, `notFound()` para locale inválido e `<html lang>` mapeado (`pt-BR`/`en`), com o idioma lido via `next/root-params` em `i18n/request.ts`; verificar que `/fr` redireciona para `/pt/fr`, que responde 404, e que `/en` tem `lang="en"`
+- [x] 2.5 Implementar `generateMetadata` com título, descrição e `alternates.languages` (hreflang) por idioma; verificar no HTML de `/pt` o `<title>` em português e os links `hreflang` para `/pt` e `/en`
 
 ## 3. Tema e tokens visuais
 
@@ -26,8 +26,8 @@
 - [ ] 4.1 Criar `components/LocaleSwitcher.tsx` (client) que usa `router.replace` do next-intl preservando `window.location.hash`, indica o idioma ativo e é operável por teclado; verificar que `/pt#projects` vira `/en#projects`
 - [ ] 4.2 Criar `components/Header.tsx` fixo no topo com links `#experience` e `#projects`, `LocaleSwitcher` e `ThemeToggle`; verificar que continua visível após rolar
 - [ ] 4.3 Adicionar rolagem suave condicionada a `prefers-reduced-motion: no-preference` e `scroll-margin-top` nas seções; verificar que o título da seção não fica sob o header e que, com movimento reduzido emulado no DevTools, a rolagem é instantânea
-- [ ] 4.4 Criar `app/[locale]/page.tsx` com `setRequestLocale` e as seções na ordem Hero, `#experience`, `#projects`; verificar que `/en#experience` abre na seção de experiências
-- [ ] 4.5 Criar `app/[locale]/not-found.tsx` simples; verificar que `/fr` exibe essa página
+- [ ] 4.4 Criar `app/[locale]/page.tsx` com as seções na ordem Hero, `#experience`, `#projects`; verificar que `/en#experience` abre na seção de experiências
+- [ ] 4.5 Criar `app/[locale]/not-found.tsx` simples e a rota `app/[locale]/[...rest]/page.tsx`; verificar que `/pt/fr` exibe essa página com status 404
 
 ## 5. Conteúdo
 

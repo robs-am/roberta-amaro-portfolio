@@ -56,7 +56,8 @@ App Router é o padrão atual e o que o next-intl suporta com mais recursos (Ser
 ### i18n com next-intl e prefixo sempre presente
 - `locales: ['pt', 'en']`, `defaultLocale: 'pt'`, `localePrefix: 'always'`: toda URL tem prefixo, então `/` sempre redireciona e nunca existe conteúdo duplicado sem prefixo.
 - Detecção pelo `Accept-Language` e cookie de preferência (`NEXT_LOCALE`) ficam a cargo do proxy do next-intl, que já implementa a ordem cookie > navegador > default exigida pela spec.
-- `generateStaticParams` + `setRequestLocale` no layout e na página, para que `/pt` e `/en` sejam gerados estaticamente.
+- `generateStaticParams` no layout e leitura do idioma com `next/root-params` em `i18n/request.ts`, para que `/pt` e `/en` sejam gerados estaticamente. Isso substitui `setRequestLocale`/`requestLocale`, marcados como deprecated no next-intl 4.
+- Caminhos sem prefixo válido (ex: `/fr`) são redirecionados pelo proxy para `/<idioma>/fr`, que responde 404 via `app/[locale]/[...rest]/page.tsx`. Forçar 404 direto no proxy exigiria adivinhar quais segmentos "parecem idioma" e quebraria rotas futuras sem prefixo, como `/blog`.
 - `lang` do `<html>`: o código de rota é `pt`, mas o atributo usa `pt-BR`. Um mapa simples `{ pt: 'pt-BR', en: 'en' }` resolve isso.
 - `hreflang` via `alternates.languages` em `generateMetadata`.
 - Strings de interface ficam em `messages/*.json`; conteúdo de portfólio fica em `data/*.ts` (ver abaixo). Assim o JSON contém só textos curtos de UI e o conteúdo longo fica tipado.
