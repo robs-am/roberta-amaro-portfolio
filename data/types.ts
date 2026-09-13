@@ -8,6 +8,9 @@ export type Profile = {
   name: string;
   role: Localized;
   bio: Localized;
+  email?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
 };
 
 export type Experience = {

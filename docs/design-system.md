@@ -39,11 +39,12 @@ Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` r
 | `--elevated` | `bg-elevated` | `#faf8f5` | `#262626` | superfícies internas e hover |
 | `--foreground` | `text-foreground` | `#2a2622` | `#f5f5f4` | texto principal |
 | `--muted` | `text-muted` | `#5f574d` | `#bcbcbc` | texto secundário (datas, empresa, descrições) |
-| `--accent` | `text-accent`, `bg-accent` | `#36707f` | `#7eb3c1` | destaque: links, título profissional, pills, botão principal |
+| `--accent` | `text-accent`, `bg-accent` | `#2a5c68` | `#7eb3c1` | destaque: links, traço decorativo do hero, pills, botão principal |
 | `--accent-foreground` | `text-accent-foreground` | `#fffdf8` | `#0f2a31` | texto sobre fundo `bg-accent` |
 | `--border` | `border-border` | `rgba(67,126,142,0.22)` | `rgba(126,179,193,0.18)` | bordas e divisórias (decorativo, nunca texto) |
 | `--glow-1` | `bg-glow-1` | `#7eb3c1` | `#0f7482` | brilho de fundo, tom teal (decorativo) |
 | `--glow-2` | `bg-glow-2` | `#7cc0f0` | `#2f8fe0` | brilho de fundo, tom azul (decorativo) |
+| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.8` | `0.5` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
 
 Opacidades sobre tokens funcionam normalmente (`bg-background/85`, `bg-accent/10`).
 
@@ -156,6 +157,16 @@ O painel abre abaixo do header com uma técnica de CSS Grid (`grid-rows-[0fr]` �
 
 O menu fecha ao: acionar um link, pressionar Esc (o foco volta pro botão), clicar/tocar fora do header (`pointerdown`), ou quando a viewport cruza 768px enquanto o menu está aberto. A animação das barras e do painel usa `--ease-expressive` em 300ms e é desativada com movimento reduzido (`motion-reduce:transition-none`).
 
+## Brilho de fundo
+
+`components/BackgroundGlow.tsx` (client, `aria-hidden`, `pointer-events-none`), renderizado no layout antes do `Header`. Inspirado em [alignerr.com](https://www.alignerr.com), aprovado com a autora após algumas rodadas de calibração.
+
+- Camada `absolute` de `95vh` de altura no topo da página, com `mask-image: radial-gradient(120% 85% at 55% 0%, #000 45%, transparent 92%)` — suaviza as quatro bordas (não só embaixo), pra o `overflow-hidden` do container nunca cortar o blur numa linha reta.
+- 3 manchas (`div`, `border-radius: 9999px`, `filter: blur(170px)`, cor sólida em `--glow-1`/`--glow-2`, opacidade em `--glow-opacity`). As duas cores ficam separadas horizontalmente (teal mais à esquerda, azul mais à direita, com uma faixa de transição no meio) — com muito overlap entre elas o brilho lê como uma cor só em vez de gradiente.
+- `pointermove` na `window` define um alvo normalizado (-1 a 1); um loop `requestAnimationFrame` interpola a posição atual até o alvo (fator `0.18`) e grava `--glow-x`/`--glow-y` no container. Cada mancha tem uma profundidade (`--glow-depth`) diferente — `150`, `240`, `340`px de deslocamento máximo — criando parallax entre elas. O loop para quando a distância até o alvo fica abaixo de 0.1px e só recomeça no próximo `pointermove`.
+- Ativo só com `(pointer: fine) and (prefers-reduced-motion: no-preference)`; com toque ou movimento reduzido as manchas ficam paradas na posição base.
+- `--glow-opacity` é bem mais alto no claro (`0.8`) que no escuro (`0.5`) — nos dois temas o texto que fica sobre o brilho (hero e nav do header antes de rolar) usa `--foreground`, não `--muted`/`--accent`; os números de contraste que sustentam esses valores estão em "Texto sobre o brilho" acima.
+
 ## Padrões de componentes
 
 Ainda não implementados com a identidade visual final. Serão documentados aqui conforme forem construídos:
@@ -164,6 +175,5 @@ Ainda não implementados com a identidade visual final. Serão documentados aqui
 - Pill
 - Botão principal e link secundário
 - Timeline de experiências
-- Brilho de fundo interativo
 
 Até lá, a especificação de cada um está na seção "Decisions" do design do change `portfolio-mvp`.

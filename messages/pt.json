@@ -23,6 +23,12 @@
       "toLight": "Ativar tema claro"
     }
   },
+  "Hero": {
+    "email": "E-mail",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "newTab": "(abre em nova aba)"
+  },
   "Experience": {
     "title": "Experiências",
     "present": "Atual"

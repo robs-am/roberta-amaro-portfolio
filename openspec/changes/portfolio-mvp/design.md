@@ -102,11 +102,12 @@ Cores definidas como variáveis CSS em `globals.css`, com valores em `:root` e s
 | `--elevated` | `#faf8f5` | `#262626` | superfícies internas e hover |
 | `--foreground` | `#2a2622` | `#f5f5f4` | texto principal |
 | `--muted` | `#5f574d` | `#bcbcbc` | texto secundário |
-| `--accent` | `#36707f` | `#7eb3c1` | links, pontos da timeline, botão |
+| `--accent` | `#2a5c68` | `#7eb3c1` | links, pontos da timeline, botão |
 | `--accent-foreground` | `#fffdf8` | `#0f2a31` | texto sobre o botão teal |
 | `--border` | `rgba(67,126,142,0.22)` | `rgba(126,179,193,0.18)` | bordas |
-| `--glow-1` | `#7eb3c1` | `#36707f` | brilho de fundo (teal) |
-| `--glow-2` | `#94c4fc` | `#587ea5` | brilho de fundo (azul) |
+| `--glow-1` | `#7eb3c1` | `#0f7482` | brilho de fundo (teal) |
+| `--glow-2` | `#7cc0f0` | `#2f8fe0` | brilho de fundo (azul) |
+| `--glow-opacity` | `0.8` | `0.5` | opacidade das manchas do brilho — ver "Texto sobre o brilho" em `docs/design-system.md` para o porquê desses valores (contraste AA do texto do hero e da nav sobre o brilho) |
 
 Contraste calculado para todos os pares de texto: o menor é 4.52:1 (texto teal sobre pill com 14% de teal no tema claro), por isso a pill usa 10% de teal. Botão: 6.52:1 no escuro e 5.46:1 no claro. Pares entre 4.5 e 5 ficam na verificação da task de contraste.
 
@@ -121,12 +122,12 @@ A Geist do template é removida. Alternativas: só IBM Plex Sans (visual mais t�
 
 ### Brilho de fundo interativo
 A referência usa um shader WebGL com 6 cores e animação por tempo. Aqui o efeito é feito com CSS e um componente client pequeno, `BackgroundGlow`:
-- Camada `absolute` no topo da página, atrás do conteúdo, com `pointer-events-none` e `aria-hidden`, altura de cerca de 80vh e máscara em gradiente para dissolver no `--background`.
-- 2 ou 3 manchas `div` com `radial-gradient` nas cores `--glow-*` e `filter: blur(...)`. Como as cores vêm dos tokens, o brilho troca junto com o tema sem JavaScript.
-- `pointermove` na `window` define um alvo normalizado (-1 a 1). Um loop `requestAnimationFrame` interpola a posição atual até o alvo (fator em torno de 0.06) e grava `--glow-x`/`--glow-y` no container. Cada mancha usa `translate3d` com um multiplicador diferente (deslocamento máximo de ~40px), criando profundidade.
+- Camada `absolute` no topo da página, atrás do conteúdo, com `pointer-events-none` e `aria-hidden`, altura de 95vh e `mask-image` radial (suaviza as quatro bordas, não só embaixo — evita que o `overflow-hidden` do container corte o blur numa linha reta) para dissolver no `--background`.
+- 3 manchas `div` com `border-radius: 9999px`, cor sólida em `--glow-*` e `filter: blur(170px)`. Como as cores vêm dos tokens, o brilho troca junto com o tema sem JavaScript. As duas cores ficam separadas horizontalmente (teal mais à esquerda, azul mais à direita, com uma faixa de transição no meio) para ler como um gradiente contínuo em vez de manchas isoladas.
+- `pointermove` na `window` define um alvo normalizado (-1 a 1). Um loop `requestAnimationFrame` interpola a posição atual até o alvo (fator `0.18`) e grava `--glow-x`/`--glow-y` no container. Cada mancha usa `translate3d` com um multiplicador de profundidade diferente (deslocamento máximo de `340px`), criando profundidade e um movimento perceptível ao mouse.
 - O loop para quando a diferença até o alvo fica abaixo de 0.1px e só recomeça no próximo `pointermove`. Isso cumpre a spec de não manter animação com o ponteiro parado; com a aba oculta, o navegador já suspende o `requestAnimationFrame`.
 - O listener só é registrado quando `(pointer: fine)` e `(prefers-reduced-motion: no-preference)` são verdadeiros, reagindo a mudanças dessas media queries.
-- Renderizado no layout, antes do `Header`. O header fica translúcido (`backdrop-blur`) sobre o brilho.
+- Renderizado no layout, antes do `Header`. O `HeaderShell` (client) começa transparente sobre o brilho e só ganha `bg-background/85` + `backdrop-blur` depois de ~8px de rolagem (`components/HeaderShell.tsx`); enquanto transparente, o texto do header usa `--foreground` em vez de `--muted`/`--accent` pelo mesmo motivo de contraste do hero (ver `docs/design-system.md`).
 
 Alternativa: WebGL como na referência (visual mais orgânico e animado mesmo parado, mas exige uma dependência 3D e processamento contínuo).
 
@@ -227,7 +228,7 @@ Links com `target="_blank" rel="noopener noreferrer"`. Imagens de projeto com `n
 - [`ThemeClassSync` repete a regra de resolução do next-themes] -> Se `storageKey`, `attribute` ou os nomes dos temas mudarem no `ThemeProvider`, o componente precisa mudar junto; o risco está anotado no próprio componente e em `docs/design-system.md`.
 - [View Transitions não existem em navegadores antigos] -> Detecção de suporte; sem a API a troca de tema é instantânea, como antes.
 - [Conteúdo com `data-reveal` ficar oculto se o JavaScript carregar mas falhar] -> Ocultação só com `scripting: enabled`, animação de segurança que revela após 3s e hero animado apenas por CSS.
-- [Animação do hero e espera das experiências passarem sensação de carregamento lento] -> O hero começa imediatamente, sem esperar hidratação, e a espera antes de revelar o conteúdo já visível ficou em 250ms contados desde o início da animação do hero, então hidratação lenta não soma atraso extra (800ms e depois 350ms contados da hidratação foram percebidos como lentos); os valores ficam em tokens (`--duration-hero`, `--reveal-hold`) para ajuste fino.
+- [Animação do hero e espera das experiências passarem sensação de carregamento lento] -> O hero começa imediatamente, sem esperar hidratação, e a espera antes de revelar o conteúdo já visível é contada desde o início da animação do hero, não da hidratação (800ms e depois 350ms contados da hidratação foram percebidos como lentos). `--reveal-hold` virou `calc(var(--duration-hero) + 2 * var(--hero-stagger))` em vez de um valor fixo, pra ficar preso à duração real do hero em vez de um número solto — testado em 250ms fixo, o conteúdo abaixo revelava antes do hero terminar.
 - [Menu mobile sem focus trap] -> Aceito: painel não modal com 2 links; Esc e clique fora fecham o menu e o foco volta ao botão.
 - [Redirect da raiz depende do proxy e não funciona em export estático puro (`output: 'export'`)] -> Não usar export estático; hospedar em plataforma com suporte a proxy (ex: Vercel).
 - [Conteúdo placeholder publicado por engano] -> Deploy está fora do escopo; placeholders claramente fictícios ("Empresa Exemplo").
@@ -239,7 +240,8 @@ Projeto novo, sem migração. Rollback não se aplica antes do primeiro deploy.
 
 ## Open Questions
 
-- Cores exatas do brilho: aproximadas a partir dos tokens da referência, ajustáveis apenas em `--glow-*`.
 - Duração e distância exatas das animações de entrada: começam em 600ms e 16px e podem ser calibradas visualmente só pelos tokens de movimento.
+
+Resolvida: cores, opacidade e movimento do brilho foram calibrados e aprovados com a autora (valores finais na tabela de tokens acima e em `docs/design-system.md`).
 - Plataforma de hospedagem: não afeta o MVP, desde que suporte proxy.
 - Seção de contato ou footer com redes sociais: pode entrar como change separado.

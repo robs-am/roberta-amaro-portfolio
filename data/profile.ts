@@ -10,4 +10,7 @@ export const profile = {
     pt: "Texto de exemplo: desenvolvo interfaces web acessíveis e rápidas com React, Next.js e TypeScript. Substitua este parágrafo por uma apresentação real.",
     en: "Sample text: I build accessible, fast web interfaces with React, Next.js and TypeScript. Replace this paragraph with a real introduction.",
   },
+  email: "roberta.amaro89@gmail.com",
+  linkedinUrl: "https://linkedin.com/in/roberta-amaro",
+  githubUrl: "https://github.com/robs-am",
 } satisfies Profile;

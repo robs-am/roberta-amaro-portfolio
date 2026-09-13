@@ -22,7 +22,7 @@
 - [x] 3.5 Verificar ausência de flash: com tema escuro salvo, recarregar com throttling de rede lento no DevTools e confirmar que o tema claro nunca aparece
 - [x] 3.6 Criar `components/BackgroundGlow.tsx` (client) conforme o design (manchas em `--glow-*`, `pointermove` + `requestAnimationFrame` com interpolação e parada ao acomodar, ativo só com `pointer: fine` e sem movimento reduzido, `aria-hidden` e `pointer-events-none`) e renderizá-lo no layout; verificar que o brilho acompanha o mouse suavemente, fica parado com movimento reduzido e com emulação de toque no DevTools, não deixa `requestAnimationFrame` rodando no painel Performance com o ponteiro parado e não bloqueia cliques em links sobre ele
 - [x] 3.7 Ajustar opacidade e blur do brilho nos dois temas; verificar que o texto do hero mantém contraste AA sobre a área mais clara do brilho
-- [ ] 3.8 (pendência) Refinar a sensação de movimento do brilho com a autora (velocidade da interpolação, amplitude do deslocamento, profundidade entre manchas) e atualizar os valores finais de `--accent`, `--glow-*` e `--glow-opacity` no `design.md` e em `docs/design-system.md`; verificar no navegador que a movimentação foi aprovada
+- [x] 3.8 (pendência) Refinar a sensação de movimento do brilho com a autora (velocidade da interpolação, amplitude do deslocamento, profundidade entre manchas) e atualizar os valores finais de `--accent`, `--glow-*` e `--glow-opacity` no `design.md` e em `docs/design-system.md`; verificar no navegador que a movimentação foi aprovada
 
 ## 4. Estrutura da página
 
@@ -43,6 +43,7 @@
 - [x] 5.4 Criar `components/ExperienceSection.tsx` como timeline vertical (linha, ponto em `--accent`, período, cargo em Jost, empresa, descrição), com ordenação por data decrescente, datas formatadas por idioma e "Atual"/"Present"; verificar em `/pt` e `/en` a ordem, o formato das datas e o término da experiência atual, e que a timeline não gera rolagem horizontal em 360px
 - [x] 5.5 Criar `data/projects.ts` com pelo menos 3 projetos fictícios com `category`, cobrindo: com repo e demo, só com repo, com imagem e sem imagem (imagem em `public/projects/`); verificar com `pnpm exec tsc --noEmit`
 - [x] 5.6 Criar `components/ProjectCard.tsx` vertical (painel `aspect-video` com imagem ou fundo decorativo `aria-hidden`, pill com `category`, título em Jost, descrição, tecnologias, primeiro link disponível como botão em `--accent` e o outro como link de texto, `target="_blank" rel="noopener noreferrer"`) e `components/ProjectsSection.tsx` (grade 1/2/3 colunas); verificar que o card sem imagem tem painel decorativo da mesma altura e sem conteúdo para leitor de tela, e que o card sem demo mostra só o repositório como botão
+- [ ] 5.7 (pendência) Adicionar links de contato (e-mail, LinkedIn, GitHub) e/ou botão de CV no hero; aguardando Roberta definir os dados reais (endereços, URLs, arquivo de CV) antes de implementar
 
 ## 6. Animações
 
