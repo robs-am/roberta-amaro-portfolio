@@ -18,6 +18,18 @@ O tema é controlado pela classe `dark` no `<html>`, aplicada pelo `next-themes`
 - Tema escuro: valores sobrescritos em `.dark`.
 - Para variações pontuais por tema em um componente, use o variant `dark:` do Tailwind, mas prefira sempre resolver com tokens.
 
+### Troca de tema
+
+- O botão de tema faz um **cross-fade de 250ms** com a View Transitions API (`document.startViewTransition`). A duração fica nas regras `::view-transition-old(root)` e `::view-transition-new(root)` em `app/globals.css`.
+- Sem suporte do navegador ou com `prefers-reduced-motion: reduce`, a troca é instantânea.
+- Durante a transição, `::view-transition { pointer-events: none; }` mantém a página clicável.
+
+### Classe do tema ao trocar de idioma
+
+Trocar de `/pt` para `/en` remonta o `<html>`, e o React apaga a classe `dark` que o `next-themes` aplicou. O componente `ThemeClassSync` reaplica a classe antes da pintura para evitar um quadro no tema errado.
+
+Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` resolvido pela preferência do sistema). **Se mudar `storageKey`, `attribute` ou os nomes dos temas no `ThemeProvider`, atualize também o `ThemeClassSync`.**
+
 ## Cores
 
 | Token | Classe Tailwind | Claro | Escuro | Uso |
@@ -90,5 +102,7 @@ Ainda não implementados com a identidade visual final. Serão documentados aqui
 - Botão principal e link secundário
 - Timeline de experiências
 - Brilho de fundo interativo
+- Menu mobile (hambúrguer abaixo de 768px, painel abaixo do header)
+- Movimento: animações de entrada ao rolar e hover nos cards (tokens de duração e curva `cubic-bezier(0.2, 0, 0, 1)`, inspirados em [tubikstudio.com/works](https://tubikstudio.com/works))
 
 Até lá, a especificação de cada um está na seção "Decisions" do design do change `portfolio-mvp`.

@@ -4,20 +4,21 @@ O repositório começou vazio (só o scaffolding do OpenSpec), então não há c
 
 A restrição que mais molda a arquitetura é o blog planejado para os próximos meses: ele precisa de URLs indexáveis por idioma. Por isso o i18n já nasce baseado em rotas, mesmo o MVP sendo uma página só.
 
-A identidade visual segue a referência escolhida pela autora: https://www.alignerr.com/en/process (fundo quase preto com brilho teal/azul que reage ao mouse, cards escuros com borda teal sutil, destaque teal claro).
+A identidade visual segue a referência escolhida pela autora: https://www.alignerr.com/en/process (fundo quase preto com brilho teal/azul que reage ao mouse, cards escuros com borda teal sutil, destaque teal claro). As animações de entrada e hover seguem uma segunda referência, https://tubikstudio.com/works, sem adotar a tipografia dela.
 
 ## Goals / Non-Goals
 
 **Goals:**
 - Página totalmente renderizada no servidor e gerada estaticamente para cada idioma
-- JavaScript no cliente restrito aos controles interativos (idioma, tema) e ao brilho de fundo
+- JavaScript no cliente restrito aos controles interativos (idioma, tema, menu mobile), ao brilho de fundo e ao observador das animações de entrada
 - Estrutura `app/[locale]/` que aceite `blog/` depois sem mexer no que já existe
-- Identidade visual centralizada em tokens, para ajustar cores e fontes sem tocar nos componentes
+- Identidade visual centralizada em tokens, para ajustar cores, fontes e movimento sem tocar nos componentes
 
 **Non-Goals:**
 - Suporte a mais de dois idiomas (a estrutura permite, mas não será testada)
 - Fundo em WebGL/canvas ou animação contínua enquanto o ponteiro está parado
-- Fontes pagas (a "The Future" da referência é substituída por uma alternativa gratuita)
+- Bibliotecas de animação (GSAP, Framer Motion) ou rolagem suavizada por JavaScript
+- Fontes pagas (a "The Future" da Alignerr e a Lausanne do Tubik ficam de fora)
 - Testes automatizados end-to-end (verificação manual pelas specs no MVP)
 - Analytics, SEO avançado (sitemap, Open Graph images), deploy
 
@@ -28,16 +29,20 @@ A identidade visual segue a referência escolhida pela autora: https://www.align
 ```
 app/
   [locale]/
-    layout.tsx          <html lang>, fontes, providers, brilho, header, metadados
+    layout.tsx          <html lang>, fontes, providers, brilho, observer, header, metadados
     page.tsx            Hero + #experience + #projects
     not-found.tsx
     [...rest]/page.tsx  notFound() para caminhos inexistentes
-  globals.css           Tailwind + tokens de tema
+  globals.css           Tailwind + tokens de tema e movimento
 components/
   BackgroundGlow.tsx    (client)
-  Header.tsx            nav + LocaleSwitcher + ThemeToggle
+  Header.tsx            nav desktop + LocaleSwitcher + ThemeToggle + MobileMenu
+  navItems.ts           lista única dos links de navegação
+  MobileMenu.tsx        (client) hambúrguer + painel abaixo do header
   LocaleSwitcher.tsx    (client)
   ThemeToggle.tsx       (client)
+  ThemeClassSync.tsx    (client) reaplica a classe do tema quando o layout remonta
+  RevealObserver.tsx    (client) marca [data-reveal] ao entrar na tela
   Hero.tsx
   ExperienceSection.tsx timeline vertical
   ProjectCard.tsx / ProjectsSection.tsx
@@ -73,13 +78,19 @@ Alternativas: Context + localStorage (descartado por não gerar URLs indexáveis
 
 **Preservar a âncora ao trocar idioma:** o fragmento não chega ao servidor. O `LocaleSwitcher` anexa `window.location.hash` ao caminho passado para `router.replace(..., { locale })`; a navegação do next-intl preserva o fragmento.
 
+**Troca de idioma sem espera:** o Next.js trata `/pt` e `/en` como o mesmo layout raiz (ignora o valor do parâmetro), então a troca é uma navegação no cliente que depende do payload da outra rota. O `LocaleSwitcher` chama `router.prefetch(pathname, { locale })` para os outros idiomas ao montar, e o clique usa dados já carregados. O prefetch só roda em produção; no dev server a troca continua mais lenta.
+
 ### Tema com next-themes + Tailwind por classe
-- `ThemeProvider` com `attribute="class"`, `defaultTheme="system"`, `enableSystem`. O next-themes injeta um script inline antes da pintura que aplica a classe, o que atende a spec de "sem flash", e persiste em `localStorage`, que é compartilhado entre `/pt` e `/en`.
+- `ThemeProvider` com `attribute="class"`, `defaultTheme="system"`, `enableSystem`, `disableTransitionOnChange`. O next-themes injeta um script inline antes da pintura que aplica a classe, o que atende a spec de "sem flash", e persiste em `localStorage`, que é compartilhado entre `/pt` e `/en`.
 - `<html suppressHydrationWarning>`, porque a classe é aplicada antes da hidratação.
 - No `ThemeToggle`, o botão só é renderizado após hidratar (via `useSyncExternalStore`), para evitar mismatch de hidratação; antes disso ocupa o mesmo espaço com um placeholder.
 - Tailwind v4: variante `dark` redefinida para a classe com `@custom-variant dark (&:where(.dark, .dark *));`.
 
 Alternativa: CSS puro com `prefers-color-scheme` (sem escolha manual) ou implementação própria do script anti-flash (mesmo resultado com mais código).
+
+**Cross-fade na troca de tema:** o next-themes troca a classe num único quadro, e a mudança de luminosidade de tela cheia é percebida como uma piscada. O `ThemeToggle` envolve a troca em `document.startViewTransition`, com o `setTheme` dentro de `flushSync` (o next-themes aplica a classe num efeito; o `flushSync` garante que ela já esteja no DOM quando o navegador captura o estado novo). A duração de 250ms fica em `::view-transition-old(root)`/`::view-transition-new(root)`, e `::view-transition { pointer-events: none; }` evita perder cliques durante a animação. Sem suporte à API ou com movimento reduzido, a troca é instantânea. Usamos a API do navegador diretamente, e não o componente `<ViewTransition>` do React, porque a troca de tema é um `setState` comum, que não aciona o componente. Alternativa descartada: transição CSS de cor, que fica irregular entre elementos (justamente o que `disableTransitionOnChange` evita).
+
+**Classe do tema ao trocar de idioma:** mudar o valor de `[locale]` remonta o layout raiz, e o React remove todos os atributos do `<html>` ao liberar o elemento (`releaseSingletonInstance`), inclusive a classe `dark`. O next-themes só a devolve num efeito passivo, depois de uma pintura, o que mostrava um quadro no tema claro. O `ThemeClassSync` reaplica classe e `color-scheme` num `useLayoutEffect`, antes da pintura, lendo a mesma chave `theme` e resolvendo `system` como o next-themes. Alternativa descartada: recarregar a página na troca de idioma (`window.location`), que evita a lógica repetida mas perde a navegação no cliente e deixa a troca mais lenta.
 
 ### Tokens de identidade visual
 Cores definidas como variáveis CSS em `globals.css`, com valores em `:root` e sobrescritos em `.dark`, expostos ao Tailwind via `@theme`. Componentes usam só as classes dos tokens (`bg-card`, `text-muted`...), nunca cores cruas. Valores extraídos dos tokens da referência:
@@ -99,12 +110,14 @@ Cores definidas como variáveis CSS em `globals.css`, com valores em `:root` e s
 
 Contraste calculado para todos os pares de texto: o menor é 4.52:1 (texto teal sobre pill com 14% de teal no tema claro), por isso a pill usa 10% de teal. Botão: 6.52:1 no escuro e 5.46:1 no claro. Pares entre 4.5 e 5 ficam na verificação da task de contraste.
 
+A referência viva de tokens e tipografia, para uso no dia a dia, fica em `docs/design-system.md`.
+
 ### Fontes
 Via `next/font/google`, ambas variáveis e só com o subset `latin`:
-- **Jost** para títulos (token `--font-display`): geométrica, a alternativa gratuita mais próxima da "The Future" da referência. Títulos em peso normal com `tracking-tight`, como na referência.
+- **Jost** para títulos (token `--font-display`): geométrica, a alternativa gratuita mais próxima da "The Future" da referência. Uma regra base em `globals.css` aplica `font-display` e `tracking-wide` a `h1`, `h2` e `h3`; o espaçamento aberto deixa a Jost em negrito mais legível do que o `tracking-tight` testado inicialmente.
 - **IBM Plex Sans** para o texto (token `--font-sans`): a mesma fonte de texto da referência.
 
-A Geist do template é removida. Alternativas: só IBM Plex Sans (visual mais técnico, uma fonte a menos) ou manter Geist (sem ligação com a referência).
+A Geist do template é removida. Alternativas: só IBM Plex Sans (visual mais técnico, uma fonte a menos), manter Geist (sem ligação com a referência) ou uma grotesca editorial como a do Tubik (descartada para não misturar duas direções de identidade).
 
 ### Brilho de fundo interativo
 A referência usa um shader WebGL com 6 cores e animação por tempo. Aqui o efeito é feito com CSS e um componente client pequeno, `BackgroundGlow`:
@@ -116,6 +129,33 @@ A referência usa um shader WebGL com 6 cores e animação por tempo. Aqui o efe
 - Renderizado no layout, antes do `Header`. O header fica translúcido (`backdrop-blur`) sobre o brilho.
 
 Alternativa: WebGL como na referência (visual mais orgânico e animado mesmo parado, mas exige uma dependência 3D e processamento contínuo).
+
+### Menu mobile
+- Abaixo de 768px (breakpoint `md`), os links da navegação saem do header e vão para um painel aberto por um botão hambúrguer. Seletor de idioma e alternador de tema continuam visíveis, e o header mobile vira uma linha só: nome à esquerda; idioma, tema e hambúrguer à direita (cabe em 360px).
+- O `Header` continua Server Component: renderiza a `<nav>` desktop com `hidden md:block` e o `MobileMenu` (client) com `md:hidden`. Os links vêm de `components/navItems.ts` (href da âncora + chave de tradução), para a nav desktop e o menu não duplicarem a lista.
+- Botão de 40×40px com três barras que viram um X (`rotate`/`translate` com `--ease-expressive`), `aria-expanded`, `aria-controls` apontando para o painel e rótulo traduzido (`Header.menu.open`/`Header.menu.close`).
+- Painel posicionado com `absolute inset-x-0 top-full` dentro do header, `bg-background/95` com `backdrop-blur` e borda inferior; links empilhados com área de toque mínima de 44px. Abre com fade e deslocamento curto.
+- Fecha ao acionar um link, com Esc (devolvendo o foco ao botão), com `pointerdown` fora do header e quando `(min-width: 768px)` passa a valer (listener de `matchMedia`). A troca de idioma remonta o layout e fecha o menu naturalmente.
+- Painel não modal: sem focus trap nem bloqueio de rolagem, porque não cobre a página e tem só 2 links. Com movimento reduzido, barras e painel mudam sem animação.
+
+Alternativas: menu em tela cheia ou gaveta lateral com fundo escurecido (desproporcionais para 2 links e exigem diálogo modal com focus trap); manter a quebra de linha atual da nav (funciona, mas foi explicitamente substituída pelo hambúrguer).
+
+### Animações de entrada e hover
+Inspiradas em https://tubikstudio.com/works, que usa GSAP + ScrollTrigger. Aqui o mesmo efeito é feito com CSS e um observador pequeno.
+
+**Tokens de movimento** em `globals.css`: `--ease-expressive: cubic-bezier(0.2, 0, 0, 1)` (curva usada no Tubik: arranca rápido e desacelera longo), `--duration-reveal: 600ms` e `--reveal-stagger: 80ms`.
+
+**Entrada ao rolar:**
+- Títulos de seção, itens da timeline e cards recebem `data-reveal` e a variável `--reveal-index` (posição no grupo) direto no JSX dos Server Components.
+- O CSS só oculta dentro de `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`: `[data-reveal]:not([data-revealed])` fica com `opacity: 0` e `translate: 0 16px`. Quando o atributo `data-revealed` aparece, uma transição de `--duration-reveal` com `--ease-expressive` leva o elemento ao estado final, com atraso de `calc(var(--reveal-index, 0) * var(--reveal-stagger))`. Sem JavaScript ou com movimento reduzido, nada fica oculto.
+- `RevealObserver` (client, renderizado no layout, retorna `null`): ao montar, cria um `IntersectionObserver` para `[data-reveal]`, marca `data-revealed` quando o elemento entra na tela e para de observá-lo, então cada elemento anima uma vez. Como o layout remonta na troca de idioma, o observer remonta junto e observa o conteúdo novo; o que já está visível é revelado na hora.
+- Rede de segurança: `[data-reveal]:not([data-revealed])` também recebe uma animação que o torna visível após 3s, caso o JavaScript carregue mas o observer falhe.
+
+**Hero:** anima no carregamento só com CSS (`@keyframes` de fade + subida, 400ms, em sequência nome → título → bio), sem depender de hidratação, para não atrasar o conteúdo principal.
+
+**Hover e foco nos cards:** `translate: 0 -4px`, borda em `--accent` com baixa opacidade e zoom de 1.03 na imagem do painel (dentro de `overflow-hidden`), em 300ms com `--ease-expressive`. `:focus-within` aplica o mesmo destaque para quem navega por teclado. Com movimento reduzido, só a borda muda.
+
+Alternativas: GSAP/ScrollTrigger como no Tubik (cerca de 70KB para efeitos que o CSS resolve); scroll-driven animations em CSS (`animation-timeline: view()`), que revertem ao rolar de volta, dificultam a sequência e não funcionam no Firefox sem flag.
 
 ### Card de projeto vertical
 ```
@@ -170,7 +210,7 @@ type Project = {
 Alternativa: arquivos separados por idioma (descartado por duplicar datas, links e tags); MDX por item (desnecessário para textos curtos, fica reservado ao blog).
 
 ### Server vs Client Components
-Tudo é Server Component, exceto `LocaleSwitcher`, `ThemeToggle` e `BackgroundGlow`. A navegação por âncora usa `<a href="#projects">` nativo, com `scroll-behavior: smooth` em CSS dentro de `@media (prefers-reduced-motion: no-preference)`, `data-scroll-behavior="smooth"` no `<html>` (para o Next.js desativar a rolagem suave durante trocas de rota) e `scroll-margin-top` nas seções para não ficarem sob o header fixo.
+Tudo é Server Component, exceto `LocaleSwitcher`, `ThemeToggle`, `ThemeClassSync`, `MobileMenu`, `RevealObserver` e `BackgroundGlow`. A navegação por âncora usa `<a href="#projects">` nativo, com `scroll-behavior: smooth` em CSS dentro de `@media (prefers-reduced-motion: no-preference)`, `data-scroll-behavior="smooth"` no `<html>` (para o Next.js desativar a rolagem suave durante trocas de rota) e `scroll-margin-top` nas seções para não ficarem sob o header fixo.
 
 ### Links externos e imagens
 Links com `target="_blank" rel="noopener noreferrer"`. Imagens de projeto com `next/image`, em `public/projects/`.
@@ -182,6 +222,11 @@ Links com `target="_blank" rel="noopener noreferrer"`. Imagens de projeto com `n
 - [Duas famílias de fonte aumentam o download] -> Fontes variáveis, só subset `latin` e `display: swap` (padrão do `next/font`).
 - [Jost não é idêntica à "The Future"] -> Aceito; a fonte fica isolada no token `--font-display` e pode ser trocada depois.
 - [Mismatch de hidratação no alternador de tema] -> Botão só após hidratar; placeholder com o mesmo tamanho para não causar layout shift.
+- [`ThemeClassSync` repete a regra de resolução do next-themes] -> Se `storageKey`, `attribute` ou os nomes dos temas mudarem no `ThemeProvider`, o componente precisa mudar junto; o risco está anotado no próprio componente e em `docs/design-system.md`.
+- [View Transitions não existem em navegadores antigos] -> Detecção de suporte; sem a API a troca de tema é instantânea, como antes.
+- [Conteúdo com `data-reveal` ficar oculto se o JavaScript carregar mas falhar] -> Ocultação só com `scripting: enabled`, animação de segurança que revela após 3s e hero animado apenas por CSS.
+- [Animação do hero atrasar a percepção de carregamento] -> Duração curta (400ms), começando imediatamente, sem esperar hidratação.
+- [Menu mobile sem focus trap] -> Aceito: painel não modal com 2 links; Esc e clique fora fecham o menu e o foco volta ao botão.
 - [Redirect da raiz depende do proxy e não funciona em export estático puro (`output: 'export'`)] -> Não usar export estático; hospedar em plataforma com suporte a proxy (ex: Vercel).
 - [Conteúdo placeholder publicado por engano] -> Deploy está fora do escopo; placeholders claramente fictícios ("Empresa Exemplo").
 - [Mais setup inicial que o toggle simples] -> Aceito conscientemente em troca de não migrar o i18n quando o blog chegar.
@@ -193,5 +238,6 @@ Projeto novo, sem migração. Rollback não se aplica antes do primeiro deploy.
 ## Open Questions
 
 - Cores exatas do brilho: aproximadas a partir dos tokens da referência, ajustáveis apenas em `--glow-*`.
+- Duração e distância exatas das animações de entrada: começam em 600ms e 16px e podem ser calibradas visualmente só pelos tokens de movimento.
 - Plataforma de hospedagem: não afeta o MVP, desde que suporte proxy.
 - Seção de contato ou footer com redes sociais: pode entrar como change separado.

@@ -13,6 +13,8 @@ Ainda não existe um portfólio pessoal público para apresentar experiências p
 - Conteúdo de exemplo (placeholder), a ser substituído pelo conteúdo real depois
 - Identidade visual inspirada em https://www.alignerr.com/en/process: destaque teal sobre fundo quase preto (com versão clara em tons quentes), fontes Jost e IBM Plex Sans, cards de projeto verticais e timeline de experiências, tudo centralizado em tokens
 - Brilho de fundo em gradiente que acompanha suavemente o mouse, parado em dispositivos de toque e para quem prefere movimento reduzido
+- Layout responsivo com menu hambúrguer abaixo de 768px para os links de navegação, mantendo seletor de idioma e alternador de tema visíveis no header
+- Animações de entrada ao rolar e destaque dos cards no hover e no foco, inspiradas em https://tubikstudio.com/works, desativadas para quem prefere movimento reduzido
 
 Fora do escopo: blog, seção de contato/formulário, CMS, conteúdo real, deploy.
 
@@ -21,7 +23,7 @@ Fora do escopo: blog, seção de contato/formulário, CMS, conteúdo real, deplo
 ### New Capabilities
 - `localization`: roteamento por idioma (`/pt`, `/en`), detecção do idioma do navegador com fallback PT, troca de idioma preservando a seção atual e textos de interface traduzidos
 - `theme`: alternância entre dark e light mode, respeito à preferência do sistema, persistência da escolha e ausência de flash de tema
-- `portfolio-page`: estrutura da página única (header, hero, seções âncora) e navegação entre seções
+- `portfolio-page`: estrutura da página única (header, hero, seções âncora), navegação entre seções, menu mobile, brilho de fundo e animações de entrada e hover
 - `portfolio-content`: exibição de experiências e cards de projetos a partir de dados bilíngues, no idioma ativo
 
 ### Modified Capabilities

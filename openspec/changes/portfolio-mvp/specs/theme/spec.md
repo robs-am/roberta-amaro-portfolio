@@ -5,7 +5,7 @@ Permite que o visitante veja o portfólio em tema claro ou escuro, respeitando a
 ## ADDED Requirements
 
 ### Requirement: Alternar tema
-O header MUST oferecer um controle que alterna entre tema claro e escuro. A mudança MUST ser aplicada imediatamente, sem recarregar a página. O controle MUST ser operável por teclado e ter rótulo acessível que descreve a ação.
+O header MUST oferecer um controle que alterna entre tema claro e escuro. A mudança MUST começar imediatamente, sem recarregar a página, com uma transição suave de no máximo 300ms entre os dois temas. Quando o visitante tiver preferência por movimento reduzido ou o navegador não suportar a transição, a mudança MUST ser instantânea. O controle MUST ser operável por teclado e ter rótulo acessível que descreve a ação.
 
 #### Scenario: Mudar para tema escuro
 - **WHEN** o visitante está no tema claro e aciona o alternador de tema
@@ -14,6 +14,14 @@ O header MUST oferecer um controle que alterna entre tema claro e escuro. A muda
 #### Scenario: Mudar para tema claro
 - **WHEN** o visitante está no tema escuro e aciona o alternador de tema
 - **THEN** a página passa a exibir o tema claro sem recarregar
+
+#### Scenario: Transição suave
+- **WHEN** o visitante aciona o alternador de tema em um navegador com suporte a transições de página
+- **THEN** a página faz uma transição gradual de no máximo 300ms entre os temas, sem salto brusco de luminosidade
+
+#### Scenario: Movimento reduzido
+- **WHEN** o visitante com preferência de movimento reduzido aciona o alternador de tema
+- **THEN** o novo tema é aplicado instantaneamente, sem animação
 
 #### Scenario: Uso por teclado
 - **WHEN** o visitante foca o alternador com Tab e pressiona Enter ou Espaço
@@ -40,6 +48,7 @@ Uma escolha manual de tema MUST ser mantida em recarregamentos, em visitas futur
 #### Scenario: Trocar de idioma
 - **WHEN** o visitante escolhe o tema escuro em `/pt` e troca para `/en`
 - **THEN** a página em inglês é exibida no tema escuro
+- **AND** em nenhum momento da troca a página aparece no tema claro
 
 #### Scenario: Escolha diferente do sistema
 - **WHEN** o visitante com sistema em modo escuro escolhe o tema claro e volta ao site depois

@@ -18,18 +18,21 @@
 - [x] 3.1 Definir em `app/globals.css` os tokens da tabela do design (`--background`, `--card`, `--elevated`, `--foreground`, `--muted`, `--accent`, `--accent-foreground`, `--border`, `--glow-*`) em `:root` e `.dark`, expostos via `@theme`, com `@custom-variant dark` por classe; verificar que adicionar a classe `dark` ao `<html>` troca as cores e que o script de contraste aponta todos os pares de texto com 4.5:1 ou mais
 - [x] 3.2 Trocar a Geist por Jost (`--font-display`, títulos) e IBM Plex Sans (`--font-sans`, texto) via `next/font/google`, variáveis e com subset `latin`; verificar no navegador que títulos usam Jost e o texto usa IBM Plex Sans
 - [x] 3.3 Adicionar o `ThemeProvider` (`attribute="class"`, `defaultTheme="system"`, `enableSystem`) e `suppressHydrationWarning` no `<html>`; verificar que a página segue o modo claro/escuro do sistema sem warnings de hidratação no console
-- [ ] 3.4 Criar `components/ThemeToggle.tsx` (client) com botão renderizado só após hidratar, rótulo acessível traduzido e operável por teclado; verificar que alterna o tema sem recarregar e que a escolha persiste após reload e ao trocar `/pt` -> `/en`
+- [x] 3.4 Criar `components/ThemeToggle.tsx` (client) com botão renderizado só após hidratar, rótulo acessível traduzido, operável por teclado e troca com cross-fade via View Transitions (instantânea sem suporte ou com movimento reduzido), e `components/ThemeClassSync.tsx` para reaplicar a classe do tema antes da pintura quando o layout remonta; verificar que alterna o tema sem recarregar e sem salto de luminosidade, que a escolha persiste após reload e que alternar `/pt` <-> `/en` no tema escuro não mostra o tema claro
 - [x] 3.5 Verificar ausência de flash: com tema escuro salvo, recarregar com throttling de rede lento no DevTools e confirmar que o tema claro nunca aparece
 - [ ] 3.6 Criar `components/BackgroundGlow.tsx` (client) conforme o design (manchas em `--glow-*`, `pointermove` + `requestAnimationFrame` com interpolação e parada ao acomodar, ativo só com `pointer: fine` e sem movimento reduzido, `aria-hidden` e `pointer-events-none`) e renderizá-lo no layout; verificar que o brilho acompanha o mouse suavemente, fica parado com movimento reduzido e com emulação de toque no DevTools, não deixa `requestAnimationFrame` rodando no painel Performance com o ponteiro parado e não bloqueia cliques em links sobre ele
 - [ ] 3.7 Ajustar opacidade e blur do brilho nos dois temas; verificar que o texto do hero mantém contraste AA sobre a área mais clara do brilho
 
 ## 4. Estrutura da página
 
-- [ ] 4.1 Criar `components/LocaleSwitcher.tsx` (client) que usa `router.replace` do next-intl preservando `window.location.hash`, indica o idioma ativo e é operável por teclado; verificar que `/pt#projects` vira `/en#projects`
+- [ ] 4.1 Criar `components/LocaleSwitcher.tsx` (client) que usa `router.replace` do next-intl preservando `window.location.hash`, pré-carrega os outros idiomas com `router.prefetch`, indica o idioma ativo e é operável por teclado; verificar que `/pt#projects` vira `/en#projects` e que, no build de produção, a troca acontece sem espera perceptível
 - [ ] 4.2 Criar `components/Header.tsx` fixo no topo, translúcido com `backdrop-blur` sobre o brilho, com links `#experience` e `#projects`, `LocaleSwitcher` e `ThemeToggle`; verificar que continua visível e legível após rolar
 - [ ] 4.3 Adicionar rolagem suave condicionada a `prefers-reduced-motion: no-preference` e `scroll-margin-top` nas seções; verificar que o título da seção não fica sob o header e que, com movimento reduzido emulado no DevTools, a rolagem é instantânea
 - [ ] 4.4 Criar `app/[locale]/page.tsx` com as seções na ordem Hero, `#experience`, `#projects`; verificar que `/en#experience` abre na seção de experiências
 - [ ] 4.5 Criar `app/[locale]/not-found.tsx` simples e a rota `app/[locale]/[...rest]/page.tsx`; verificar que `/pt/fr` exibe essa página com status 404
+- [ ] 4.6 Adicionar `Header.menu.open` e `Header.menu.close` em `messages/pt.json` e `messages/en.json` e criar `components/navItems.ts` com a lista única de links (`#experience`, `#projects`) usada pela nav desktop; verificar que as mensagens têm as mesmas chaves nos dois idiomas e que a nav desktop continua igual
+- [ ] 4.7 Criar `components/MobileMenu.tsx` (client) com botão hambúrguer de 40×40px (três barras que viram X), `aria-expanded`, `aria-controls` e rótulo traduzido, e painel abaixo do header com os links de `navItems` empilhados (área de toque mínima de 44px); no `Header`, nav desktop com `hidden md:block`, `MobileMenu` com `md:hidden` e header mobile em uma linha (nome; idioma, tema e menu); verificar em 360px que o botão substitui os links, com seletor e tema visíveis e sem rolagem horizontal, e em 1024px que os links aparecem e o botão some
+- [ ] 4.8 Fechar o menu ao acionar um link, com Esc (foco volta ao botão), com `pointerdown` fora do header e quando `(min-width: 768px)` passar a valer, e desativar a animação das barras e do painel com movimento reduzido; verificar cada caso no navegador e que Tab percorre os links do menu aberto
 
 ## 5. Conteúdo
 
@@ -40,10 +43,18 @@
 - [ ] 5.5 Criar `data/projects.ts` com pelo menos 3 projetos fictícios com `category`, cobrindo: com repo e demo, só com repo, com imagem e sem imagem (imagem em `public/projects/`); verificar com `pnpm exec tsc --noEmit`
 - [ ] 5.6 Criar `components/ProjectCard.tsx` vertical (painel `aspect-video` com imagem ou fundo decorativo `aria-hidden`, pill com `category`, título em Jost, descrição, tecnologias, primeiro link disponível como botão em `--accent` e o outro como link de texto, `target="_blank" rel="noopener noreferrer"`) e `components/ProjectsSection.tsx` (grade 1/2/3 colunas); verificar que o card sem imagem tem painel decorativo da mesma altura e sem conteúdo para leitor de tela, e que o card sem demo mostra só o repositório como botão
 
-## 6. Verificação final
+## 6. Animações
 
-- [ ] 6.1 Rodar `pnpm build` e verificar que passa sem erros de tipo ou lint e que `/pt` e `/en` aparecem como rotas estáticas na saída
-- [ ] 6.2 Verificar responsividade no DevTools em 360px (sem rolagem horizontal, controles do header acessíveis) e em 1440px (conteúdo centralizado com largura máxima)
-- [ ] 6.3 Verificar contraste AA nos temas claro e escuro com Lighthouse ou axe DevTools, incluindo o hero sobre o brilho, e ajustar tokens até não haver falhas de contraste
-- [ ] 6.4 Verificar navegação completa só por teclado (Tab até nav, seletor de idioma e alternador de tema, acionando cada um) em `/pt` e `/en`
-- [ ] 6.5 Verificar com `curl` que o HTML de `/en` já contém os textos em inglês (sem depender de JavaScript) e que o cookie de idioma faz `/` redirecionar para o idioma escolhido manualmente
+- [ ] 6.1 Adicionar em `app/globals.css` os tokens `--ease-expressive`, `--duration-reveal` e `--reveal-stagger` e as regras de `[data-reveal]` (oculto só com `scripting: enabled` e sem movimento reduzido, transição com atraso por `--reveal-index`, animação de segurança que revela após 3s); verificar com JavaScript desativado no DevTools e com movimento reduzido emulado que todo o conteúdo aparece
+- [ ] 6.2 Criar `components/RevealObserver.tsx` (client) renderizado no layout, com `IntersectionObserver` que marca `data-revealed` uma vez e para de observar; verificar que um elemento com `data-reveal` anima ao entrar na tela e não anima de novo ao rolar de volta
+- [ ] 6.3 Aplicar `data-reveal` e `--reveal-index` aos títulos de seção, itens da timeline e cards, e a animação CSS de carregamento ao hero (nome, título e bio em sequência, 400ms); verificar que timeline e cards entram em sequência ao rolar e que, ao trocar de idioma com os projetos na tela, os cards não ficam ocultos
+- [ ] 6.4 Adicionar hover e `:focus-within` aos cards (elevação de 4px, borda em `--accent`, zoom 1.03 na imagem do painel, 300ms com `--ease-expressive`), mudando só a borda com movimento reduzido; verificar com mouse, com Tab e com movimento reduzido emulado
+- [ ] 6.5 Documentar tokens de movimento, menu mobile e padrões de animação em `docs/design-system.md`; verificar que esses itens saíram da lista de padrões pendentes
+
+## 7. Verificação final
+
+- [ ] 7.1 Rodar `pnpm build` e verificar que passa sem erros de tipo ou lint e que `/pt` e `/en` aparecem como rotas estáticas na saída
+- [ ] 7.2 Verificar responsividade no DevTools em 360px (sem rolagem horizontal, menu hambúrguer, seletor de idioma e alternador de tema acessíveis), 768px (links no header, sem botão de menu) e 1440px (conteúdo centralizado com largura máxima)
+- [ ] 7.3 Verificar contraste AA nos temas claro e escuro com Lighthouse ou axe DevTools, incluindo o hero sobre o brilho e os links do menu mobile, e ajustar tokens até não haver falhas de contraste
+- [ ] 7.4 Verificar navegação completa só por teclado (Tab até nav ou botão de menu, links do menu aberto, seletor de idioma e alternador de tema, acionando cada um) em `/pt` e `/en`
+- [ ] 7.5 Verificar com `curl` que o HTML de `/en` já contém os textos em inglês (sem depender de JavaScript) e que o cookie de idioma faz `/` redirecionar para o idioma escolhido manualmente
