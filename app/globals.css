@@ -8,11 +8,12 @@
   --elevated: #faf8f5;
   --foreground: #2a2622;
   --muted: #5f574d;
-  --accent: #36707f;
+  --accent: #2a5c68;
   --accent-foreground: #fffdf8;
   --border: rgba(67, 126, 142, 0.22);
   --glow-1: #7eb3c1;
   --glow-2: #94c4fc;
+  --glow-opacity: 0.45;
 }
 
 .dark {
@@ -24,8 +25,9 @@
   --accent: #7eb3c1;
   --accent-foreground: #0f2a31;
   --border: rgba(126, 179, 193, 0.18);
-  --glow-1: #36707f;
-  --glow-2: #587ea5;
+  --glow-1: #0f7482;
+  --glow-2: #2d8fd0;
+  --glow-opacity: 0.85;
 }
 
 @theme inline {
@@ -65,4 +67,21 @@
 ::view-transition-new(root) {
   animation-duration: 250ms;
   animation-timing-function: ease-in-out;
+}
+
+.glow {
+  mask-image: linear-gradient(to bottom, #000 60%, transparent);
+}
+
+.glow-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  opacity: var(--glow-opacity);
+  transform: translate3d(
+    calc(var(--glow-x, 0) * var(--glow-depth, 0) * 1px),
+    calc(var(--glow-y, 0) * var(--glow-depth, 0) * 1px),
+    0
+  );
+  will-change: transform;
 }

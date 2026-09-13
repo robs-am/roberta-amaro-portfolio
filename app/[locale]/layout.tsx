@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
+import { BackgroundGlow } from "@/components/BackgroundGlow";
 import { Header } from "@/components/Header";
 import { ThemeClassSync } from "@/components/ThemeClassSync";
 import type { Locale } from "@/data/types";
@@ -70,6 +71,7 @@ export default async function LocaleLayout({
     >
       <body className="min-h-dvh bg-background font-sans text-foreground">
         <ThemeClassSync />
+        <BackgroundGlow />
         <NextIntlClientProvider>
           <ThemeProvider
             attribute="class"
