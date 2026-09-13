@@ -22,7 +22,7 @@ export async function ExperienceSection({ locale }: { locale: Locale }) {
       aria-labelledby="experience-title"
       className="scroll-mt-28 border-t border-border py-16 sm:scroll-mt-20"
     >
-      <h2 id="experience-title" className="text-2xl font-semibold tracking-tight">
+      <h2 id="experience-title" className="text-2xl font-semibold">
         {t("title")}
       </h2>
       <ol className="mt-8 space-y-10">
