@@ -37,7 +37,7 @@ export function LocaleSwitcher() {
               // The URL fragment never reaches the server, so it is carried over from the client.
               router.replace(`${pathname}${window.location.hash}`, { locale: option });
             }}
-            className={`rounded px-2 py-1.5 uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+            className={`cursor-pointer rounded px-2 py-1.5 uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
               active ? "bg-foreground text-background" : "text-muted hover:text-foreground"
             }`}
           >

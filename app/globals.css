@@ -12,7 +12,7 @@
   --accent-foreground: #fffdf8;
   --border: rgba(67, 126, 142, 0.22);
   --glow-1: #7eb3c1;
-  --glow-2: #94c4fc;
+  --glow-2: #b8a3f5;
   --glow-opacity: 0.45;
   --duration-reveal: 600ms;
   --reveal-stagger: 80ms;
@@ -36,7 +36,7 @@
   --accent-foreground: #0f2a31;
   --border: rgba(126, 179, 193, 0.18);
   --glow-1: #0f7482;
-  --glow-2: #2d8fd0;
+  --glow-2: #7c5cff;
   --glow-opacity: 0.85;
 }
 
@@ -81,7 +81,8 @@
 }
 
 .glow {
-  mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  /* Fades on every edge (not just the bottom) so overflow-hidden never clips the blur into a hard line. */
+  mask-image: radial-gradient(120% 85% at 55% 0%, #000 45%, transparent 92%);
 }
 
 .project-panel {
@@ -138,7 +139,7 @@
 .glow-blob {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(120px);
+  filter: blur(150px);
   opacity: var(--glow-opacity);
   transform: translate3d(
     calc(var(--glow-x, 0) * var(--glow-depth, 0) * 1px),

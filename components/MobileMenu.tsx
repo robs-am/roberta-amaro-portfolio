@@ -54,7 +54,7 @@ export function MobileMenu() {
         aria-controls={panelId}
         aria-label={open ? t("menu.close") : t("menu.open")}
         onClick={() => setOpen((value) => !value)}
-        className="inline-flex size-10 items-center justify-center rounded-md text-foreground transition-colors hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className="inline-flex size-10 cursor-pointer items-center justify-center rounded-md text-foreground transition-colors hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         <span aria-hidden="true" className="relative block h-3.5 w-5">
           <span className={`${barClass} top-0 ${open ? "translate-y-1.5 rotate-45" : ""}`} />

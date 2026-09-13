@@ -50,7 +50,7 @@
 - [x] 6.2 Criar `components/RevealObserver.tsx` (client) renderizado no layout, com `IntersectionObserver` que marca `data-revealed` uma vez, define `--reveal-index` pela ordem dos elementos que entram juntos no mesmo lote e para de observar; verificar que um elemento com `data-reveal` anima ao entrar na tela e não anima de novo ao rolar de volta
 - [x] 6.3 Aplicar `data-reveal` aos títulos de seção, itens da timeline e cards, e a animação CSS de carregamento ao hero (nome, título e bio em sequência, 900ms com 150ms entre linhas, curva `--ease-soft` e leve desfoque), com o `RevealObserver` esperando `--reveal-hold` (250ms, contados desde o início da animação do hero e não da hidratação) antes de revelar o que já está visível em páginas com hero; verificar que o hero anima antes das experiências no carregamento, que timeline e cards entram em sequência ao rolar, que um card entrando sozinho não espera atraso, e que, ao trocar de idioma com os projetos na tela, os cards não ficam ocultos
 - [x] 6.4 Adicionar hover e `:focus-within` aos cards (elevação de 4px, borda em `--accent`, zoom 1.03 na imagem do painel, 300ms com `--ease-expressive`), mudando só a borda com movimento reduzido; verificar com mouse, com Tab e com movimento reduzido emulado
-- [ ] 6.5 Documentar tokens de movimento, menu mobile e padrões de animação em `docs/design-system.md`; verificar que esses itens saíram da lista de padrões pendentes
+- [x] 6.5 Documentar tokens de movimento, menu mobile e padrões de animação em `docs/design-system.md`; verificar que esses itens saíram da lista de padrões pendentes
 
 ## 7. Verificação final
 

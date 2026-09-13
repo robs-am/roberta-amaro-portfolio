@@ -42,8 +42,8 @@ Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` r
 | `--accent` | `text-accent`, `bg-accent` | `#36707f` | `#7eb3c1` | destaque: links, título profissional, pills, botão principal |
 | `--accent-foreground` | `text-accent-foreground` | `#fffdf8` | `#0f2a31` | texto sobre fundo `bg-accent` |
 | `--border` | `border-border` | `rgba(67,126,142,0.22)` | `rgba(126,179,193,0.18)` | bordas e divisórias (decorativo, nunca texto) |
-| `--glow-1` | `bg-glow-1` | `#7eb3c1` | `#36707f` | brilho de fundo, tom teal (decorativo) |
-| `--glow-2` | `bg-glow-2` | `#94c4fc` | `#587ea5` | brilho de fundo, tom azul (decorativo) |
+| `--glow-1` | `bg-glow-1` | `#7eb3c1` | `#0f7482` | brilho de fundo, tom teal (decorativo) |
+| `--glow-2` | `bg-glow-2` | `#b8a3f5` | `#7c5cff` | brilho de fundo, tom roxo/violeta (decorativo) |
 
 Opacidades sobre tokens funcionam normalmente (`bg-background/85`, `bg-accent/10`).
 
@@ -93,6 +93,49 @@ Em `app/globals.css`, `h1`, `h2` e `h3` recebem automaticamente:
 | Texto corrido | `leading-7` (+ `text-muted` quando secundário) | descrições, bio |
 | Texto auxiliar | `text-sm text-muted` | datas, empresa, links do header |
 
+## Movimento
+
+Inspirado em [tubikstudio.com/works](https://tubikstudio.com/works) (GSAP + ScrollTrigger no original); aqui o mesmo efeito é feito só com CSS e um `IntersectionObserver` pequeno.
+
+| Token | Valor | Uso |
+|---|---|---|
+| `--ease-expressive` | `cubic-bezier(0.2, 0, 0, 1)` | curva padrão de interação: arranca rápido, desacelera longo (entrada ao rolar, hover, menu mobile) |
+| `--ease-soft` | `cubic-bezier(0.22, 1, 0.36, 1)` | curva do hero: desacelera bem devagar, sensação mais suave que a expressiva |
+| `--duration-reveal` | `600ms` | duração da transição de entrada ao rolar |
+| `--reveal-stagger` | `80ms` | atraso entre elementos do mesmo lote ao entrarem juntos na tela |
+| `--reveal-distance` | `16px` | deslocamento vertical inicial dos elementos `data-reveal` |
+| `--duration-hero` | `900ms` | duração de cada linha do hero |
+| `--hero-stagger` | `150ms` | atraso entre linhas do hero (nome → título → bio) |
+| `--hero-distance` | `12px` | deslocamento vertical inicial das linhas do hero |
+| `--hero-blur` | `6px` | desfoque inicial das linhas do hero, que se desfaz durante a animação |
+| `--reveal-hold` | `calc(var(--duration-hero) + 2 * var(--hero-stagger))` (1200ms) | tempo que o `RevealObserver` espera, contado do início da animação do hero (não da hidratação), antes de revelar conteúdo abaixo que já está visível no carregamento |
+
+### Entrada ao rolar (`data-reveal`)
+
+- Títulos de seção, itens da timeline e cards recebem `data-reveal` direto no JSX dos Server Components.
+- O CSS só oculta dentro de `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`: sem JavaScript ou com movimento reduzido, nada fica oculto.
+- `RevealObserver` (client, renderizado no layout, retorna `null`) observa todo `[data-reveal]` com `IntersectionObserver`; quando um lote de elementos entra na tela junto, define `--reveal-index` pela ordem deles (só nesse lote, não globalmente — um card entrando sozinho não herda um índice alto e não espera atraso à toa), marca `data-revealed` e para de observar. Cada elemento anima uma vez só; rolar de volta não repete a animação.
+- Como o layout remonta na troca de idioma, o `RevealObserver` remonta junto e revela na hora o que já estiver visível — os cards não ficam ocultos depois de trocar `/pt` ↔ `/en` com a seção de projetos na tela.
+- Rede de segurança: `[data-reveal]:not([data-revealed])` também recebe uma animação (`reveal-fallback`) que o torna visível após 3s, caso o JavaScript carregue mas o observer falhe.
+
+### Hero
+
+Anima só com CSS, sem depender de hidratação: nome → título → bio entram em foco com fade, subida de `--hero-distance` e desfoque de `--hero-blur` que se desfaz, cada linha em `--duration-hero` com `--hero-stagger` de atraso entre elas e a curva `--ease-soft`.
+
+O `RevealObserver` espera `--reveal-hold` antes de revelar conteúdo já visível abaixo do hero (ex.: Experiências), para a seção seguinte não competir com a animação do hero ainda em andamento. Por isso `--reveal-hold` é calculado a partir dos próprios tokens do hero (duração da última linha + seus atrasos) em vez de um valor fixo separado — se `--duration-hero` ou `--hero-stagger` mudarem, o hold acompanha sem precisar sincronizar os dois manualmente.
+
+### Hover e foco nos cards
+
+Card (`ProjectCard`): sobe 4px e a borda vira `--accent` a 60% de opacidade; a imagem (ou painel decorativo, quando não há imagem) ganha zoom de 1.03, contido pelo `overflow-hidden` do painel. Tudo em 300ms com `--ease-expressive`. `:focus-within` aplica o mesmo destaque para quem navega por teclado (o foco costuma estar num link dentro do card). Com movimento reduzido, só a cor da borda muda — sem translate nem zoom.
+
+## Menu mobile
+
+Abaixo de 768px, a navegação do `Header` vira um botão hambúrguer (`MobileMenu`, client) de 40×40px com três barras que se tornam um X (`rotate(45deg)`/`rotate(-45deg)` nas barras externas, `opacity-0` na do meio), `aria-expanded`, `aria-controls` e rótulo traduzido (`Header.menu.open`/`Header.menu.close`). A partir de 768px a nav desktop (`hidden md:block`) reaparece e o botão (`md:hidden`) some.
+
+O painel abre abaixo do header com uma técnica de CSS Grid (`grid-rows-[0fr]` → `grid-rows-[1fr]`) para animar a altura sem precisar medir o conteúdo, e recebe `inert` quando fechado — tira o painel da ordem de tab e do leitor de tela sem precisar de `display: none` (que cortaria a transição). Os links vêm de `navItems`, a mesma lista usada pela nav desktop, empilhados com área de toque mínima de 44px (`min-h-11`).
+
+O menu fecha ao: acionar um link, pressionar Esc (o foco volta pro botão), clicar/tocar fora do header (`pointerdown`), ou quando a viewport cruza 768px enquanto o menu está aberto. A animação das barras e do painel usa `--ease-expressive` em 300ms e é desativada com movimento reduzido (`motion-reduce:transition-none`).
+
 ## Padrões de componentes
 
 Ainda não implementados com a identidade visual final. Serão documentados aqui conforme forem construídos:
@@ -102,7 +145,5 @@ Ainda não implementados com a identidade visual final. Serão documentados aqui
 - Botão principal e link secundário
 - Timeline de experiências
 - Brilho de fundo interativo
-- Menu mobile (hambúrguer abaixo de 768px, painel abaixo do header)
-- Movimento: animações de entrada ao rolar e hover nos cards (tokens de duração e curva `cubic-bezier(0.2, 0, 0, 1)`, inspirados em [tubikstudio.com/works](https://tubikstudio.com/works))
 
 Até lá, a especificação de cada um está na seção "Decisions" do design do change `portfolio-mvp`.

@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, type CSSProperties } from "react";
 
-const EASING = 0.06;
-const MAX_DEPTH = 56;
+const EASING = 0.12;
+const MAX_DEPTH = 240;
 const SETTLE_PX = 0.1;
 
 const blobs = [
-  { className: "right-[-20%] top-[-40%] h-[95%] w-[70%] bg-glow-2", depth: 24 },
-  { className: "left-[20%] top-[-50%] h-[85%] w-[55%] bg-glow-1", depth: 40 },
+  { className: "right-[-20%] top-[-40%] h-[95%] w-[70%] bg-glow-2", depth: 105 },
+  { className: "left-[20%] top-[-50%] h-[85%] w-[55%] bg-glow-1", depth: 170 },
   { className: "right-[5%] top-[5%] h-[50%] w-[35%] bg-glow-1", depth: MAX_DEPTH },
 ];
 
