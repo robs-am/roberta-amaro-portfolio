@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { IBM_Plex_Sans, Jost } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
@@ -9,8 +9,13 @@ import type { Locale } from "@/data/types";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+});
+
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
 });
 
@@ -58,7 +63,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={htmlLang[locale]}
-      className={`${geistSans.variable} antialiased`}
+      className={`${jost.variable} ${plexSans.variable} antialiased`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

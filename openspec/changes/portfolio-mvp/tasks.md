@@ -15,7 +15,7 @@
 
 ## 3. Tema e identidade visual
 
-- [ ] 3.1 Definir em `app/globals.css` os tokens da tabela do design (`--background`, `--card`, `--elevated`, `--foreground`, `--muted`, `--accent`, `--accent-foreground`, `--border`, `--glow-*`) em `:root` e `.dark`, expostos via `@theme`, com `@custom-variant dark` por classe; verificar que adicionar a classe `dark` ao `<html>` troca as cores e que o script de contraste aponta todos os pares de texto com 4.5:1 ou mais
+- [x] 3.1 Definir em `app/globals.css` os tokens da tabela do design (`--background`, `--card`, `--elevated`, `--foreground`, `--muted`, `--accent`, `--accent-foreground`, `--border`, `--glow-*`) em `:root` e `.dark`, expostos via `@theme`, com `@custom-variant dark` por classe; verificar que adicionar a classe `dark` ao `<html>` troca as cores e que o script de contraste aponta todos os pares de texto com 4.5:1 ou mais
 - [ ] 3.2 Trocar a Geist por Jost (`--font-display`, títulos) e IBM Plex Sans (`--font-sans`, texto) via `next/font/google`, variáveis e com subset `latin`; verificar no navegador que títulos usam Jost e o texto usa IBM Plex Sans
 - [ ] 3.3 Adicionar o `ThemeProvider` (`attribute="class"`, `defaultTheme="system"`, `enableSystem`) e `suppressHydrationWarning` no `<html>`; verificar que a página segue o modo claro/escuro do sistema sem warnings de hidratação no console
 - [ ] 3.4 Criar `components/ThemeToggle.tsx` (client) com botão renderizado só após hidratar, rótulo acessível traduzido e operável por teclado; verificar que alterna o tema sem recarregar e que a escolha persiste após reload e ao trocar `/pt` -> `/en`

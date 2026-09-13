@@ -3,31 +3,52 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #18181b;
-  --muted: #52525b;
-  --card: #fafafa;
-  --border: #e4e4e7;
-  --accent: #4f46e5;
+  --background: #f1ede6;
+  --card: #fffdf8;
+  --elevated: #faf8f5;
+  --foreground: #2a2622;
+  --muted: #5f574d;
+  --accent: #36707f;
+  --accent-foreground: #fffdf8;
+  --border: rgba(67, 126, 142, 0.22);
+  --glow-1: #7eb3c1;
+  --glow-2: #94c4fc;
 }
 
 .dark {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --muted: #a1a1aa;
-  --card: #18181b;
-  --border: #27272a;
-  --accent: #a5b4fc;
+  --background: #181818;
+  --card: #202020;
+  --elevated: #262626;
+  --foreground: #f5f5f4;
+  --muted: #bcbcbc;
+  --accent: #7eb3c1;
+  --accent-foreground: #0f2a31;
+  --border: rgba(126, 179, 193, 0.18);
+  --glow-1: #36707f;
+  --glow-2: #587ea5;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-card: var(--card);
+  --color-elevated: var(--elevated);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  --color-card: var(--card);
-  --color-border: var(--border);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-glow-1: var(--glow-1);
+  --color-glow-2: var(--glow-2);
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
