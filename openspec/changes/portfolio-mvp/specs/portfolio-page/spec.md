@@ -60,3 +60,30 @@ A página MUST ser utilizável em larguras de tela a partir de 360px, sem rolage
 #### Scenario: Tela de desktop
 - **WHEN** a página é exibida com 1440px de largura
 - **THEN** o conteúdo fica centralizado com largura máxima limitada, sem linhas de texto ocupando a tela inteira
+
+### Requirement: Brilho de fundo interativo
+A página MUST exibir, atrás do topo, um brilho decorativo em gradiente com as cores de destaque do tema ativo. Em dispositivos com ponteiro preciso (mouse ou trackpad), o brilho MUST se deslocar suavemente na direção do ponteiro, com deslocamento pequeno e sem saltos. O brilho MUST permanecer parado quando a preferência de movimento reduzido estiver ativa ou quando o dispositivo não tiver ponteiro preciso. O brilho MUST ser ignorado por leitores de tela, MUST NOT impedir cliques ou seleção de texto e MUST NOT manter animação em execução enquanto o ponteiro estiver parado.
+
+#### Scenario: Movimento do mouse
+- **WHEN** o visitante move o mouse da esquerda para a direita da tela
+- **THEN** o brilho se desloca suavemente para a direita, sem saltos
+
+#### Scenario: Movimento reduzido
+- **WHEN** o visitante com preferência de movimento reduzido move o mouse
+- **THEN** o brilho permanece parado
+
+#### Scenario: Dispositivo de toque
+- **WHEN** a página é aberta em um celular sem mouse
+- **THEN** o brilho é exibido parado
+
+#### Scenario: Ponteiro parado
+- **WHEN** o visitante para de mover o mouse e o brilho termina de se acomodar
+- **THEN** nenhuma animação do brilho continua em execução
+
+#### Scenario: Cores acompanham o tema
+- **WHEN** o visitante alterna entre tema claro e escuro
+- **THEN** o brilho passa a usar as cores de destaque do tema ativo
+
+#### Scenario: Não interfere na interação
+- **WHEN** o visitante clica em um link posicionado sobre a área do brilho
+- **THEN** o link é acionado normalmente

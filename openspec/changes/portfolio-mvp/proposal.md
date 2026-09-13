@@ -11,7 +11,8 @@ Ainda não existe um portfólio pessoal público para apresentar experiências p
 - Dark/light mode com persistência da escolha e sem flash de tema incorreto no carregamento
 - Seção de experiências e cards de projetos alimentados por arquivos de dados tipados, com textos em PT e EN no mesmo item
 - Conteúdo de exemplo (placeholder), a ser substituído pelo conteúdo real depois
-- Identidade visual com defaults neutros (paleta simples clara/escura, fonte sans), centralizada em tokens para ajuste posterior
+- Identidade visual inspirada em https://www.alignerr.com/en/process: destaque teal sobre fundo quase preto (com versão clara em tons quentes), fontes Jost e IBM Plex Sans, cards de projeto verticais e timeline de experiências, tudo centralizado em tokens
+- Brilho de fundo em gradiente que acompanha suavemente o mouse, parado em dispositivos de toque e para quem prefere movimento reduzido
 
 Fora do escopo: blog, seção de contato/formulário, CMS, conteúdo real, deploy.
 

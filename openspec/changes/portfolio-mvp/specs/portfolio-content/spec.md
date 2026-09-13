@@ -16,7 +16,11 @@ A seção de experiências MUST exibir cada experiência com cargo, empresa, per
 - **THEN** o período é exibido terminando em "Present"
 
 ### Requirement: Cards de projetos
-A seção de projetos MUST exibir cada projeto como um card com título, descrição e tecnologias utilizadas. O card MUST exibir links para o repositório e para a demonstração apenas quando esses links existirem. Links externos MUST abrir em nova aba sem dar à página aberta acesso à página de origem.
+A seção de projetos MUST exibir cada projeto como um card vertical contendo, de cima para baixo: painel visual, tipo do projeto, título, descrição, tecnologias utilizadas e links. O card MUST exibir links para a demonstração e para o repositório apenas quando esses links existirem. Links externos MUST abrir em nova aba sem dar à página aberta acesso à página de origem.
+
+#### Scenario: Ordem dos elementos do card
+- **WHEN** um projeto com todos os campos é exibido
+- **THEN** o card mostra, nesta ordem, painel visual, tipo, título, descrição, tecnologias e links
 
 #### Scenario: Projeto com repositório e demonstração
 - **WHEN** um projeto tem link de repositório e link de demonstração
@@ -31,23 +35,24 @@ A seção de projetos MUST exibir cada projeto como um card com título, descri�
 - **THEN** o link abre em nova aba
 - **AND** a página aberta não tem referência à janela do portfólio
 
-### Requirement: Imagem de projeto opcional
-Um projeto MAY ter imagem; quando tiver, o card MUST exibi-la com texto alternativo no idioma ativo. Quando não tiver, o card MUST ser exibido sem espaço reservado vazio.
+### Requirement: Painel visual do card
+Todo card de projeto MUST começar com um painel visual de mesma proporção. Quando o projeto tiver imagem, o painel MUST exibi-la com texto alternativo no idioma ativo. Quando não tiver, o painel MUST exibir um fundo decorativo, que MUST ser ignorado por leitores de tela.
 
 #### Scenario: Projeto com imagem
 - **WHEN** um projeto tem imagem e a página está em `/pt`
-- **THEN** o card exibe a imagem com texto alternativo em português
+- **THEN** o painel do card exibe a imagem com texto alternativo em português
 
 #### Scenario: Projeto sem imagem
 - **WHEN** um projeto não tem imagem
-- **THEN** o card é exibido sem área de imagem vazia
+- **THEN** o painel do card exibe um fundo decorativo com a mesma proporção dos painéis com imagem
+- **AND** um leitor de tela não anuncia nenhum conteúdo para esse painel
 
 ### Requirement: Conteúdo no idioma ativo
-Os campos de texto de experiências e projetos (cargo, descrição, título, texto alternativo) MUST ser exibidos no idioma ativo. Os campos que não dependem de idioma (empresa, datas, tecnologias, links) MUST ser os mesmos nas duas versões.
+Os campos de texto de experiências e projetos (cargo, descrição, tipo do projeto, título, texto alternativo) MUST ser exibidos no idioma ativo. Os campos que não dependem de idioma (empresa, datas, tecnologias, links) MUST ser os mesmos nas duas versões.
 
 #### Scenario: Mesmo projeto nos dois idiomas
 - **WHEN** um projeto é exibido em `/pt` e em `/en`
-- **THEN** título e descrição aparecem no idioma de cada página
+- **THEN** tipo, título e descrição aparecem no idioma de cada página
 - **AND** tecnologias e links são idênticos nas duas páginas
 
 ### Requirement: Datas no formato do idioma
