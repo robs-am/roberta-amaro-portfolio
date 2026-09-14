@@ -15,7 +15,7 @@ export async function Hero({ locale }: { locale: Locale }) {
   ].filter((link) => !!link);
 
   return (
-    <section id="hero" className="hero-reveal scroll-mt-(--header-height,0px) py-16 sm:py-24">
+    <section id="hero" className="hero-reveal scroll-mt-(--header-height,0px) pt-16 pb-10 sm:pt-24 sm:pb-14">
       <h1 className="text-5xl font-bold lg:text-7xl">
         {profile.name}
       </h1>

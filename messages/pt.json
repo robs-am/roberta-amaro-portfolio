@@ -44,7 +44,8 @@
     "demo": "Ver site",
     "newTab": "(abre em nova aba)",
     "showMore": "Ver mais",
-    "showLess": "Ver menos"
+    "showLess": "Ver menos",
+    "goToProject": "Ir para o projeto {index}"
   },
   "NotFound": {
     "title": "Página não encontrada",

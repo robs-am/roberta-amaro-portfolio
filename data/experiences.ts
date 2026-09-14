@@ -1,46 +1,31 @@
 import type { Experience } from "./types";
 
-// Sample content: replace with real experience.
 export const experiences = [
   {
-    id: "empresa-exemplo-b",
+    id: "grupo-olx",
     role: {
-      pt: "Desenvolvedora Front-end",
-      en: "Front-end Developer",
+      pt: "Engenheira de Software",
+      en: "Software Engineer",
     },
-    company: "Empresa Exemplo B",
-    start: "2021-02",
-    end: "2023-12",
+    company: "Grupo OLX",
+    start: "2024-12",
     description: {
-      pt: "Desenvolvimento de um painel administrativo em React e criação de uma biblioteca de componentes compartilhada entre três produtos.",
-      en: "Built a React admin dashboard and created a component library shared across three products.",
+      pt: "Como Engenheira de Software na vertical de imóveis da OLX, desenvolvo experiências para um dos maiores marketplaces imobiliários do Brasil — passando por produtos com IA, SEO, conversão e performance web — em colaboração próxima com Produto, Design e Engenharia.",
+      en: "As a Software Engineer on OLX's real estate domain, I build experiences for one of Brazil's largest real estate marketplaces — spanning AI-powered products, SEO, conversion and web performance — working closely with Product, Design and Engineering.",
     },
   },
   {
-    id: "empresa-exemplo-a",
+    id: "ed3-digital",
     role: {
-      pt: "Desenvolvedora Front-end Sênior",
-      en: "Senior Front-end Developer",
+      pt: "Engenheira de Software Front-end",
+      en: "Front-End Software Engineer",
     },
-    company: "Empresa Exemplo A",
-    start: "2024-03",
+    company: "ED3 Digital",
+    start: "2022-11",
+    end: "2024-11",
     description: {
-      pt: "Liderança técnica do front-end de uma plataforma de e-commerce em Next.js, com foco em performance e acessibilidade.",
-      en: "Front-end technical lead for a Next.js e-commerce platform, focused on performance and accessibility.",
-    },
-  },
-  {
-    id: "empresa-exemplo-c",
-    role: {
-      pt: "Desenvolvedora Júnior",
-      en: "Junior Developer",
-    },
-    company: "Empresa Exemplo C",
-    start: "2019-03",
-    end: "2021-01",
-    description: {
-      pt: "Manutenção de sites institucionais e implementação de layouts responsivos a partir de protótipos.",
-      en: "Maintained corporate websites and implemented responsive layouts from design mockups.",
+      pt: "Na ED3 Digital, desenvolvi e mantive lojas virtuais de marcas de moda e beleza no Brasil — incluindo Tommy Hilfiger, Creamy e Skelt — sendo responsável pelas funcionalidades de front-end de ponta a ponta, do repasse do Figma até o deploy.",
+      en: "At ED3 Digital, I built and maintained e-commerce storefronts for fashion and beauty brands in Brazil — including Tommy Hilfiger, Creamy and Skelt — owning frontend features end-to-end, from Figma handoff to deployment.",
     },
   },
 ] satisfies Experience[];

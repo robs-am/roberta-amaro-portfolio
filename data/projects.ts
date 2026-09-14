@@ -1,6 +1,5 @@
 import type { Project } from "./types";
 
-// Real projects first; the entries after Tommy Hilfiger are sample content.
 export const projects = [
   {
     id: "tommy-hilfiger",
@@ -13,8 +12,8 @@ export const projects = [
       en: "Tommy Hilfiger",
     },
     description: {
-      pt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      en: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      pt: "Marca global de moda presente em mais de 100 países.",
+      en: "Global fashion brand present in more than 100 countries.",
     },
     tech: ["VTEX", "React", "TypeScript", "Tailwind CSS"],
     demoUrl: "https://br.tommy.com/",
@@ -39,8 +38,8 @@ export const projects = [
       en: "Liritty",
     },
     description: {
-      pt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      en: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      pt: "Rede de moda feminina do Rio de Janeiro com 18 lojas físicas.",
+      en: "Women's fashion retailer with 18 physical stores in Rio de Janeiro.",
     },
     tech: ["VTEX", "React", "TypeScript", "Tailwind CSS"],
     demoUrl: "https://www.liritty.com.br",
@@ -65,8 +64,8 @@ export const projects = [
       en: "Candide",
     },
     description: {
-      pt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      en: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      pt: "Distribuidora brasileira de brinquedos com mais de 55 anos de mercado.",
+      en: "Brazilian toy distributor with over 55 years in the market.",
     },
     tech: ["VTEX", "React", "TypeScript", "Tailwind CSS"],
     demoUrl: "https://www.candide.com.br",
@@ -91,8 +90,8 @@ export const projects = [
       en: "Creamy Skincare",
     },
     description: {
-      pt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      en: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      pt: "Marca de dermocosméticos que já ultrapassou R$1 bilhão em faturamento acumulado.",
+      en: "Dermocosmetics brand that has already surpassed R$1 billion in cumulative revenue.",
     },
     tech: ["VTEX", "React", "TypeScript", "Tailwind CSS"],
     demoUrl: "https://www.creamy.com.br",
@@ -117,8 +116,8 @@ export const projects = [
       en: "Skelt",
     },
     description: {
-      pt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      en: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      pt: "Marca de autobronzeador que se posiciona como a mais vendida do Brasil na categoria.",
+      en: "Self-tanner brand that positions itself as Brazil's best-selling in the category.",
     },
     tech: ["VTEX", "React", "TypeScript", "SASS"],
     demoUrl: "https://www.skelt.com.br",
