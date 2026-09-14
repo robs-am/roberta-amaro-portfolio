@@ -38,6 +38,14 @@ O header MUST conter links para as seções de experiências e projetos. Acionar
 - **WHEN** o visitante com preferência de movimento reduzido aciona um link de seção
 - **THEN** a página vai até a seção sem animação de rolagem
 
+### Requirement: Voltar ao topo
+O header MUST conter um controle com rótulo acessível que leva à seção de apresentação (hero). Acioná-lo MUST se comportar como os demais links de âncora: rolagem suave (instantânea com movimento reduzido) e atualização do fragmento da URL.
+
+#### Scenario: Clique no controle de voltar ao topo
+- **WHEN** o visitante, já rolado até a seção de projetos, aciona o controle de voltar ao topo
+- **THEN** a página rola até a seção de apresentação
+- **AND** a URL passa a ser `/pt#hero`
+
 ### Requirement: Header acessível durante a rolagem
 O header, com a navegação, o seletor de idioma e o alternador de tema, MUST permanecer visível e utilizável enquanto o visitante rola a página, sem cobrir o título da seção de destino ao navegar por âncora.
 

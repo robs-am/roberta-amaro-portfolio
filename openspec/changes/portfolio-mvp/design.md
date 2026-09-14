@@ -41,14 +41,16 @@ components/
   Hero.tsx
   ExperienceSection.tsx timeline vertical
   header/
-    Header.tsx            server; monta DesktopNav + LocaleSwitcher + ThemeToggle + MobileMenu dentro do HeaderShell
+    Header.tsx            server; monta BackToTopLink + DesktopNav + LocaleSwitcher + ThemeToggle + MobileMenu dentro do HeaderShell
     HeaderShell.tsx        (client) fundo/borda conforme o scroll, mede a própria altura
     HeaderScrollContext.tsx contexto com o estado "rolou/não rolou", consumido pelo DesktopNav
+    BackToTopLink.tsx      (client) ícone "chevrons-up" que rola até o hero
     DesktopNav.tsx         (client) nav desktop com destaque da seção ativa
     navItems.ts            lista única dos links de navegação
     MobileMenu.tsx         (client) hambúrguer + painel abaixo do header
     LocaleSwitcher.tsx     (client)
     ThemeToggle.tsx        (client)
+    smoothScroll.ts        `onSmoothAnchorClick`, rolagem animada compartilhada pelos links de âncora
   projects/
     ProjectsSection.tsx    server; monta o ProjectsCarousel com os ProjectCard
     ProjectCard.tsx
@@ -140,7 +142,7 @@ A referência usa um shader WebGL com 6 cores e animação por tempo. Aqui o efe
 Alternativa: WebGL como na referência (visual mais orgânico e animado mesmo parado, mas exige uma dependência 3D e processamento contínuo).
 
 ### Menu mobile
-- Abaixo de 768px (breakpoint `md`), os links da navegação saem do header e vão para um painel aberto por um botão hambúrguer. Seletor de idioma e alternador de tema continuam visíveis, e o header mobile vira uma linha só: nome à esquerda; idioma, tema e hambúrguer à direita (cabe em 360px).
+- Abaixo de 768px (breakpoint `md`), os links da navegação saem do header e vão para um painel aberto por um botão hambúrguer. Seletor de idioma e alternador de tema continuam visíveis, e o header mobile vira uma linha só: ícone de voltar ao topo (`BackToTopLink`) à esquerda; idioma, tema e hambúrguer à direita (cabe em 360px). O nome por extenso foi trocado pelo ícone porque já aparece em destaque no hero logo abaixo; repeti-lo no header era redundante.
 - O `Header` continua Server Component: renderiza a `<nav>` desktop com `hidden md:block` e o `MobileMenu` (client) com `md:hidden`. Os links vêm de `components/header/navItems.ts` (href da âncora + chave de tradução), para a nav desktop e o menu não duplicarem a lista.
 - Botão de 40×40px com três barras que viram um X (`rotate`/`translate` com `--ease-expressive`), `aria-expanded`, `aria-controls` apontando para o painel e rótulo traduzido (`Header.menu.open`/`Header.menu.close`).
 - Painel posicionado com `absolute inset-x-0 top-full` dentro do header, `bg-background/95` com `backdrop-blur` e borda inferior; links empilhados com área de toque mínima de 44px. Abre com fade e deslocamento curto.
@@ -221,7 +223,7 @@ type Project = {
 Alternativa: arquivos separados por idioma (descartado por duplicar datas, links e tags); MDX por item (desnecessário para textos curtos, fica reservado ao blog).
 
 ### Server vs Client Components
-Tudo é Server Component, exceto `LocaleSwitcher`, `ThemeToggle`, `ThemeClassSync`, `MobileMenu`, `RevealObserver` e `BackgroundGlow`. A navegação por âncora usa `<a href="#projects">` nativo, com `scroll-behavior: smooth` em CSS dentro de `@media (prefers-reduced-motion: no-preference)`, `data-scroll-behavior="smooth"` no `<html>` (para o Next.js desativar a rolagem suave durante trocas de rota) e `scroll-margin-top` nas seções para não ficarem sob o header fixo.
+Tudo é Server Component, exceto `LocaleSwitcher`, `ThemeToggle`, `ThemeClassSync`, `MobileMenu`, `BackToTopLink`, `RevealObserver` e `BackgroundGlow`. Os links `<a href="#...">` (nav desktop, menu mobile e o ícone de voltar ao topo) usam `onClick={onSmoothAnchorClick}` (`components/header/smoothScroll.ts`): calcula o alvo a partir de `scroll-margin-top` (lido via `getComputedStyle`, cobrindo tanto o hero, com margem por CSS var, quanto as demais seções, com `scroll-mt` fixo), anima com `requestAnimationFrame` e uma curva cúbica de easing (650ms) em vez de `scroll-behavior: smooth`, atualiza a URL com `history.pushState` ao final, ignora cliques modificados (Cmd/Ctrl/Shift/Alt, botão do meio) para preservar o comportamento nativo, e pula direto para o alvo com `window.scrollTo` quando `prefers-reduced-motion: reduce`. O `scroll-behavior: smooth` em CSS foi removido: ele concorria com o `scrollTo` chamado a cada frame pela animação (o navegador tentava suavizar cada chamada intermediária), o que causava uma trava seguida de um salto rápido.
 
 ### Links externos e imagens
 Links com `target="_blank" rel="noopener noreferrer"`. Imagens de projeto com `next/image`, em `public/projects/`.
