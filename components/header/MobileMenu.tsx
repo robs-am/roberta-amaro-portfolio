@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { navItems } from "./navItems";
+import { onSmoothAnchorClick } from "./smoothScroll";
 
 const barClass =
   "absolute left-0 h-0.5 w-full rounded-full bg-current transition duration-300 ease-expressive motion-reduce:transition-none";
@@ -71,12 +72,15 @@ export function MobileMenu() {
         }`}
       >
         <nav aria-label={t("navLabel")} className="overflow-hidden">
-          <ul className="mx-auto flex max-w-5xl flex-col border-b border-border px-4 py-2 sm:px-6">
+          <ul className="mx-auto flex max-w-5xl flex-col border-b border-border px-6 py-2 sm:px-8">
             {navItems.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
-                  onClick={() => setOpen(false)}
+                  onClick={(event) => {
+                    setOpen(false);
+                    onSmoothAnchorClick(event);
+                  }}
                   className="flex min-h-11 items-center rounded-sm text-base font-medium text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   {t(`nav.${item.key}`)}

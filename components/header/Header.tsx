@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { profile } from "@/data/profile";
+import { BackToTopLink } from "./BackToTopLink";
 import { DesktopNav } from "./DesktopNav";
 import { HeaderShell } from "./HeaderShell";
 import { LocaleSwitcher } from "./LocaleSwitcher";
@@ -16,13 +16,8 @@ export async function Header() {
 
   return (
     <HeaderShell>
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-4 py-3 sm:px-6">
-        <a
-          href="#hero"
-          className="rounded-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        >
-          {profile.name}
-        </a>
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-6 py-3 sm:px-8">
+        <BackToTopLink label={t("backToTop")} />
         <DesktopNav navLabel={t("navLabel")} labels={labels} />
         <div className="flex items-center gap-2">
           <LocaleSwitcher />

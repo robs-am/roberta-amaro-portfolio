@@ -25,14 +25,22 @@ export async function ExperienceSection({ locale }: { locale: Locale }) {
       <h2 id="experience-title" data-reveal className="text-2xl font-semibold">
         {t("title")}
       </h2>
-      <ol className="mt-10 ml-1.5 space-y-6 border-l border-accent/30 pl-6 sm:pl-8">
-        {sorted.map((item) => (
+      <ol className="mt-10 ml-1.5 space-y-6 border-l border-accent/70 pl-6 sm:border-accent/30 sm:pl-8">
+        {sorted.map((item, index) => (
           <li key={item.id} data-reveal className="relative max-w-3xl">
+            {/* Desktop: one dot per card, on the line. Mobile: the card covers the line instead (see below). */}
             <span
               aria-hidden="true"
-              className="absolute -left-6 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent ring-4 ring-background sm:-left-8"
+              className="absolute -left-6 top-1/2 hidden size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent ring-4 ring-background sm:-left-8 sm:block"
             />
-            <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
+            {/* Mobile only: connector dot centered in the gap above this card (none above the first card). */}
+            {index > 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute -left-6 -top-4.5 size-3 -translate-x-1/2 rounded-full bg-accent ring-4 ring-background sm:hidden"
+              />
+            )}
+            <div className="-ml-8 rounded-xl border border-border bg-card py-5 pr-5 pl-14 sm:ml-0 sm:p-6">
               <p className="text-sm text-muted">
                 <time dateTime={item.start}>{formatMonth(item.start)}</time>
                 {" – "}

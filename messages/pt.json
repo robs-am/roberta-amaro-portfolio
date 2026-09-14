@@ -8,6 +8,7 @@
   },
   "Header": {
     "navLabel": "Navegação principal",
+    "backToTop": "Voltar ao topo",
     "nav": {
       "experience": "Experiências",
       "projects": "Projetos"

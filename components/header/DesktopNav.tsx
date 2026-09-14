@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useHeaderScrolled } from "./HeaderScrollContext";
 import { navItems } from "./navItems";
+import { onSmoothAnchorClick } from "./smoothScroll";
 
 export function DesktopNav({
   navLabel,
@@ -42,6 +43,7 @@ export function DesktopNav({
           <li key={item.href}>
             <a
               href={item.href}
+              onClick={onSmoothAnchorClick}
               aria-current={activeHref === item.href ? "true" : undefined}
               className={`rounded-full px-3 py-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                 activeHref === item.href ? "bg-accent/10 text-foreground" : inactiveClass
