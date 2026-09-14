@@ -5,7 +5,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
 import { BackgroundGlow } from "@/components/BackgroundGlow";
-import { Header } from "@/components/Header";
+import { Header } from "@/components/header/Header";
 import { RevealObserver } from "@/components/RevealObserver";
 import { ThemeClassSync } from "@/components/ThemeClassSync";
 import type { Locale } from "@/data/types";

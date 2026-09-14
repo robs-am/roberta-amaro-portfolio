@@ -36,16 +36,24 @@ app/
   globals.css           Tailwind + tokens de tema e movimento
 components/
   BackgroundGlow.tsx    (client)
-  Header.tsx            nav desktop + LocaleSwitcher + ThemeToggle + MobileMenu
-  navItems.ts           lista única dos links de navegação
-  MobileMenu.tsx        (client) hambúrguer + painel abaixo do header
-  LocaleSwitcher.tsx    (client)
-  ThemeToggle.tsx       (client)
   ThemeClassSync.tsx    (client) reaplica a classe do tema quando o layout remonta
   RevealObserver.tsx    (client) marca [data-reveal] ao entrar na tela
   Hero.tsx
   ExperienceSection.tsx timeline vertical
-  ProjectCard.tsx / ProjectsSection.tsx
+  header/
+    Header.tsx            server; monta DesktopNav + LocaleSwitcher + ThemeToggle + MobileMenu dentro do HeaderShell
+    HeaderShell.tsx        (client) fundo/borda conforme o scroll, mede a própria altura
+    HeaderScrollContext.tsx contexto com o estado "rolou/não rolou", consumido pelo DesktopNav
+    DesktopNav.tsx         (client) nav desktop com destaque da seção ativa
+    navItems.ts            lista única dos links de navegação
+    MobileMenu.tsx         (client) hambúrguer + painel abaixo do header
+    LocaleSwitcher.tsx     (client)
+    ThemeToggle.tsx        (client)
+  projects/
+    ProjectsSection.tsx    server; monta o ProjectsCarousel com os ProjectCard
+    ProjectCard.tsx
+    ProjectDescription.tsx (client) truncagem com "ver mais"
+    ProjectsCarousel.tsx   (client) scroll com snap + dots no mobile
 data/
   types.ts
   profile.ts            nome, título, bio (hero)
@@ -127,13 +135,13 @@ A referência usa um shader WebGL com 6 cores e animação por tempo. Aqui o efe
 - `pointermove` na `window` define um alvo normalizado (-1 a 1). Um loop `requestAnimationFrame` interpola a posição atual até o alvo (fator `0.18`) e grava `--glow-x`/`--glow-y` no container. Cada mancha usa `translate3d` com um multiplicador de profundidade diferente (deslocamento máximo de `340px`), criando profundidade e um movimento perceptível ao mouse.
 - O loop para quando a diferença até o alvo fica abaixo de 0.1px e só recomeça no próximo `pointermove`. Isso cumpre a spec de não manter animação com o ponteiro parado; com a aba oculta, o navegador já suspende o `requestAnimationFrame`.
 - O listener só é registrado quando `(pointer: fine)` e `(prefers-reduced-motion: no-preference)` são verdadeiros, reagindo a mudanças dessas media queries.
-- Renderizado no layout, antes do `Header`. O `HeaderShell` (client) começa transparente sobre o brilho e só ganha `bg-background/85` + `backdrop-blur` depois de ~8px de rolagem (`components/HeaderShell.tsx`); enquanto transparente, o texto do header usa `--foreground` em vez de `--muted`/`--accent` pelo mesmo motivo de contraste do hero (ver `docs/design-system.md`).
+- Renderizado no layout, antes do `Header`. O `HeaderShell` (client) começa transparente sobre o brilho e só ganha `bg-background/85` + `backdrop-blur` depois de ~8px de rolagem (`components/header/HeaderShell.tsx`); enquanto transparente, o texto do header usa `--foreground` em vez de `--muted`/`--accent` pelo mesmo motivo de contraste do hero (ver `docs/design-system.md`).
 
 Alternativa: WebGL como na referência (visual mais orgânico e animado mesmo parado, mas exige uma dependência 3D e processamento contínuo).
 
 ### Menu mobile
 - Abaixo de 768px (breakpoint `md`), os links da navegação saem do header e vão para um painel aberto por um botão hambúrguer. Seletor de idioma e alternador de tema continuam visíveis, e o header mobile vira uma linha só: nome à esquerda; idioma, tema e hambúrguer à direita (cabe em 360px).
-- O `Header` continua Server Component: renderiza a `<nav>` desktop com `hidden md:block` e o `MobileMenu` (client) com `md:hidden`. Os links vêm de `components/navItems.ts` (href da âncora + chave de tradução), para a nav desktop e o menu não duplicarem a lista.
+- O `Header` continua Server Component: renderiza a `<nav>` desktop com `hidden md:block` e o `MobileMenu` (client) com `md:hidden`. Os links vêm de `components/header/navItems.ts` (href da âncora + chave de tradução), para a nav desktop e o menu não duplicarem a lista.
 - Botão de 40×40px com três barras que viram um X (`rotate`/`translate` com `--ease-expressive`), `aria-expanded`, `aria-controls` apontando para o painel e rótulo traduzido (`Header.menu.open`/`Header.menu.close`).
 - Painel posicionado com `absolute inset-x-0 top-full` dentro do header, `bg-background/95` com `backdrop-blur` e borda inferior; links empilhados com área de toque mínima de 44px. Abre com fade e deslocamento curto.
 - Fecha ao acionar um link, com Esc (devolvendo o foco ao botão), com `pointerdown` fora do header e quando `(min-width: 768px)` passa a valer (listener de `matchMedia`). A troca de idioma remonta o layout e fecha o menu naturalmente.

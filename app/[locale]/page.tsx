@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { ExperienceSection } from "@/components/ExperienceSection";
 import { Hero } from "@/components/Hero";
-import { ProjectsSection } from "@/components/ProjectsSection";
+import { ProjectsSection } from "@/components/projects/ProjectsSection";
 import { routing } from "@/i18n/routing";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
