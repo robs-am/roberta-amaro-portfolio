@@ -13,10 +13,12 @@ export async function ExperienceSection({ locale }: Readonly<{ locale: Locale }>
       aria-labelledby="experience-title"
       className="snap-start h-[calc(100dvh-var(--header-height,0px))] overflow-y-auto scroll-mt-(--header-height,0px) py-16"
     >
-      <h2 id="experience-title" data-reveal className="text-2xl font-semibold">
-        {t("title")}
-      </h2>
-      <ExperienceTimeline experiences={sorted} locale={locale} />
+      <div className="mx-auto max-w-3xl">
+        <h2 id="experience-title" data-reveal className="text-2xl font-semibold">
+          {t("title")}
+        </h2>
+        <ExperienceTimeline experiences={sorted} locale={locale} />
+      </div>
     </section>
   );
 }

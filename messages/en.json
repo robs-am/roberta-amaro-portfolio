@@ -47,7 +47,13 @@
     "demo": "Visit site",
     "newTab": "(opens in a new tab)",
     "showMore": "Show more",
-    "showLess": "Show less"
+    "showLess": "Show less",
+    "viewAll": "View all projects"
+  },
+  "ProjectsPage": {
+    "title": "All projects | Roberta Amaro",
+    "description": "All of Roberta Amaro's projects.",
+    "back": "Back to home"
   },
   "NotFound": {
     "title": "Page not found",

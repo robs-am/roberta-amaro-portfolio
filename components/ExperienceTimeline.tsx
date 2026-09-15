@@ -22,7 +22,7 @@ export async function ExperienceTimeline({
   return (
     <ol className="mt-10 ml-1.5 space-y-6 border-l border-accent/70 pl-6 sm:border-accent/30 sm:pl-8">
       {experiences.map((item, index) => (
-        <li key={item.id} data-reveal className="relative max-w-3xl">
+        <li key={item.id} data-reveal className="relative">
           {/* Desktop: one dot per card, on the line. Mobile: the card covers the line instead (see below). */}
           <span
             aria-hidden="true"

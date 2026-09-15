@@ -2,12 +2,17 @@
 
 import { useLocale } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
+import { useHeroVisible } from "./HeroVisibilityContext";
 import { sectionHref } from "./sectionHref";
 import { onSmoothAnchorClick } from "./smoothScroll";
 
 export function HomeLink({ label }: { label: string }) {
   const pathname = usePathname();
   const locale = useLocale();
+  const heroVisible = useHeroVisible();
+
+  // Already at the hero — a link back to it is redundant, same reasoning as ContactLinks.
+  if (heroVisible) return null;
 
   return (
     <a

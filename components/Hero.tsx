@@ -13,7 +13,7 @@ const ctaClass =
   "inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 const ctaOutlineClass =
-  "inline-flex items-center gap-2 rounded-full border border-accent px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+  "inline-flex items-center gap-2 rounded-full border-2 border-accent bg-accent/10 px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const t = useTranslations("Hero");
@@ -62,11 +62,11 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             .
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#experience" onClick={onSmoothAnchorClick} className={ctaClass}>
+            <a href="#experience" onClick={onSmoothAnchorClick} className={ctaOutlineClass}>
               {t("experienceCta")}
               <ArrowIcon />
             </a>
-            <a href="#projects" onClick={onSmoothAnchorClick} className={ctaOutlineClass}>
+            <a href="#projects" onClick={onSmoothAnchorClick} className={ctaClass}>
               {t("projectsCta")}
               <ArrowIcon />
             </a>
