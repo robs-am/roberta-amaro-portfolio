@@ -3,12 +3,23 @@
 import { useTranslations } from "next-intl";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
 import { profile } from "@/data/profile";
+import { useHeroVisible } from "./HeroVisibilityContext";
 
 const linkClass =
   "inline-flex size-9 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
-export function ContactLinks({ className }: { className?: string }) {
+export function ContactLinks({
+  className,
+  wrapperClassName,
+}: {
+  className?: string;
+  wrapperClassName?: string;
+}) {
   const t = useTranslations("Hero");
+  const heroVisible = useHeroVisible();
+
+  // The hero already shows these prominently — only repeat them once it's scrolled out of view.
+  if (heroVisible) return null;
 
   const links = [
     profile.email && { href: `mailto:${profile.email}`, label: t("email"), Icon: EmailIcon, external: false },
@@ -18,7 +29,7 @@ export function ContactLinks({ className }: { className?: string }) {
 
   if (links.length === 0) return null;
 
-  return (
+  const list = (
     <ul className={`items-center gap-2 ${className ?? ""}`}>
       {links.map((link) => (
         <li key={link.href}>
@@ -35,4 +46,6 @@ export function ContactLinks({ className }: { className?: string }) {
       ))}
     </ul>
   );
+
+  return wrapperClassName ? <div className={wrapperClassName}>{list}</div> : list;
 }

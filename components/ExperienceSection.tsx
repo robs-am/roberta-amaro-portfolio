@@ -11,7 +11,7 @@ export async function ExperienceSection({ locale }: Readonly<{ locale: Locale }>
     <section
       id="experience"
       aria-labelledby="experience-title"
-      className="snap-start h-[calc(100dvh-var(--header-height,0px))] overflow-y-auto scroll-mt-(--header-height,0px) border-t border-border py-16"
+      className="snap-start h-[calc(100dvh-var(--header-height,0px))] overflow-y-auto scroll-mt-(--header-height,0px) py-16"
     >
       <h2 id="experience-title" data-reveal className="text-2xl font-semibold">
         {t("title")}

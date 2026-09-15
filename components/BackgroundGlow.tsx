@@ -88,7 +88,7 @@ export function BackgroundGlow() {
     <div
       ref={ref}
       aria-hidden="true"
-      className={`glow ${isHome ? "glow-home" : ""} pointer-events-none absolute inset-x-0 top-0 -z-10 h-[95vh] overflow-hidden`}
+      className={`glow ${isHome ? "glow-home" : ""} pointer-events-none absolute inset-x-0 top-0 -z-10 h-dvh overflow-hidden`}
     >
       {blobs.map((blob) => (
         <div

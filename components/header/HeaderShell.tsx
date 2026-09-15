@@ -2,9 +2,14 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { HeaderScrollProvider } from "./HeaderScrollContext";
+import { HeroVisibilityProvider } from "./HeroVisibilityContext";
 
 export function HeaderShell({ children }: { children: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
+  // Defaults to false (contact links shown) so pages without a hero — the all-projects page —
+  // never need a synchronous correction; the observer below flips it true almost immediately
+  // wherever a hero does exist.
+  const [heroVisible, setHeroVisible] = useState(false);
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -12,6 +17,17 @@ export function HeaderShell({ children }: { children: ReactNode }) {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const hero = document.querySelector("#hero");
+    if (!hero) return;
+
+    const observer = new IntersectionObserver(([entry]) => setHeroVisible(entry.isIntersecting), {
+      threshold: 0.5,
+    });
+    observer.observe(hero);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -37,7 +53,9 @@ export function HeaderShell({ children }: { children: ReactNode }) {
           : "border-transparent bg-transparent"
       }`}
     >
-      <HeaderScrollProvider scrolled={scrolled}>{children}</HeaderScrollProvider>
+      <HeaderScrollProvider scrolled={scrolled}>
+        <HeroVisibilityProvider visible={heroVisible}>{children}</HeroVisibilityProvider>
+      </HeaderScrollProvider>
     </header>
   );
 }

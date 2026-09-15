@@ -1,8 +1,11 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
+import { usePathname } from "@/i18n/navigation";
 import { useHeaderScrolled } from "./HeaderScrollContext";
 import { navItems } from "./navItems";
+import { sectionHref } from "./sectionHref";
 import { onSmoothAnchorClick } from "./smoothScroll";
 
 export function DesktopNav({
@@ -14,6 +17,8 @@ export function DesktopNav({
 }>) {
   const [activeHref, setActiveHref] = useState<string | null>(null);
   const scrolled = useHeaderScrolled();
+  const pathname = usePathname();
+  const locale = useLocale();
 
   useEffect(() => {
     const sections = navItems
@@ -42,7 +47,7 @@ export function DesktopNav({
         {navItems.map((item) => (
           <li key={item.href}>
             <a
-              href={item.href}
+              href={sectionHref(pathname, locale, item.href)}
               onClick={onSmoothAnchorClick}
               aria-current={activeHref === item.href ? "true" : undefined}
               className={`rounded-full px-3 py-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${

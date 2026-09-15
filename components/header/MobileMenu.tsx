@@ -1,9 +1,11 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
+import { usePathname } from "@/i18n/navigation";
 import { ContactLinks } from "./ContactLinks";
 import { navItems } from "./navItems";
+import { sectionHref } from "./sectionHref";
 import { onSmoothAnchorClick } from "./smoothScroll";
 
 const barClass =
@@ -14,6 +16,8 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
+  const locale = useLocale();
 
   useEffect(() => {
     if (!open) return;
@@ -77,7 +81,7 @@ export function MobileMenu() {
             {navItems.map((item) => (
               <li key={item.href}>
                 <a
-                  href={item.href}
+                  href={sectionHref(pathname, locale, item.href)}
                   onClick={(event) => {
                     setOpen(false);
                     onSmoothAnchorClick(event);
@@ -89,9 +93,10 @@ export function MobileMenu() {
               </li>
             ))}
           </ul>
-          <div className="mx-auto max-w-5xl border-t border-b border-border px-6 py-3 sm:px-8">
-            <ContactLinks className="flex" />
-          </div>
+          <ContactLinks
+            className="flex"
+            wrapperClassName="mx-auto max-w-5xl border-t border-b border-border px-6 py-3 sm:px-8"
+          />
         </nav>
       </div>
     </div>
