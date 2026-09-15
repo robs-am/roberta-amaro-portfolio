@@ -14,7 +14,7 @@ export async function ExperienceSection({ locale }: Readonly<{ locale: Locale }>
       className="snap-start h-[calc(100dvh-var(--header-height,0px))] overflow-y-auto scroll-mt-(--header-height,0px) py-16"
     >
       <div className="mx-auto max-w-3xl">
-        <h2 id="experience-title" data-reveal className="text-2xl font-semibold">
+        <h2 id="experience-title" data-reveal className="text-3xl font-semibold sm:text-4xl">
           {t("title")}
         </h2>
         <ExperienceTimeline experiences={sorted} locale={locale} />
