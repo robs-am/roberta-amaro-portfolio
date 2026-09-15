@@ -1,9 +1,14 @@
 import { getTranslations } from "next-intl/server";
+import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
 import { profile } from "@/data/profile";
 import { localize, type Locale } from "@/data/types";
+import { Link } from "@/i18n/navigation";
 
 const linkClass =
-  "inline-flex size-12 items-center justify-center rounded-md text-foreground transition-colors hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+  "inline-flex size-14 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+
+const ctaClass =
+  "inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 export async function Hero({ locale }: { locale: Locale }) {
   const t = await getTranslations("Hero");
@@ -16,7 +21,7 @@ export async function Hero({ locale }: { locale: Locale }) {
 
   return (
     <section id="hero" className="hero-reveal scroll-mt-(--header-height,0px) py-10">
-      <h1 className="text-5xl font-bold lg:text-7xl">
+      <h1 className="text-6xl font-bold lg:text-8xl">
         {profile.name}
       </h1>
       <div aria-hidden="true" className="mt-6 h-1 w-10 rounded-full bg-accent" />
@@ -36,8 +41,18 @@ export async function Hero({ locale }: { locale: Locale }) {
         ))}
         .
       </p>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <Link href="/experience" className={ctaClass}>
+          {t("experienceCta")}
+          <ArrowIcon />
+        </Link>
+        <Link href="/projects" className={ctaClass}>
+          {t("projectsCta")}
+          <ArrowIcon />
+        </Link>
+      </div>
       {links.length > 0 && (
-        <ul className="mt-6 flex gap-2">
+        <ul className="mt-8 flex gap-3">
           {links.map((link) => (
             <li key={link.href}>
               <a
@@ -57,67 +72,19 @@ export async function Hero({ locale }: { locale: Locale }) {
   );
 }
 
-// Tabler Icons (MIT), same circular badge treatment as the brand marks below for a consistent row.
-function EmailIcon() {
+function ArrowIcon() {
   return (
     <svg
-      viewBox="0 0 24 24"
-      className="size-10"
+      viewBox="0 0 16 16"
+      className="size-3.5"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="1.75"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <circle cx="12" cy="12" r="10" />
-      <g transform="translate(12 12) scale(0.7) translate(-12 -12)">
-        <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10" />
-        <path d="M3 7l9 6l9 -6" />
-      </g>
-    </svg>
-  );
-}
-
-// Outline brand marks (Tabler Icons, MIT) — official logos only ship filled; this is the stroke rendition.
-// Both get the same circular badge so the octocat (which has no natural container) reads clearly, like the LinkedIn mark's square does.
-function GithubIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="size-10"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <g transform="translate(12 12) scale(0.62) translate(-12 -12)">
-        <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
-      </g>
-    </svg>
-  );
-}
-
-function LinkedinIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="size-10"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M8 11v5" />
-      <path d="M8 8v.01" />
-      <path d="M12 16v-5" />
-      <path d="M16 16v-3a2 2 0 1 0 -4 0" />
+      <path d="M5 11 11 5M6 5h5v5" />
     </svg>
   );
 }

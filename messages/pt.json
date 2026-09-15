@@ -8,7 +8,7 @@
   },
   "Header": {
     "navLabel": "Navegação principal",
-    "backToTop": "Voltar ao topo",
+    "home": "Início",
     "nav": {
       "experience": "Experiências",
       "projects": "Projetos"
@@ -32,7 +32,9 @@
     "linkedin": "LinkedIn",
     "github": "GitHub",
     "newTab": "(abre em nova aba)",
-    "and": "e"
+    "and": "e",
+    "experienceCta": "Ver experiências",
+    "projectsCta": "Ver projetos"
   },
   "Experience": {
     "title": "Experiências",

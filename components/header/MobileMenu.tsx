@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
+import { ContactLinks } from "./ContactLinks";
 import { navItems } from "./navItems";
 
 const barClass =
@@ -13,6 +14,7 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!open) return;
@@ -46,6 +48,9 @@ export function MobileMenu() {
     };
   }, [open]);
 
+  // The home page is just the hero, with its own CTAs to these same destinations — nothing to put in the menu.
+  if (pathname === "/") return null;
+
   return (
     <div className="md:hidden">
       <button
@@ -72,7 +77,7 @@ export function MobileMenu() {
         }`}
       >
         <nav aria-label={t("navLabel")} className="overflow-hidden">
-          <ul className="mx-auto flex max-w-5xl flex-col border-b border-border px-6 py-2 sm:px-8">
+          <ul className="mx-auto flex max-w-5xl flex-col px-6 py-2 sm:px-8">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
@@ -85,6 +90,9 @@ export function MobileMenu() {
               </li>
             ))}
           </ul>
+          <div className="mx-auto max-w-5xl border-t border-b border-border px-6 py-3 sm:px-8">
+            <ContactLinks className="flex" />
+          </div>
         </nav>
       </div>
     </div>

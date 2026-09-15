@@ -14,6 +14,9 @@ export function DesktopNav({
   const scrolled = useHeaderScrolled();
   const pathname = usePathname();
 
+  // The home page is just the hero, with its own CTAs to these same destinations.
+  if (pathname === "/") return null;
+
   const inactiveClass = scrolled ? "text-muted hover:text-foreground" : "text-foreground/90 hover:text-foreground";
 
   return (

@@ -84,6 +84,14 @@
   mask-image: radial-gradient(120% 85% at 55% 0%, #000 45%, transparent 92%);
 }
 
+@media (min-width: 1024px) {
+  /* Home's hero is vertically centered, not top-anchored, so its glow centers lower too, to spotlight
+     the content instead of the empty area above it. Mobile keeps the top-anchored mask. */
+  .glow-home {
+    mask-image: radial-gradient(120% 85% at 55% 42%, #000 45%, transparent 92%);
+  }
+}
+
 .project-panel {
   background:
     radial-gradient(circle at 16% 0%, color-mix(in oklab, var(--glow-1) 45%, transparent), transparent 55%),
@@ -93,6 +101,7 @@
 @keyframes hero-in {
   from {
     opacity: 0;
+    scale: 0.85;
     translate: 0 var(--hero-distance);
     filter: blur(var(--hero-blur));
   }

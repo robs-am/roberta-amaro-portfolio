@@ -10,7 +10,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   return (
     <main
       id="main-content"
-      className="mx-auto flex min-h-[calc(100dvh-var(--header-height,0px))] max-w-5xl flex-col justify-center px-6 sm:px-8"
+      className="mx-auto flex min-h-[calc(100dvh-var(--header-height,0px))] max-w-5xl flex-col justify-center px-6 pb-16 sm:px-8 sm:pb-20 lg:pb-28"
     >
       <Hero locale={locale} />
     </main>
