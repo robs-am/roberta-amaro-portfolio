@@ -3,17 +3,12 @@
 import { useTranslations } from "next-intl";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
 import { profile } from "@/data/profile";
-import { usePathname } from "@/i18n/navigation";
 
 const linkClass =
   "inline-flex size-9 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 export function ContactLinks({ className }: { className?: string }) {
   const t = useTranslations("Hero");
-  const pathname = usePathname();
-
-  // The home page's hero already shows these prominently — no need to repeat them there.
-  if (pathname === "/") return null;
 
   const links = [
     profile.email && { href: `mailto:${profile.email}`, label: t("email"), Icon: EmailIcon, external: false },

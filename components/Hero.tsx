@@ -1,8 +1,10 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useTranslations } from "next-intl";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
+import { onSmoothAnchorClick } from "@/components/header/smoothScroll";
 import { profile } from "@/data/profile";
 import { localize, type Locale } from "@/data/types";
-import { Link } from "@/i18n/navigation";
 
 const linkClass =
   "inline-flex size-14 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
@@ -10,8 +12,8 @@ const linkClass =
 const ctaClass =
   "inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
-export async function Hero({ locale }: { locale: Locale }) {
-  const t = await getTranslations("Hero");
+export function Hero({ locale }: Readonly<{ locale: Locale }>) {
+  const t = useTranslations("Hero");
 
   const links = [
     profile.email && { href: `mailto:${profile.email}`, label: t("email"), Icon: EmailIcon, external: false },
@@ -20,7 +22,10 @@ export async function Hero({ locale }: { locale: Locale }) {
   ].filter((link) => !!link);
 
   return (
-    <section id="hero" className="hero-reveal scroll-mt-(--header-height,0px) py-10">
+    <section
+      id="hero"
+      className="hero-reveal snap-start flex h-[calc(100dvh-var(--header-height,0px))] flex-col justify-center scroll-mt-(--header-height,0px) pb-16 sm:pb-20 lg:pb-28"
+    >
       <h1 className="text-6xl font-bold lg:text-8xl">
         {profile.name}
       </h1>
@@ -42,14 +47,14 @@ export async function Hero({ locale }: { locale: Locale }) {
         .
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link href="/experience" className={ctaClass}>
+        <a href="#experience" onClick={onSmoothAnchorClick} className={ctaClass}>
           {t("experienceCta")}
           <ArrowIcon />
-        </Link>
-        <Link href="/projects" className={ctaClass}>
+        </a>
+        <a href="#projects" onClick={onSmoothAnchorClick} className={ctaClass}>
           {t("projectsCta")}
           <ArrowIcon />
-        </Link>
+        </a>
       </div>
       {links.length > 0 && (
         <ul className="mt-8 flex gap-3">

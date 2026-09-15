@@ -24,11 +24,26 @@ function scrollToHash(hash: string) {
   const distance = targetY - startY;
   const startTime = performance.now();
 
+  // `scroll-snap-type: mandatory` and `scroll-behavior: smooth` (both needed so wheel/trackpad
+  // scrolling snaps smoothly between sections) fight a JS-driven scroll: the browser tries to
+  // snap to and smooth-animate toward the nearest section on every intermediate `scrollTo` call,
+  // short-circuiting our own easing. Suspend both for the trip, then restore them.
+  const html = document.documentElement;
+  const previousSnapType = html.style.scrollSnapType;
+  const previousScrollBehavior = html.style.scrollBehavior;
+  html.style.scrollSnapType = "none";
+  html.style.scrollBehavior = "auto";
+
   function step(now: number) {
     const progress = Math.min((now - startTime) / DURATION, 1);
     window.scrollTo(0, startY + distance * easeInOutCubic(progress));
-    if (progress < 1) requestAnimationFrame(step);
-    else history.pushState(null, "", hash);
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      html.style.scrollSnapType = previousSnapType;
+      html.style.scrollBehavior = previousScrollBehavior;
+      history.pushState(null, "", hash);
+    }
   }
 
   requestAnimationFrame(step);

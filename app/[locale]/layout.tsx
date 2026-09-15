@@ -75,7 +75,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={htmlLang[locale]}
-      className={`${jost.variable} ${plexSans.variable} antialiased`}
+      className={`${jost.variable} ${plexSans.variable} snap-y snap-mandatory antialiased`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

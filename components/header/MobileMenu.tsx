@@ -2,9 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
-import { Link, usePathname } from "@/i18n/navigation";
 import { ContactLinks } from "./ContactLinks";
 import { navItems } from "./navItems";
+import { onSmoothAnchorClick } from "./smoothScroll";
 
 const barClass =
   "absolute left-0 h-0.5 w-full rounded-full bg-current transition duration-300 ease-expressive motion-reduce:transition-none";
@@ -14,7 +14,6 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const pathname = usePathname();
 
   useEffect(() => {
     if (!open) return;
@@ -48,9 +47,6 @@ export function MobileMenu() {
     };
   }, [open]);
 
-  // The home page is just the hero, with its own CTAs to these same destinations — nothing to put in the menu.
-  if (pathname === "/") return null;
-
   return (
     <div className="md:hidden">
       <button
@@ -80,13 +76,16 @@ export function MobileMenu() {
           <ul className="mx-auto flex max-w-5xl flex-col px-6 py-2 sm:px-8">
             {navItems.map((item) => (
               <li key={item.href}>
-                <Link
+                <a
                   href={item.href}
-                  onClick={() => setOpen(false)}
+                  onClick={(event) => {
+                    setOpen(false);
+                    onSmoothAnchorClick(event);
+                  }}
                   className="flex min-h-11 items-center rounded-sm text-base font-medium text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   {t(`nav.${item.key}`)}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>

@@ -1,20 +1,11 @@
 "use client";
 
-import { useLocale } from "next-intl";
-import { usePathname } from "@/i18n/navigation";
-import { sectionHref } from "./sectionHref";
 import { onSmoothAnchorClick } from "./smoothScroll";
 
 export function HomeLink({ label }: { label: string }) {
-  const pathname = usePathname();
-  const locale = useLocale();
-
-  // The home page is just the hero, with its own CTAs to the other pages — nothing to link back to from there.
-  if (pathname === "/") return null;
-
   return (
     <a
-      href={sectionHref(pathname, locale, "#hero")}
+      href="#hero"
       aria-label={label}
       onClick={onSmoothAnchorClick}
       className="flex size-11 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"

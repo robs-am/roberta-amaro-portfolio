@@ -40,11 +40,6 @@
     "title": "Experience",
     "present": "Present"
   },
-  "ExperiencePage": {
-    "title": "Experience | Roberta Amaro",
-    "description": "Roberta Amaro's professional background.",
-    "back": "Back to home"
-  },
   "Projects": {
     "title": "Projects",
     "tech": "Technologies",
@@ -53,11 +48,6 @@
     "newTab": "(opens in a new tab)",
     "showMore": "Show more",
     "showLess": "Show less"
-  },
-  "ProjectsPage": {
-    "title": "All projects | Roberta Amaro",
-    "description": "All of Roberta Amaro's projects.",
-    "back": "Back to home"
   },
   "NotFound": {
     "title": "Page not found",

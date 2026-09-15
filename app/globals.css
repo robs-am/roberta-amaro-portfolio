@@ -115,6 +115,13 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  /* Animates the native scroll-snap correction on wheel/trackpad/touch scroll. Click-triggered
+     navigation (smoothScroll.ts) temporarily switches this to "auto" so its own easing isn't
+     double-applied by the browser, then restores it once the animation finishes. */
+  html {
+    scroll-behavior: smooth;
+  }
+
   .hero-reveal > * {
     animation: hero-in var(--duration-hero) var(--ease-soft) both;
   }
