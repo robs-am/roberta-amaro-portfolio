@@ -42,6 +42,8 @@ export type Project = {
     height: number;
     alt: Localized;
   };
+  /** Shows this project in the home's curated highlights; the full list still appears on /projects. */
+  featured?: boolean;
 };
 
 export function localize(value: Localized, locale: Locale): string {

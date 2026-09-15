@@ -3,6 +3,7 @@ import type { Project } from "./types";
 export const projects = [
   {
     id: "tommy-hilfiger",
+    featured: true,
     category: {
       pt: "E-commerce",
       en: "E-commerce",
@@ -29,6 +30,7 @@ export const projects = [
   },
   {
     id: "liritty",
+    featured: true,
     category: {
       pt: "E-commerce",
       en: "E-commerce",
@@ -55,6 +57,7 @@ export const projects = [
   },
   {
     id: "candide",
+    featured: true,
     category: {
       pt: "E-commerce",
       en: "E-commerce",
@@ -81,6 +84,7 @@ export const projects = [
   },
   {
     id: "creamy",
+    featured: true,
     category: {
       pt: "E-commerce",
       en: "E-commerce",

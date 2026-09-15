@@ -38,6 +38,11 @@
     "title": "Experiências",
     "present": "Atual"
   },
+  "ExperiencePage": {
+    "title": "Experiências | Roberta Amaro",
+    "description": "Trajetória profissional de Roberta Amaro.",
+    "back": "Voltar para a home"
+  },
   "Projects": {
     "title": "Projetos",
     "tech": "Tecnologias",
@@ -45,8 +50,12 @@
     "demo": "Ver site",
     "newTab": "(abre em nova aba)",
     "showMore": "Ver mais",
-    "showLess": "Ver menos",
-    "goToProject": "Ir para o projeto {index}"
+    "showLess": "Ver menos"
+  },
+  "ProjectsPage": {
+    "title": "Todos os projetos | Roberta Amaro",
+    "description": "Todos os projetos de Roberta Amaro.",
+    "back": "Voltar para a home"
   },
   "NotFound": {
     "title": "Página não encontrada",
