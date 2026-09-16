@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { HeaderScrollProvider } from "./HeaderScrollContext";
 import { HeroVisibilityProvider } from "./HeroVisibilityContext";
 
@@ -12,7 +12,9 @@ export function HeaderShell({ children }: { children: ReactNode }) {
   const [heroVisible, setHeroVisible] = useState(false);
   const ref = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  // useLayoutEffect (not useEffect) so a locale switch's remount corrects `scrolled`
+  // before paint, matching ThemeClassSync's fix for the same class of flicker.
+  useLayoutEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -49,7 +51,7 @@ export function HeaderShell({ children }: { children: ReactNode }) {
       ref={ref}
       className={`sticky top-0 z-20 border-b transition-colors duration-300 ${
         scrolled
-          ? "border-border bg-background/85 backdrop-blur"
+          ? "border-border bg-background/95 backdrop-blur"
           : "border-transparent bg-transparent"
       }`}
     >

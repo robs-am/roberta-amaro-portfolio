@@ -6,9 +6,10 @@ import { ProjectCard } from "./ProjectCard";
 
 const MAX_HIGHLIGHTED = 4;
 
-// Grid columns grow with the breakpoint (1/2/3/4); each card here is hidden until its column
-// exists, so the row never wraps to a second line and the section never scrolls internally.
-const VISIBILITY_BY_INDEX = ["", "hidden sm:block", "hidden lg:block", "hidden xl:block"];
+// Mobile: all cards show, swipeable in a single row (native scroll-snap, no JS). From `sm` up,
+// it becomes a grid whose columns grow with the breakpoint (1/2/3/4); each card here is hidden
+// until its column exists, so the row never wraps to a second line and never scrolls internally.
+const VISIBILITY_BY_INDEX = ["", "", "sm:hidden lg:block", "sm:hidden xl:block"];
 
 export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) {
   const t = await getTranslations("Projects");
@@ -19,7 +20,7 @@ export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) 
     <section
       id="projects"
       aria-labelledby="projects-title"
-      className="relative left-1/2 w-screen -translate-x-1/2 snap-start h-[calc(100dvh-var(--header-height,0px))] overflow-x-hidden overflow-y-auto scroll-mt-(--header-height,0px) py-16"
+      className="relative left-1/2 w-screen -translate-x-1/2 snap-start h-[calc(100dvh-var(--header-height,0px))] overflow-hidden scroll-mt-(--header-height,0px) py-16"
     >
       {/* The section itself breaks out to the full viewport width (it would otherwise inherit
           `main`'s max-w-7xl) so the glow can reach both edges, like the hero's. Content below is
@@ -50,9 +51,12 @@ export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) 
             </Link>
           )}
         </div>
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="scrollbar-hide mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto sm:grid sm:snap-none sm:gap-6 sm:overflow-visible sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {highlighted.map((project, index) => (
-            <div key={project.id} className={VISIBILITY_BY_INDEX[index] ?? ""}>
+            <div
+              key={project.id}
+              className={`w-[85%] shrink-0 snap-center sm:w-auto sm:shrink sm:snap-align-none ${VISIBILITY_BY_INDEX[index] ?? ""}`}
+            >
               <ProjectCard project={project} locale={locale} />
             </div>
           ))}
