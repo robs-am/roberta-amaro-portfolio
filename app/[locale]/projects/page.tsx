@@ -47,12 +47,18 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
       >
         ← {tPage("back")}
       </Link>
-      <h1 data-reveal className="mt-8 text-2xl font-semibold">
+      <h1 data-reveal className="mt-8 text-3xl font-semibold">
         {t("title")}
       </h1>
-      <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} locale={locale} />
+      {/* Capped narrower than the page's own max-w-7xl and centered: at full width, 2 columns of
+          these landscape cards read as oversized. The offset on odd cards (`sm:translate-y-28`)
+          reads as an interleaved pair of columns while scrolling; `gap-y-36` keeps that offset
+          from overlapping the row below. */}
+      <div className="mx-auto mt-8 grid max-w-4xl gap-x-16 gap-y-36 sm:grid-cols-2">
+        {projects.map((project, index) => (
+          <div key={project.id} className={index % 2 === 1 ? "sm:translate-y-28" : undefined}>
+            <ProjectCard project={project} locale={locale} />
+          </div>
         ))}
       </div>
     </main>

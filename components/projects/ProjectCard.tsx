@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { localize, type Locale, type Project } from "@/data/types";
-import { ProjectDescription } from "./ProjectDescription";
 
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
@@ -15,20 +14,22 @@ export async function ProjectCard({
 }) {
   const t = await getTranslations("Projects");
   const title = localize(project.title, locale);
-  const linkContext = `${title} ${t("newTab")}`;
 
-  const links = [
-    project.demoUrl && { href: project.demoUrl, label: t("demo") },
-    project.repoUrl && { href: project.repoUrl, label: t("repo") },
-  ].filter((link) => !!link);
-  const [primary, secondary] = links;
+  let primary: { href: string; label: string } | undefined;
+  if (project.demoUrl) primary = { href: project.demoUrl, label: t("demo") };
+  else if (project.repoUrl) primary = { href: project.repoUrl, label: t("repo") };
+
+  const secondary =
+    primary?.href === project.demoUrl && project.repoUrl
+      ? { href: project.repoUrl, label: t("repo") }
+      : undefined;
 
   return (
     <article
       data-reveal
-      className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-[transform,border-color] duration-300 ease-expressive hover:border-accent/60 focus-within:border-accent/60 motion-safe:hover:-translate-y-1 motion-safe:focus-within:-translate-y-1"
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border transition-[transform,border-color] duration-300 ease-expressive hover:border-accent/60 focus-within:border-accent/60 motion-safe:hover:-translate-y-1 motion-safe:focus-within:-translate-y-1"
     >
-      <div className="aspect-video overflow-hidden border-b border-border bg-elevated p-3">
+      <div className="aspect-video overflow-hidden">
         {project.image ? (
           <Image
             src={project.image.src}
@@ -36,72 +37,77 @@ export async function ProjectCard({
             height={project.image.height}
             alt={localize(project.image.alt, locale)}
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="h-full w-full rounded-lg object-cover shadow-[inset_0_0_0_1px_var(--border)] transition-transform duration-[600ms] ease-expressive motion-safe:group-hover:scale-[1.03] motion-safe:group-focus-within:scale-[1.03]"
+            className="h-full w-full rounded-xl object-cover"
           />
         ) : (
-          <div
-            aria-hidden="true"
-            className="project-panel h-full w-full rounded-lg transition-transform duration-[600ms] ease-expressive motion-safe:group-hover:scale-[1.03] motion-safe:group-focus-within:scale-[1.03]"
-          />
+          <div aria-hidden="true" className="project-panel h-full w-full rounded-xl" />
         )}
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <p className="w-fit rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">
+        <p className="text-xs font-medium tracking-wide text-muted uppercase">
           {localize(project.category, locale)}
         </p>
-        <h3 className="mt-3 text-lg font-semibold">{title}</h3>
-        <ProjectDescription
-          text={localize(project.description, locale)}
-          showMoreLabel={t("showMore")}
-          showLessLabel={t("showLess")}
-        />
-        <ul aria-label={t("tech")} className="mt-4 flex flex-wrap gap-2">
-          {project.tech.map((tech) => (
-            <li
-              key={tech}
-              className="rounded-full border border-border bg-elevated px-2.5 py-0.5 text-xs font-medium text-foreground"
-            >
-              {tech}
-            </li>
-          ))}
-        </ul>
-
-        {primary && (
-          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium">
+        <h3 className="mt-1.5 flex items-start justify-between gap-3 text-xl font-semibold">
+          {title}
+          {primary && (
             <a
               href={primary.href}
               target="_blank"
               rel="noopener noreferrer"
-              className={`inline-flex items-center gap-1.5 rounded-md bg-accent px-3.5 py-2 text-accent-foreground transition-colors hover:bg-accent/90 ${focusRing}`}
+              className={`group/cta inline-flex h-9 shrink-0 items-center gap-0 overflow-hidden rounded-full border border-accent/30 bg-accent/10 px-2.5 text-accent transition-[gap,padding,background-color,color,border-color] duration-300 ease-expressive motion-safe:group-hover:gap-2 group-hover:border-accent group-hover:bg-accent group-hover:pr-4 group-hover:text-accent-foreground focus-visible:gap-2 focus-visible:border-accent focus-visible:bg-accent focus-visible:pr-4 focus-visible:text-accent-foreground ${focusRing}`}
             >
-              {primary.label}
-              <ArrowIcon />
-              <span className="sr-only"> {linkContext}</span>
+              <ArrowIcon className="size-4 shrink-0" />
+              <span className="grid grid-cols-[0fr] transition-[grid-template-columns] duration-300 ease-expressive motion-reduce:transition-none group-hover:grid-cols-[1fr] group-focus-visible/cta:grid-cols-[1fr]">
+                <span className="overflow-hidden text-sm font-medium whitespace-nowrap">
+                  {primary.label}
+                </span>
+              </span>
+              <span className="sr-only">
+                {title}, {primary.label} {t("newTab")}
+              </span>
             </a>
-            {secondary && (
-              <a
-                href={secondary.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`rounded-sm text-accent underline-offset-4 hover:underline ${focusRing}`}
-              >
-                {secondary.label}
-                <span className="sr-only"> {linkContext}</span>
-              </a>
-            )}
-          </div>
+          )}
+        </h3>
+        <p className="mt-3 text-sm leading-6 text-muted">
+          {localize(project.description, locale)}
+        </p>
+        {project.tech.length > 0 && (
+          <p aria-label={t("tech")} className="mt-4 text-xs font-medium text-accent">
+            {project.tech.join(" · ")}
+          </p>
+        )}
+        {/* Experiment: reveal a separate "what I did" blurb on hover/focus, below the tech line,
+            so it doesn't butt straight up against the store description above. Lorem ipsum
+            stand-in until we write real per-project copy for this part. */}
+        <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-expressive motion-reduce:transition-none group-hover:grid-rows-[1fr] group-focus-within:grid-rows-[1fr]">
+          <p className="overflow-hidden pt-3 text-sm leading-6 text-muted">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nec dolor at nunc
+            feugiat cursus.
+          </p>
+        </div>
+
+        {secondary && (
+          <a
+            href={secondary.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`mt-4 w-fit rounded-sm text-sm font-medium text-accent underline-offset-4 hover:underline ${focusRing}`}
+          >
+            {secondary.label}
+            <span className="sr-only">, {title} {t("newTab")}</span>
+          </a>
         )}
       </div>
     </article>
   );
 }
 
-function ArrowIcon() {
+function ArrowIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg
       viewBox="0 0 16 16"
-      className="size-3.5"
+      className={`size-4 ${className ?? ""}`}
       fill="none"
       stroke="currentColor"
       strokeWidth="1.75"

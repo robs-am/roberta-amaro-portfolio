@@ -6,9 +6,10 @@ import { ProjectCard } from "./ProjectCard";
 
 const MAX_HIGHLIGHTED = 4;
 
-// Mobile: all cards show, swipeable in a single row (native scroll-snap, no JS). From `sm` up,
-// it becomes a grid whose columns grow with the breakpoint (1/2/3/4); each card here is hidden
-// until its column exists, so the row never wraps to a second line and never scrolls internally.
+// This section is pinned to one viewport (`h-[calc(100dvh-...)]` + `overflow-hidden` below), so
+// highlighted cards must fit a single row rather than wrap or stagger. Below `sm` they're a
+// swipeable row (native scroll-snap); from `sm` up, columns grow with the breakpoint (2/3/4) and
+// each card stays hidden until its column exists, so the row never wraps to a second line.
 const VISIBILITY_BY_INDEX = ["", "", "sm:hidden lg:block", "sm:hidden xl:block"];
 
 export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) {
@@ -51,11 +52,14 @@ export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) 
             </Link>
           )}
         </div>
+        {/* Odd cards sit a little lower (`sm:translate-y-6`) for a hint of the /projects page's
+            interleaved feel, kept small since this row has no room to spare inside the fixed
+            viewport height above. */}
         <div className="scrollbar-hide mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto sm:grid sm:snap-none sm:gap-6 sm:overflow-visible sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {highlighted.map((project, index) => (
             <div
               key={project.id}
-              className={`w-[85%] shrink-0 snap-center sm:w-auto sm:shrink sm:snap-align-none ${VISIBILITY_BY_INDEX[index] ?? ""}`}
+              className={`w-[85%] shrink-0 snap-center sm:w-auto sm:shrink sm:snap-align-none ${VISIBILITY_BY_INDEX[index] ?? ""} ${index % 2 === 1 ? "sm:translate-y-6" : ""}`}
             >
               <ProjectCard project={project} locale={locale} />
             </div>
