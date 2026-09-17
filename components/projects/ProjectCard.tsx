@@ -77,11 +77,18 @@ export async function ProjectCard({
             {project.tech.join(" · ")}
           </p>
         )}
+        {/* Always-visible cue for the hover-revealed blurb below, kept to just the chevron (the
+            arrow-pill above already signals "clickable") so it doesn't stack another line of text
+            on an already busy card. Tints accent and flips together with the reveal. */}
+        <div className="mt-4 flex items-center text-muted transition-colors duration-300 ease-expressive group-hover:text-accent group-focus-within:text-accent">
+          <span className="sr-only">{t("whatIDid")}</span>
+          <ChevronIcon className="size-3.5 shrink-0 transition-transform duration-300 ease-expressive group-hover:rotate-180 group-focus-within:rotate-180" />
+        </div>
         {/* Experiment: reveal a separate "what I did" blurb on hover/focus, below the tech line,
             so it doesn't butt straight up against the store description above. Lorem ipsum
             stand-in until we write real per-project copy for this part. */}
         <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-expressive motion-reduce:transition-none group-hover:grid-rows-[1fr] group-focus-within:grid-rows-[1fr]">
-          <p className="overflow-hidden pt-3 text-sm leading-6 text-muted">
+          <p className="overflow-hidden pt-1 text-sm leading-6 text-muted">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nec dolor at nunc
             feugiat cursus.
           </p>
@@ -116,6 +123,23 @@ function ArrowIcon({ className }: Readonly<{ className?: string }>) {
       aria-hidden="true"
     >
       <path d="M5 11 11 5M6 5h5v5" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ className }: Readonly<{ className?: string }>) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4 6l4 4 4-4" />
     </svg>
   );
 }
