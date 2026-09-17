@@ -79,6 +79,15 @@
   animation-timing-function: ease-in-out;
 }
 
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 .glow {
   /* Fades on every edge (not just the bottom) so overflow-hidden never clips the blur into a hard line. */
   mask-image: radial-gradient(120% 85% at 55% 0%, #000 45%, transparent 92%);
