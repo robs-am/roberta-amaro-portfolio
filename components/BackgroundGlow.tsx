@@ -1,19 +1,35 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, type CSSProperties } from "react";
+import { routing } from "@/i18n/routing";
 
 const EASING = 0.18;
 const MAX_DEPTH = 340;
 const SETTLE_PX = 0.1;
 
 const blobs = [
-  { className: "right-[-15%] top-[-40%] h-[115%] w-[85%] bg-glow-2", depth: 150 },
-  { className: "left-[-5%] top-[-55%] h-[105%] w-[65%] bg-glow-1", depth: 240 },
-  { className: "right-[30%] top-[10%] h-[55%] w-[40%] bg-glow-1", depth: MAX_DEPTH },
+  {
+    className: "right-[-15%] top-[-40%] h-[115%] w-[85%] bg-glow-2",
+    homeClassName: "lg:top-[-10%]",
+    depth: 150,
+  },
+  {
+    className: "left-[-5%] top-[-55%] h-[105%] w-[65%] bg-glow-1",
+    homeClassName: "lg:top-[-15%]",
+    depth: 240,
+  },
+  {
+    className: "right-[30%] top-[10%] h-[55%] w-[40%] bg-glow-1",
+    homeClassName: "lg:top-[35%]",
+    depth: MAX_DEPTH,
+  },
 ];
 
 export function BackgroundGlow() {
   const ref = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const isHome = routing.locales.some((locale) => pathname === `/${locale}`);
 
   useEffect(() => {
     const container = ref.current;
@@ -72,12 +88,12 @@ export function BackgroundGlow() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[95vh] overflow-hidden"
+      className={`glow ${isHome ? "glow-home" : ""} pointer-events-none absolute inset-x-0 top-0 -z-10 h-dvh overflow-hidden`}
     >
       {blobs.map((blob) => (
         <div
           key={blob.className}
-          className={`glow-blob ${blob.className}`}
+          className={`glow-blob ${blob.className} ${isHome ? blob.homeClassName : ""}`}
           style={{ "--glow-depth": blob.depth } as CSSProperties}
         />
       ))}

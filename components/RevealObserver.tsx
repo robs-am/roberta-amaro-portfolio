@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "@/i18n/navigation";
 
 function toMilliseconds(value: string) {
   const trimmed = value.trim();
@@ -15,6 +16,8 @@ function heroAnimationTime(hero: Element | null) {
 }
 
 export function RevealObserver() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -50,7 +53,7 @@ export function RevealObserver() {
       window.clearTimeout(timer);
       observer.disconnect();
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }

@@ -8,7 +8,7 @@
   },
   "Header": {
     "navLabel": "Navegação principal",
-    "backToTop": "Voltar ao topo",
+    "home": "Início",
     "nav": {
       "experience": "Experiências",
       "projects": "Projetos"
@@ -32,7 +32,9 @@
     "linkedin": "LinkedIn",
     "github": "GitHub",
     "newTab": "(abre em nova aba)",
-    "and": "e"
+    "and": "e",
+    "experienceCta": "Ver experiências",
+    "projectsCta": "Ver projetos"
   },
   "Experience": {
     "title": "Experiências",
@@ -44,9 +46,13 @@
     "repo": "Repositório",
     "demo": "Ver site",
     "newTab": "(abre em nova aba)",
-    "showMore": "Ver mais",
-    "showLess": "Ver menos",
-    "goToProject": "Ir para o projeto {index}"
+    "whatIDid": "Minha atuação",
+    "viewAll": "Ver todos os projetos"
+  },
+  "ProjectsPage": {
+    "title": "Todos os projetos | Roberta Amaro",
+    "description": "Todos os projetos de Roberta Amaro.",
+    "back": "Voltar para a home"
   },
   "NotFound": {
     "title": "Página não encontrada",
