@@ -9,14 +9,11 @@ import { localize, type Locale } from "@/data/types";
 const linkClass =
   "inline-flex size-14 items-center justify-center rounded-full text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
-const ctaClass =
-  "inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-colors hover:bg-accent/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+const ctaPrimaryClass =
+  "inline-flex h-11 shrink-0 items-center gap-2.5 overflow-hidden rounded-full border border-accent bg-accent px-6 text-sm font-semibold text-accent-foreground transition-[gap,padding,transform] duration-300 ease-expressive motion-safe:hover:gap-3.5 motion-safe:hover:scale-105 hover:pr-7 focus-visible:gap-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent data-reveal:animate-cta-reveal";
 
-const ctaLinkClass =
-  "group inline-flex items-center gap-3 rounded-full text-sm font-semibold text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
-
-const ctaLinkIconClass =
-  "flex size-9 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-accent/10 text-accent transition-[transform,background-color,color,border-color] duration-300 ease-expressive motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5 group-hover:border-accent group-hover:bg-accent group-hover:text-accent-foreground";
+const ctaSecondaryClass =
+  "inline-flex h-11 shrink-0 items-center gap-2 overflow-hidden rounded-full border border-accent/40 bg-accent/15 px-5 text-sm font-semibold text-accent transition-[gap,padding,border-color,background-color,color] duration-300 ease-expressive motion-safe:hover:gap-3 hover:border-accent hover:bg-accent/25 focus-visible:gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent data-reveal:animate-cta-reveal";
 
 export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const t = useTranslations("Hero");
@@ -65,15 +62,13 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             .
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#experience" onClick={onSmoothAnchorClick} className={ctaLinkClass}>
-              {t("experienceCta")}
-              <span aria-hidden="true" className={ctaLinkIconClass}>
-                <ArrowIcon className="size-3.5" />
-              </span>
+            <a href="#experience" onClick={onSmoothAnchorClick} className={ctaSecondaryClass}>
+              <ArrowIcon className="size-4 shrink-0" />
+              <span>{t("experienceCta")}</span>
             </a>
-            <a href="#projects" onClick={onSmoothAnchorClick} className={ctaClass}>
-              {t("projectsCta")}
-              <ArrowIcon />
+            <a href="#projects" onClick={onSmoothAnchorClick} className={ctaPrimaryClass}>
+              <ArrowIcon className="size-4 shrink-0" />
+              <span>{t("projectsCta")}</span>
             </a>
           </div>
           {links.length > 0 && (

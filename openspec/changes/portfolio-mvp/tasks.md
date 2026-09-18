@@ -61,8 +61,8 @@
 
 ## 7. Verificação final
 
-- [ ] 7.1 Rodar `pnpm build` e verificar que passa sem erros de tipo ou lint e que `/pt` e `/en` aparecem como rotas estáticas na saída
-- [ ] 7.2 Verificar responsividade no DevTools em 360px (sem rolagem horizontal, menu hambúrguer, seletor de idioma e alternador de tema acessíveis), 768px (links no header, sem botão de menu) e 1440px (conteúdo centralizado com largura máxima)
-- [ ] 7.3 Verificar contraste AA nos temas claro e escuro com Lighthouse ou axe DevTools, incluindo o hero sobre o brilho e os links do menu mobile, e ajustar tokens até não haver falhas de contraste
-- [ ] 7.4 Verificar navegação completa só por teclado (Tab até nav ou botão de menu, links do menu aberto, seletor de idioma e alternador de tema, acionando cada um) em `/pt` e `/en`
-- [ ] 7.5 Verificar com `curl` que o HTML de `/en` já contém os textos em inglês (sem depender de JavaScript) e que o cookie de idioma faz `/` redirecionar para o idioma escolhido manualmente
+- [x] 7.1 Rodar `pnpm build` e verificar que passa sem erros de tipo ou lint e que `/pt` e `/en` aparecem como rotas estáticas na saída
+- [ ] 7.2 Verificar responsividade no DevTools em 360px (sem rolagem horizontal, menu hambúrguer, seletor de idioma e alternador de tema acessíveis), 768px (links no header, sem botão de menu) e 1440px (conteúdo centralizado com largura máxima) — ⏸️ Use F12 → Modo Responsivo
+- [ ] 7.3 Verificar contraste AA nos temas claro e escuro com Lighthouse ou axe DevTools, incluindo o hero sobre o brilho e os links do menu mobile, e ajustar tokens até não haver falhas de contraste — ⏸️ Use Lighthouse (F12) ou axe DevTools
+- [ ] 7.4 Verificar navegação completa só por teclado (Tab até nav ou botão de menu, links do menu aberto, seletor de idioma e alternador de tema, acionando cada um) em `/pt` e `/en` — ⏸️ Use Tab/Shift+Tab no navegador
+- [x] 7.5 Verificar com `curl` que o HTML de `/en` já contém os textos em inglês (sem depender de JavaScript) e que o cookie de idioma faz `/` redirecionar para o idioma escolhido manualmente

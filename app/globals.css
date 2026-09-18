@@ -90,14 +90,14 @@
 
 .glow {
   /* Fades on every edge (not just the bottom) so overflow-hidden never clips the blur into a hard line. */
-  mask-image: radial-gradient(120% 85% at 55% 0%, #000 45%, transparent 92%);
+  mask-image: radial-gradient(120% 85% at 55% 0%, #000 45%, transparent 100%);
 }
 
 @media (min-width: 1024px) {
   /* Home's hero is vertically centered, not top-anchored, so its glow centers lower too, to spotlight
      the content instead of the empty area above it. Mobile keeps the top-anchored mask. */
   .glow-home {
-    mask-image: radial-gradient(120% 85% at 55% 42%, #000 45%, transparent 92%);
+    mask-image: radial-gradient(120% 85% at 55% 42%, #000 45%, transparent 100%);
   }
 }
 
@@ -123,6 +123,13 @@
   }
 }
 
+@keyframes cta-reveal {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   /* Animates the native scroll-snap correction on wheel/trackpad/touch scroll. Click-triggered
      navigation (smoothScroll.ts) temporarily switches this to "auto" so its own easing isn't
@@ -141,6 +148,13 @@
 
   .hero-reveal > :nth-child(3) {
     animation-delay: calc(var(--hero-stagger) * 2);
+  }
+
+  @supports (animation-timeline: view()) {
+    .animate-cta-reveal {
+      animation: cta-reveal 600ms var(--ease-expressive) both;
+      animation-delay: calc(var(--reveal-hold) + 100ms);
+    }
   }
 }
 

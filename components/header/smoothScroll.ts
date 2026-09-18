@@ -1,9 +1,9 @@
 import type { MouseEvent } from "react";
 
-const DURATION = 650;
+const DURATION = 1200;
 
-function easeInOutCubic(t: number) {
-  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
+function easeOutQuart(t: number) {
+  return 1 - (1 - t) ** 4;
 }
 
 function scrollToHash(hash: string) {
@@ -36,7 +36,7 @@ function scrollToHash(hash: string) {
 
   function step(now: number) {
     const progress = Math.min((now - startTime) / DURATION, 1);
-    window.scrollTo(0, startY + distance * easeInOutCubic(progress));
+    window.scrollTo(0, startY + distance * easeOutQuart(progress));
     if (progress < 1) {
       requestAnimationFrame(step);
     } else {
