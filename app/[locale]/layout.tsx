@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { BackgroundGlow } from "@/components/BackgroundGlow";
 import { Header } from "@/components/header/Header";
 import { RevealObserver } from "@/components/RevealObserver";
+import { ScrollReset } from "@/components/ScrollReset";
 import { SectionScrollSync } from "@/components/SectionScrollSync";
 import { ThemeClassSync } from "@/components/ThemeClassSync";
 import type { Locale } from "@/data/types";
@@ -87,6 +88,7 @@ export default async function LocaleLayout({
         >
           {t("skipToContent")}
         </a>
+        <ScrollReset />
         <ThemeClassSync />
         <SectionScrollSync />
         <BackgroundGlow />

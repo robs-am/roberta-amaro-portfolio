@@ -35,10 +35,9 @@ export function LocaleSwitcher() {
             aria-pressed={active}
             onClick={() => {
               if (active) return;
-              // The URL fragment never reaches the server, so it is carried over from the client.
-              // `scroll: false` disables Next's own hash-scroll, which fights the scroll-snap +
-              // smooth-scroll combo on <html>; SectionScrollSync restores the position instead.
-              router.replace(`${pathname}${currentSectionHash()}`, { locale: option, scroll: false });
+              // Always go to top when changing locale — avoids scroll fighting between router and manual scroll.
+              window.scrollTo(0, 0);
+              router.replace(pathname, { locale: option, scroll: false });
             }}
             className={`cursor-pointer rounded px-2 py-1.5 uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
               active ? "bg-foreground text-background" : "text-muted hover:text-foreground"

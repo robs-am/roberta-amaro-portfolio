@@ -21,9 +21,14 @@ export function HeaderShell({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const hero = document.querySelector("#hero");
     if (!hero) return;
+
+    // Sync the initial state before paint to avoid flicker on locale remount
+    const rect = hero.getBoundingClientRect();
+    const isVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
+    setHeroVisible(isVisible);
 
     const observer = new IntersectionObserver(([entry]) => setHeroVisible(entry.isIntersecting), {
       threshold: 0.5,

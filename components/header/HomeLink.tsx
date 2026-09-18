@@ -11,15 +11,17 @@ export function HomeLink({ label }: { label: string }) {
   const locale = useLocale();
   const heroVisible = useHeroVisible();
 
-  // Already at the hero — a link back to it is redundant, same reasoning as ContactLinks.
-  if (heroVisible) return null;
-
   return (
     <a
       href={sectionHref(pathname, locale, "#hero")}
       aria-label={label}
       onClick={onSmoothAnchorClick}
-      className="flex size-11 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      className={`flex size-11 shrink-0 items-center justify-center rounded-sm text-foreground transition-opacity duration-500 hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+        heroVisible
+          ? "pointer-events-none opacity-0"
+          : "opacity-100"
+      }`}
+      tabIndex={heroVisible ? -1 : 0}
     >
       <HomeIcon />
     </a>
@@ -31,10 +33,10 @@ function HomeIcon() {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="size-8"
+      className="size-6"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

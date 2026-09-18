@@ -18,9 +18,6 @@ export function ContactLinks({
   const t = useTranslations("Hero");
   const heroVisible = useHeroVisible();
 
-  // The hero already shows these prominently — only repeat them once it's scrolled out of view.
-  if (heroVisible) return null;
-
   const links = [
     profile.email && { href: `mailto:${profile.email}`, label: t("email"), Icon: EmailIcon, external: false },
     profile.linkedinUrl && { href: profile.linkedinUrl, label: t("linkedin"), Icon: LinkedinIcon, external: true },
@@ -30,7 +27,11 @@ export function ContactLinks({
   if (links.length === 0) return null;
 
   const list = (
-    <ul className={`items-center gap-2 ${className ?? ""}`}>
+    <ul
+      className={`items-center gap-2 transition-all duration-300 ${className ?? ""} ${
+        heroVisible ? "pointer-events-none opacity-0" : "opacity-100"
+      }`}
+    >
       {links.map((link) => (
         <li key={link.href}>
           <a
@@ -39,6 +40,7 @@ export function ContactLinks({
             rel={link.external ? "noopener noreferrer" : undefined}
             aria-label={link.external ? `${link.label} ${t("newTab")}` : link.label}
             className={linkClass}
+            tabIndex={heroVisible ? -1 : 0}
           >
             <link.Icon className="size-5" />
           </a>
