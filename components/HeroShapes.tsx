@@ -17,6 +17,7 @@ import {
 } from "three";
 import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
 import {
+  HERO_ENTRANCE_MS,
   PLACEMENT_MS,
   PORTRAIT_ASPECT,
   POINTER_SHIFT,
@@ -25,6 +26,7 @@ import {
   blobs,
   collectTextRects,
   fitPlacements,
+  heroEntrance,
   heroPlacements,
   pointerCurrent,
   pointerTarget,
@@ -103,6 +105,23 @@ export function HeroShapes() {
     let glides: JSAnimation[] = [];
     let laidOut = false;
 
+    // Entrance: each shape grows in, one after another from the top down (ring, wine sphere, small
+    // sphere, knot). It starts with the text and ends with it: the delays are counted from when the hero
+    // started, and each shape's duration is whatever is left until HERO_ENTRANCE_MS. `grown` is 0..1 per shape.
+    const grown = blobs.map(() => ({ value: 0 }));
+    const growDelays = [0, 450, 150, 300]; // in the order of `blobs`: ring, knot, wine sphere, small sphere
+    const growth: JSAnimation[] = [];
+    if (motionQuery.matches) {
+      const elapsed = heroEntrance.startedAt ? performance.now() - heroEntrance.startedAt : 0;
+      grown.forEach((shape, index) => {
+        const delay = Math.max(growDelays[index] - elapsed, 0);
+        const duration = Math.max(HERO_ENTRANCE_MS - elapsed - delay, 500);
+        growth.push(animate(shape, { value: 1, duration, delay, ease: "outCubic" }));
+      });
+    } else {
+      for (const shape of grown) shape.value = 1;
+    }
+
     const draw = (seconds: number) => {
       const time = motionQuery.matches ? seconds : 0;
       groups.forEach((group, index) => {
@@ -115,7 +134,7 @@ export function HeroShapes() {
         group.rotation.x = blob.tilt[0] + Math.sin(time * 0.25) * blob.drift * 3;
         group.rotation.y = blob.tilt[1] + Math.sin(time * 0.2 + 1) * blob.drift * 2;
         const place = displayed[index];
-        meshes[index].scale.setScalar(place.radius);
+        meshes[index].scale.setScalar(place.radius * Math.max(grown[index].value, 0.001));
         group.position.set(
           place.x * halfWidth - current.x * POINTER_SHIFT * depth,
           place.y * halfHeight - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
@@ -220,6 +239,7 @@ export function HeroShapes() {
       cancelAnimationFrame(frame);
       window.clearTimeout(settled);
       for (const glide of glides) glide.cancel();
+      for (const grow of growth) grow.cancel();
       resizeObserver.disconnect();
       themeObserver.disconnect();
       window.removeEventListener("pointermove", onPointerMove);

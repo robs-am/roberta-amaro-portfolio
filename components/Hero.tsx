@@ -14,6 +14,7 @@ import {
   textLinkLabelClass,
 } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
+import { heroEntrance } from "@/components/shapesScene";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
 
@@ -42,6 +43,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     if (!section) return;
     if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
 
+    heroEntrance.startedAt = performance.now();
     const words = section.querySelectorAll<HTMLElement>("[data-hero-word]");
     const items = section.querySelectorAll<HTMLElement>("[data-hero-item]");
     for (const target of [...words, ...items]) target.style.opacity = "0";

@@ -100,3 +100,10 @@ export function fitPlacements(rects: DOMRect[], width: number, height: number, u
     return placed;
   });
 }
+
+// The home's entrance runs the text and the shapes together: they start at the same moment and finish at
+// the same moment. HERO_ENTRANCE_MS is when the text is done (see the timings in Hero.tsx, where the last
+// item starts at 1200 + 4 x 110 ms and lasts 800 ms); Hero stamps when it started, and the shapes, which
+// mount later because Three.js loads separately, work out how much of that time is left.
+export const HERO_ENTRANCE_MS = 2400;
+export const heroEntrance = { startedAt: 0 };
