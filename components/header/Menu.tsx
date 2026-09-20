@@ -8,10 +8,14 @@ import { textLinkArrowClass, textLinkClass, textLinkLabelClass } from "@/compone
 import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LocaleSwitcher } from "./LocaleSwitcher";
+import { MenuShapes } from "./MenuShapes";
 import { navItems } from "./navItems";
 import { ThemeToggle } from "./ThemeToggle";
 
 const subscribe = () => () => {};
+
+// Matches the overlay's `duration-700` reveal transition.
+const CLOSE_DURATION_MS = 700;
 
 // Bare line icon, no box, so it stands apart from the bordered language/theme controls beside it.
 const menuButtonClass =
@@ -23,6 +27,7 @@ export function Menu() {
   const t = useTranslations("Header");
   const tHero = useTranslations("Hero");
   const [open, setOpen] = useState(false);
+  const [shapesMounted, setShapesMounted] = useState(false);
   const panelId = useId();
   const openRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -62,6 +67,14 @@ export function Menu() {
     };
   }, [open]);
 
+  // The 3D layer exists only while the menu is visible: it starts on open and is torn down once the
+  // close transition has finished, so it does not keep a WebGL context alive on every page.
+  useEffect(() => {
+    if (open) return;
+    const timer = setTimeout(() => setShapesMounted(false), CLOSE_DURATION_MS);
+    return () => clearTimeout(timer);
+  }, [open]);
+
   const contacts = [
     profile.email && { href: `mailto:${profile.email}`, label: tHero("email"), external: false },
     profile.linkedinUrl && { href: profile.linkedinUrl, label: tHero("linkedin"), external: true },
@@ -86,7 +99,10 @@ export function Menu() {
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={t("menu.open")}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setShapesMounted(true);
+          setOpen(true);
+        }}
         className={menuButtonClass}
       >
         <OpenIcon />
@@ -105,8 +121,10 @@ export function Menu() {
               open ? "visible [clip-path:inset(0)]" : "invisible [clip-path:inset(0_0_100%_0)]"
             }`}
           >
+            {shapesMounted && <MenuShapes />}
+
             {/* Same box as the header row, so the controls stay put when the menu opens. */}
-            <div className="mx-auto flex min-h-11 max-w-5xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
+            <div className="relative mx-auto flex min-h-11 max-w-5xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
               <LocaleSwitcher />
               <ThemeToggle />
               <button
@@ -120,7 +138,7 @@ export function Menu() {
               </button>
             </div>
 
-            <div className="mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 sm:px-8">
+            <div className="relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 sm:px-8">
               <nav aria-label={t("navLabel")}>
                 <ul className="flex flex-col gap-1">
                   {navItems.map((item, index) => {
