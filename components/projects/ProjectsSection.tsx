@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { textLinkArrowClass, textLinkClass, textLinkLabelClass } from "@/components/textLinkStyles";
 import { projects } from "@/data/projects";
 import type { Locale, Project } from "@/data/types";
 import { Link } from "@/i18n/navigation";
@@ -34,10 +35,10 @@ export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) 
           {projects.length > highlighted.length && (
             <Link
               href="/projects"
-              className="inline-flex w-fit items-center gap-2 rounded-full border border-accent px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className={textLinkClass}
             >
-              {t("viewAll")}
-              <ArrowIcon />
+              <span className={textLinkLabelClass}>{t("viewAll")}</span>
+              <ArrowIcon className={textLinkArrowClass} />
             </Link>
           )}
         </div>
@@ -59,11 +60,11 @@ export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) 
   );
 }
 
-function ArrowIcon() {
+function ArrowIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg
       viewBox="0 0 16 16"
-      className="size-3.5"
+      className={className}
       fill="none"
       stroke="currentColor"
       strokeWidth="1.75"

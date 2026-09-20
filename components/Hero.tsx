@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
 import { onSmoothAnchorClick } from "@/components/header/smoothScroll";
+import { textLinkArrowClass, textLinkClass, textLinkLabelClass } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
 import { localize, type Locale } from "@/data/types";
 
@@ -16,13 +17,11 @@ const HeroShapes = dynamic(() => import("@/components/HeroShapes").then((mod) =>
 });
 
 const linkClass =
-  "inline-flex size-14 items-center justify-center rounded-full text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+  "group/link relative inline-flex size-14 items-center justify-center rounded-full text-foreground/70 transition-colors hover:text-accent dark:hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
-const ctaPrimaryClass =
-  "inline-flex h-11 shrink-0 items-center gap-2.5 overflow-hidden rounded-full border border-accent/60 bg-accent/25 px-6 text-sm font-semibold text-highlight transition-[gap,padding,transform,background-color] duration-300 ease-expressive hover:bg-accent/35 dark:border-foreground dark:bg-foreground dark:text-background dark:hover:bg-foreground motion-safe:hover:gap-3.5 motion-safe:hover:scale-105 hover:pr-7 focus-visible:gap-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
-
-const ctaSecondaryClass =
-  "inline-flex h-11 shrink-0 items-center gap-2 overflow-hidden rounded-full border border-accent/40 bg-accent/15 px-5 text-sm font-semibold text-accent dark:border-foreground/40 dark:bg-transparent dark:text-foreground transition-[gap,padding,border-color,background-color,color] duration-300 ease-expressive motion-safe:hover:gap-3 hover:border-accent hover:bg-accent/25 dark:hover:border-foreground dark:hover:bg-foreground/10 focus-visible:gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+// Visual label for the icon-only links (they already have an aria-label, so it is hidden from assistive tech).
+const tooltipClass =
+  "pointer-events-none absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground px-2.5 py-1 text-xs font-medium text-background opacity-0 transition-opacity duration-200 group-hover/link:opacity-100 group-focus-visible/link:opacity-100 motion-reduce:transition-none";
 
 export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const t = useTranslations("Hero");
@@ -126,20 +125,20 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             ))}
             .
           </p>
-          <div data-hero-item className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href="#experience" onClick={onSmoothAnchorClick} className={ctaSecondaryClass}>
-              <ArrowIcon className="size-4 shrink-0" />
-              <span>{t("experienceCta")}</span>
+          <div data-hero-item className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-1">
+            <a href="#experience" onClick={onSmoothAnchorClick} className={textLinkClass}>
+              <ArrowIcon className={textLinkArrowClass} />
+              <span className={textLinkLabelClass}>{t("experienceCta")}</span>
             </a>
-            <a href="#projects" onClick={onSmoothAnchorClick} className={ctaPrimaryClass}>
-              <ArrowIcon className="size-4 shrink-0" />
-              <span>{t("projectsCta")}</span>
+            <a href="#projects" onClick={onSmoothAnchorClick} className={textLinkClass}>
+              <ArrowIcon className={textLinkArrowClass} />
+              <span className={textLinkLabelClass}>{t("projectsCta")}</span>
             </a>
           </div>
           {links.length > 0 && (
             <ul data-hero-item className="mt-8 flex justify-center gap-3">
               {links.map((link) => (
-                <li key={link.href}>
+                <li key={link.href} className="relative">
                   <a
                     href={link.href}
                     target={link.external ? "_blank" : undefined}
@@ -147,7 +146,10 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
                     aria-label={link.external ? `${link.label} ${t("newTab")}` : link.label}
                     className={linkClass}
                   >
-                    <link.Icon />
+                    <link.Icon badge={false} className="size-8" />
+                    <span aria-hidden="true" className={tooltipClass}>
+                      {link.label}
+                    </span>
                   </a>
                 </li>
               ))}

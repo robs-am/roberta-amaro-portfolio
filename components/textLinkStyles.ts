@@ -1,0 +1,10 @@
+// Text-only link: the underline is a background gradient that grows from the left on hover/focus.
+// Apply `textLinkClass` to the link, `textLinkLabelClass` to its label and `textLinkArrowClass` to its arrow.
+export const textLinkClass =
+  "group inline-flex min-h-11 shrink-0 items-center gap-2 text-base font-semibold text-accent dark:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent";
+
+export const textLinkLabelClass =
+  "bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1.5px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-300 ease-expressive group-hover:bg-[length:100%_1.5px] group-focus-visible:bg-[length:100%_1.5px]";
+
+export const textLinkArrowClass =
+  "size-4 shrink-0 transition-transform duration-300 ease-expressive motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5";

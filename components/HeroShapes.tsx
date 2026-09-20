@@ -26,7 +26,8 @@ const MAX_PIXEL_RATIO = 1.5;
 // perspective, so a piece moved toward the camera (the "A" crossbar) is not pushed sideways.
 const CAMERA_Z = 30;
 const CAMERA_FOV = 12;
-const PATH_POINTS = 7;
+const PATH_POINTS = 28;
+const TUBE_SEGMENTS = 160;
 
 type Point = [number, number, number];
 
@@ -36,7 +37,7 @@ type Point = [number, number, number];
 // UNIT_SHARE of the viewport); without a path the blob is a sphere. `radius` is in the same units.
 //
 // Hovering the name gathers the blobs into the initials "RA" to its left. Every tube also has a
-// `letter` stroke: PATH_POINTS control points in a shared letter frame (y up, letters about 2 tall; the strokes sit at different depths so they overlap in front of each other),
+// `letter` stroke: a few control points (resampled to PATH_POINTS) in a shared letter frame (y up, letters about 2 tall; the strokes sit at different depths so they overlap in front of each other),
 // which its scattered path morphs into point by point. The sphere becomes the trailing dot.
 type Blob = {
   anchor: [number, number];
@@ -54,7 +55,7 @@ const blobs: Blob[] = [
     anchor: [-0.82, 0.72], z: 0, radius: 0.42, tilt: 0.2, drift: 0.05, tone: 0,
     path: [[-1.3, 0.5, 0], [-0.4, 0.75, 0.2], [0.4, 0.25, 0], [0.9, -0.45, -0.1]],
     // R: the stem.
-    letter: [[-1.1, -0.85, 0], [-1.1, -0.57, 0], [-1.1, -0.28, 0], [-1.1, 0, 0], [-1.1, 0.28, 0], [-1.1, 0.57, 0], [-1.1, 0.85, 0]],
+    letter: [[-1.1, -0.85, 0], [-1.1, 0, 0], [-1.1, 0.85, 0]],
   },
   { anchor: [0.05, 1.08], z: -1, radius: 0.7, tilt: 0, drift: 0.03, tone: 1 },
   {
@@ -62,26 +63,26 @@ const blobs: Blob[] = [
     path: [[-1, 0.4, 0], [-0.2, 0.75, 0.1], [0.5, 0.3, 0], [1, -0.5, 0.1]],
     // R: the bowl, running on into the leg. It starts inside the stem's top and comes back into
     // the stem's side, so the pieces overlap instead of just touching.
-    letter: [[-1.1, 0.85, 0.25], [-0.65, 0.85, 0.25], [-0.3, 0.6, 0.25], [-0.35, 0.2, 0.25], [-0.8, 0.05, 0.25], [-0.55, -0.4, 0.25], [-0.3, -0.85, 0.25]],
+    letter: [[-1.1, 0.85, 0.25], [-0.65, 0.85, 0.25], [-0.4, 0.75, 0.25], [-0.3, 0.5, 0.25], [-0.4, 0.25, 0.25], [-0.65, 0.15, 0.25], [-0.72, 0.02, 0.25], [-0.56, -0.35, 0.25], [-0.3, -0.85, 0.25]],
   },
   {
     anchor: [-0.8, -0.78], z: 0.4, radius: 0.5, tilt: 0.1, drift: 0.04, tone: 1,
     path: [[-1, 0.2, 0], [-0.3, 0.65, 0.1], [0.6, 0.3, 0], [1.1, -0.6, 0.1]],
     // A: the two legs joined by a rounded arch. The arch's radius (about 0.3) stays above the
     // stroke radius, otherwise the tube pinches into a sharp tip at the apex.
-    letter: [[-0.1, -0.85, 0.35], [0.03, -0.3, 0.35], [0.2, 0.35, 0.35], [0.5, 0.7, 0.35], [0.8, 0.35, 0.35], [0.97, -0.3, 0.35], [1.1, -0.85, 0.35]],
+    letter: [[-0.1, -0.85, 0.35], [0.03, -0.3, 0.35], [0.17, 0.2, 0.35], [0.28, 0.5, 0.35], [0.5, 0.7, 0.35], [0.72, 0.5, 0.35], [0.83, 0.2, 0.35], [0.97, -0.3, 0.35], [1.1, -0.85, 0.35]],
   },
   {
     anchor: [0.86, -0.58], z: 0, radius: 0.42, tilt: -0.15, drift: -0.05, tone: 0,
     path: [[-0.4, 0.9, 0], [0.3, 0.5, 0.1], [-0.3, -0.3, 0], [0.4, -0.9, 0.1]],
     // A: the crossbar, laid across the legs from center to center and far enough in front (more than
     // the two stroke radii) that it never intersects them: it simply passes over them.
-    letter: [[0.03, -0.3, 0.85], [0.18, -0.3, 0.85], [0.34, -0.3, 0.85], [0.5, -0.3, 0.85], [0.66, -0.3, 0.85], [0.82, -0.3, 0.85], [0.97, -0.3, 0.85]],
+    letter: [[0.03, -0.3, 0.85], [0.97, -0.3, 0.85]],
   },
 ];
 
 // Letter stroke thickness and the dot's place, in the same letter frame as the strokes above.
-const LETTER_RADIUS = 0.19;
+const LETTER_RADIUS = 0.22;
 const DOT = { position: new Vector3(1.5, -0.8, 0.35), radius: 0.2 };
 // Extent of the whole "RA." frame and the horizontal center of that extent, used to fit it to the text block.
 const FRAME_WIDTH = 3;
@@ -141,10 +142,12 @@ export function HeroShapes() {
     const materials = [0, 1].map(
       () =>
         new MeshPhysicalMaterial({
-          roughness: 0.32,
+          roughness: 0.6,
           metalness: 0,
-          clearcoat: 1,
-          clearcoatRoughness: 0.18,
+          clearcoat: 0.3,
+          clearcoatRoughness: 0.45,
+          sheen: 1,
+          sheenRoughness: 0.35,
         }),
     );
 
@@ -163,9 +166,11 @@ export function HeroShapes() {
       scene.add(group);
 
       const scattered = blob.path
-        ? new CatmullRomCurve3(blob.path.map(([x, y, z]) => new Vector3(x, y, z))).getPoints(PATH_POINTS - 1)
+        ? new CatmullRomCurve3(blob.path.map(([x, y, z]) => new Vector3(x, y, z))).getSpacedPoints(PATH_POINTS - 1)
         : [];
-      const letter = blob.letter?.map(([x, y, z]) => new Vector3(x, y, z)) ?? [];
+      const letter = blob.letter
+        ? new CatmullRomCurve3(blob.letter.map(([x, y, z]) => new Vector3(x, y, z))).getSpacedPoints(PATH_POINTS - 1)
+        : [];
       return { group, body, caps, scattered, letter, builtAt: -1 };
     });
     const bases = rigs.map(() => new Vector3());
@@ -187,7 +192,7 @@ export function HeroShapes() {
       rig.scattered.forEach((point, i) => points[i].lerpVectors(point, rig.letter[i], t));
       const curve = new CatmullRomCurve3(points.map((point) => point.clone()));
       rig.body.geometry.dispose();
-      rig.body.geometry = new TubeGeometry(curve, 64, radius, 32, false);
+      rig.body.geometry = new TubeGeometry(curve, TUBE_SEGMENTS, radius, 32, false);
       rig.caps[0].position.copy(points[0]);
       rig.caps[1].position.copy(points[PATH_POINTS - 1]);
       rig.caps.forEach((cap) => cap.scale.setScalar(radius));
@@ -199,10 +204,12 @@ export function HeroShapes() {
       const dark = document.documentElement.classList.contains("dark");
       materials[0].color = token(dark ? "--elevated" : "--card");
       materials[1].color = token(dark ? "--card" : "--glow-1");
+      // Sheen lifts the grazing edges toward the tone itself, so the rim fades instead of going black.
+      materials.forEach((material) => material.sheenColor.copy(material.color).lerp(new Color(0xffffff), dark ? 0.15 : 0.5));
       key.color = token(dark ? "--highlight" : "--card");
       rim.color = token("--glow-2");
       // A light background needs much more fill so the shaded sides stay soft instead of turning dark.
-      ambient.intensity = dark ? 0.35 : 1.2;
+      ambient.intensity = dark ? 0.5 : 1.6;
       key.intensity = dark ? 2.5 : 1.6;
       rim.intensity = dark ? 1.5 : 0.8;
     };
