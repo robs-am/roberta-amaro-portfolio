@@ -190,6 +190,20 @@
   }
 }
 
+@keyframes timeline-line-fallback {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* Same idea as [data-reveal]: hidden only when TimelineLine can draw it (it sets data-ready on mount), shown anyway after 3s otherwise. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-timeline-line]:not([data-ready]) {
+    transform: scaleY(0);
+    animation: timeline-line-fallback 0s 3s forwards;
+  }
+}
+
 .glow-blob {
   position: absolute;
   border-radius: 9999px;
