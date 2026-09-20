@@ -124,7 +124,7 @@ export function Menu() {
             {shapesMounted && <MenuShapes />}
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}
-            <div className="relative mx-auto flex min-h-11 max-w-5xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
+            <div className="relative mx-auto flex min-h-11 max-w-7xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
               <LocaleSwitcher />
               <ThemeToggle />
               <button
@@ -203,7 +203,7 @@ function CapsuleSvg({ children }: Readonly<{ children: React.ReactNode }>) {
       className="size-9"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.5"
       strokeLinejoin="round"
       aria-hidden="true"
     >

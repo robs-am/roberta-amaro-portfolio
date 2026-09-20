@@ -127,6 +127,30 @@
   clip-path: polygon(var(--slant) 0, 100% 0, 100% 100%, 0 100%);
 }
 
+/* Projects lightbox: the backdrop fades in on open and out when the close animation starts. */
+.showcase-dialog::backdrop {
+  background: color-mix(in oklab, var(--background) 55%, transparent);
+  backdrop-filter: blur(8px);
+  opacity: 1;
+  transition: opacity 500ms var(--ease-soft);
+}
+
+.showcase-dialog[data-closing]::backdrop {
+  opacity: 0;
+}
+
+@starting-style {
+  .showcase-dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-dialog::backdrop {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   /* Smooth in-page jumps (e.g. the footer's back-to-top link). */
   html {
@@ -140,11 +164,12 @@
   }
 }
 
-/* Hidden only until the anime.js entrance takes over (Hero and ExperienceEntrance set data-ready on
-   their root on mount), shown anyway after 3s otherwise. */
+/* Hidden only until the anime.js entrance takes over (Hero, ExperienceEntrance and ProjectShowcase
+   set data-ready on their root on mount), shown anyway after 3s otherwise. */
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
   .hero-reveal:not([data-ready]) :is([data-hero-word], [data-hero-item]),
-  [data-experience-list]:not([data-ready]) :is([data-experience-year], [data-experience-body]) {
+  [data-experience-list]:not([data-ready]) :is([data-experience-year], [data-experience-body]),
+  [data-showcase]:not([data-ready]) :is([data-showcase-title], [data-showcase-meta]) {
     opacity: 0;
     animation: show-fallback 0s 3s forwards;
   }
