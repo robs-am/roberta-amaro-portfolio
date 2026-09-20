@@ -5,8 +5,14 @@ import { animate, stagger } from "animejs";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
+import { ArrowIcon } from "@/components/ArrowIcon";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
-import { textLinkArrowClass, textLinkClass, textLinkLabelClass } from "@/components/textLinkStyles";
+import {
+  textLinkArrowClass,
+  textLinkClass,
+  textLinkLabelActiveClass,
+  textLinkLabelClass,
+} from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
@@ -132,7 +138,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             </Link>
             <Link href="/projects" className={textLinkClass}>
               <ArrowIcon className={textLinkArrowClass} />
-              <span className={textLinkLabelClass}>{t("projectsCta")}</span>
+              <span className={textLinkLabelActiveClass}>{t("projectsCta")}</span>
             </Link>
           </div>
           {links.length > 0 && (
@@ -158,22 +164,5 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
         </div>
       </div>
     </section>
-  );
-}
-
-function ArrowIcon({ className }: Readonly<{ className?: string }>) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      className={className ?? "size-3.5"}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M5 11 11 5M6 5h5v5" />
-    </svg>
   );
 }

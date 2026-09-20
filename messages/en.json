@@ -10,10 +10,12 @@
     "navLabel": "Main navigation",
     "home": "Home",
     "nav": {
+      "home": "Home",
       "experience": "Experience",
       "projects": "Projects"
     },
     "menu": {
+      "label": "Menu",
       "open": "Open menu",
       "close": "Close menu"
     },

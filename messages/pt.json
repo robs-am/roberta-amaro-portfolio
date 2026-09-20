@@ -10,10 +10,12 @@
     "navLabel": "Navegação principal",
     "home": "Início",
     "nav": {
+      "home": "Início",
       "experience": "Experiências",
       "projects": "Projetos"
     },
     "menu": {
+      "label": "Menu",
       "open": "Abrir menu",
       "close": "Fechar menu"
     },

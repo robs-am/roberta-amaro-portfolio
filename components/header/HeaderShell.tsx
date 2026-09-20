@@ -2,7 +2,6 @@
 
 import { useLayoutEffect, useState, type ReactNode } from "react";
 import { usePathname } from "@/i18n/navigation";
-import { HeaderScrollProvider } from "./HeaderScrollContext";
 
 export function HeaderShell({ children }: { children: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
@@ -27,7 +26,7 @@ export function HeaderShell({ children }: { children: ReactNode }) {
           : "border-transparent bg-transparent"
       }`}
     >
-      <HeaderScrollProvider scrolled={scrolled}>{children}</HeaderScrollProvider>
+      {children}
     </header>
   );
 }
