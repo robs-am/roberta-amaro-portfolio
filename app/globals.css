@@ -123,17 +123,19 @@
   }
 }
 
-@keyframes hero-item-fallback {
+@keyframes show-fallback {
   to {
     opacity: 1;
   }
 }
 
-/* Hidden only until Hero's anime.js entrance takes over (it sets data-ready on the section), shown anyway after 3s otherwise. */
+/* Hidden only until the anime.js entrance takes over (Hero and ExperienceEntrance set data-ready on
+   their root on mount), shown anyway after 3s otherwise. */
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  .hero-reveal:not([data-ready]) :is([data-hero-word], [data-hero-item]) {
+  .hero-reveal:not([data-ready]) :is([data-hero-word], [data-hero-item]),
+  [data-experience-list]:not([data-ready]) :is([data-experience-year], [data-experience-body]) {
     opacity: 0;
-    animation: hero-item-fallback 0s 3s forwards;
+    animation: show-fallback 0s 3s forwards;
   }
 }
 

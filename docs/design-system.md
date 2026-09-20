@@ -42,9 +42,10 @@ Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` r
 | `--accent` | `text-accent`, `bg-accent` | `#2a5c68` | `#7eb3c1` | destaque: links, traço decorativo do hero, pills, botão principal |
 | `--accent-foreground` | `text-accent-foreground` | `#fffdf8` | `#0f2a31` | texto sobre fundo `bg-accent` |
 | `--border` | `border-border` | `rgba(67,126,142,0.22)` | `rgba(126,179,193,0.18)` | bordas e divisórias (decorativo, nunca texto) |
-| `--glow-1` | `bg-glow-1` | `#7eb3c1` | `#0f7482` | brilho de fundo, tom teal (decorativo) |
-| `--glow-2` | `bg-glow-2` | `#7cc0f0` | `#2f8fe0` | brilho de fundo, tom azul (decorativo) |
-| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.8` | `0.5` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
+| `--highlight` | `text-highlight` | `#1c4750` | `#c9ecf5` | teal de texto ajustado para passar AA sobre o brilho (o `--accent` não passa lá); usado no botão principal do hero |
+| `--glow-1` | `bg-glow-1` | `#8ccfc9` | `#0f7482` | brilho de fundo, tom teal (decorativo) |
+| `--glow-2` | `bg-glow-2` | `#9dd6e2` | `#2f8fe0` | brilho de fundo, tom azul (decorativo) |
+| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.6` | `0.5` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
 
 Opacidades sobre tokens funcionam normalmente (`bg-background/85`, `bg-accent/10`).
 
@@ -78,10 +79,9 @@ Com isso, o único par que precisa passar no pior caso é `foreground`:
 | Escuro | 0.65 | 4.26 (falha) |
 | Escuro | 0.55 | 4.93 |
 | Escuro | **0.5 (valor em uso)** | **5.36** |
-| Claro | **0.8 (valor em uso)** | **7.59** |
-| Claro | 0.4 | 8.91 |
+| Claro | **0.6 (valor em uso, com as cores atuais)** | **9.65** |
 
-A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **4.68 no escuro** e **6.21 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
+A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **4.67 no escuro** e **7.61 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
 
 Se `--glow-1`, `--glow-2` ou `--glow-opacity` de qualquer tema mudarem, recalcule esse pior caso antes de assumir que o texto continua legível — cores mais claras de `--glow-2` custam mais opacidade no escuro. Se `muted`/`accent` voltarem a aparecer sobre o brilho em algum ponto, a opacidade segura cai bem mais (no claro, `muted` só passa com `--glow-opacity` em torno de 0.3 ou menos com as cores atuais).
 
@@ -105,49 +105,65 @@ Em `app/globals.css`, `h1`, `h2` e `h3` recebem automaticamente:
 
 | Elemento | Classes | Onde |
 |---|---|---|
-| Nome (`h1`) | `text-5xl font-bold lg:text-7xl` | hero |
+| Nome (`h1`) | `text-6xl font-bold lg:text-8xl` | hero |
 | Título de página (`h1`) | `text-3xl font-bold` | página 404 |
-| Título de seção (`h2`) | `text-2xl font-semibold` | Experiências, Projetos |
-| Título de card (`h3`) | `text-lg font-semibold` | card de projeto |
-| Cargo (`h3`) | `font-semibold` | item de experiência |
-| Título profissional (eyebrow) | `text-sm font-semibold uppercase tracking-wide text-foreground` | hero |
-| Texto corrido | `leading-7` (+ `text-muted` quando secundário) | descrições, bio — exceto a bio do hero, que fica sobre o brilho e por isso usa `text-foreground/90` |
-| Texto auxiliar | `text-sm text-muted` | datas, empresa, links do header |
+| Título de seção (`h2`) | `text-3xl font-semibold` | Experiências, Projetos |
+| Título de card (`h3`) | `text-xl font-semibold` | card de projeto |
+| Ano da experiência | `font-display text-5xl font-bold tracking-wide text-accent` | item de experiência (é um `p`, não um título) |
+| Cargo (`h3`) | `text-lg font-semibold` | item de experiência |
+| Cargo do hero | `text-xl font-semibold text-foreground sm:text-2xl`, em caixa normal | hero |
+| Bio do hero | `text-xl leading-8 tracking-wide text-foreground/90` | hero |
+| Texto corrido | `leading-7` (+ `text-muted` quando secundário) | descrições — a bio do hero fica sobre o brilho e por isso usa `text-foreground/90` |
+| Texto auxiliar | `text-sm text-muted` | períodos, empresa, links do header |
+
+Caixa alta, rótulos acima de títulos e pontos do meio entre itens foram removidos de propósito (eram marcas de template): o cargo do hero, a categoria dos cards de projeto e o eyebrow não existem mais. As tecnologias dos cards continuam separadas por `·`.
 
 ## Movimento
 
-Inspirado em [tubikstudio.com/works](https://tubikstudio.com/works) (GSAP + ScrollTrigger no original); aqui o mesmo efeito é feito só com CSS e um `IntersectionObserver` pequeno.
+Inspirado em [tubikstudio.com/works](https://tubikstudio.com/works). O site tem **um momento de movimento só**, a entrada do hero, mais uma entrada discreta nas experiências. Títulos de seção e cards de projeto não animam ao rolar: fade e subida em tudo era o padrão de página gerada e foi removido. As animações de entrada usam [anime.js](https://animejs.com).
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--ease-expressive` | `cubic-bezier(0.2, 0, 0, 1)` | curva padrão de interação: arranca rápido, desacelera longo (entrada ao rolar, hover, menu mobile) |
-| `--ease-soft` | `cubic-bezier(0.22, 1, 0.36, 1)` | curva do hero: desacelera bem devagar, sensação mais suave que a expressiva |
-| `--duration-reveal` | `600ms` | duração da transição de entrada ao rolar |
-| `--reveal-stagger` | `80ms` | atraso entre elementos do mesmo lote ao entrarem juntos na tela |
-| `--reveal-distance` | `16px` | deslocamento vertical inicial dos elementos `data-reveal` |
-| `--duration-hero` | `900ms` | duração de cada linha do hero |
-| `--hero-stagger` | `150ms` | atraso entre linhas do hero (nome → título → bio) |
-| `--hero-distance` | `12px` | deslocamento vertical inicial das linhas do hero |
-| `--hero-blur` | `6px` | desfoque inicial das linhas do hero, que se desfaz durante a animação |
-| `--reveal-hold` | `calc(var(--duration-hero) + 2 * var(--hero-stagger))` (1200ms) | tempo que o `RevealObserver` espera, contado do início da animação do hero (não da hidratação), antes de revelar conteúdo abaixo que já está visível no carregamento |
+| `--ease-expressive` | `cubic-bezier(0.2, 0, 0, 1)` | curva padrão de interação: arranca rápido, desacelera longo (hover, menu mobile) |
+| `--ease-soft` | `cubic-bezier(0.22, 1, 0.36, 1)` | hover dos cards: desacelera bem devagar, sensação mais suave que a expressiva |
 
-### Entrada ao rolar (`data-reveal`)
+Os tempos das animações de entrada ficam direto nos componentes (`Hero.tsx`, `ExperienceEntrance.tsx`), não em tokens CSS.
 
-- Títulos de seção, itens da timeline e cards recebem `data-reveal` direto no JSX dos Server Components.
-- O CSS só oculta dentro de `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`: sem JavaScript ou com movimento reduzido, nada fica oculto.
-- `RevealObserver` (client, renderizado no layout, retorna `null`) observa todo `[data-reveal]` com `IntersectionObserver`; quando um lote de elementos entra na tela junto, define `--reveal-index` pela ordem deles (só nesse lote, não globalmente — um card entrando sozinho não herda um índice alto e não espera atraso à toa), marca `data-revealed` e para de observar. Cada elemento anima uma vez só; rolar de volta não repete a animação.
-- Como o layout remonta na troca de idioma, o `RevealObserver` remonta junto e revela na hora o que já estiver visível — os cards não ficam ocultos depois de trocar `/pt` ↔ `/en` com a seção de projetos na tela.
-- Rede de segurança: `[data-reveal]:not([data-revealed])` também recebe uma animação (`reveal-fallback`) que o torna visível após 3s, caso o JavaScript carregue mas o observer falhe.
+### Padrão das entradas com anime.js
+
+O CSS só oculta os elementos dentro de `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`, e só até o componente marcar `data-ready` na sua raiz ao montar (o efeito antes põe `opacity: 0` inline, para não haver quadro visível entre a marca e o início da animação). Assim:
+
+- Com movimento reduzido nada é ocultado e a animação nem roda.
+- Se o JavaScript não rodar, o fallback `show-fallback` mostra tudo após 3s. Esse fallback só existe **enquanto** `data-ready` não estiver marcado: uma versão anterior deixava o fallback ativo sempre, e ele mostrava o conteúdo fora da tela após 3s, antes de o usuário rolar até ele.
+- Como a entrada depende de hidratação, ela começa quando o JS carrega, não no primeiro paint.
 
 ### Hero
 
-Anima só com CSS, sem depender de hidratação: nome → título → bio entram em foco com fade, subida de `--hero-distance` e desfoque de `--hero-blur` que se desfaz, cada linha em `--duration-hero` com `--hero-stagger` de atraso entre elas e a curva `--ease-soft`.
+Animada num `useEffect` do `Hero` (client), em três etapas, todas com a curva `outExpo`:
 
-O `RevealObserver` espera `--reveal-hold` antes de revelar conteúdo já visível abaixo do hero (ex.: Experiências), para a seção seguinte não competir com a animação do hero ainda em andamento. Por isso `--reveal-hold` é calculado a partir dos próprios tokens do hero (duração da última linha + seus atrasos) em vez de um valor fixo separado — se `--duration-hero` ou `--hero-stagger` mudarem, o hold acompanha sem precisar sincronizar os dois manualmente.
+| Etapa | Alvo | Efeito | Início | Duração |
+|---|---|---|---|---|
+| 1 | primeira palavra do nome (`data-hero-word`) | revelada da esquerda pra direita (`clipPath` + `translateX` de −32px) | 0ms | 1400ms |
+| 2 | demais palavras do nome | reveladas de cima pra baixo (`clipPath` + `translateY` de −40px), 250ms entre elas | 900ms | 1400ms |
+| 3 | barra, cargo, textos, CTAs e ícones (`data-hero-item`, na ordem do DOM) | fade + subida de 28px, 180ms entre itens | 1900ms | 1300ms |
+
+O hero completo leva cerca de 4s. Ele ocupa 100dvh, então a seção seguinte só aparece ao rolar e não disputa atenção com a entrada.
+
+### Experiências
+
+Sem cards, linha nem pontos: cada experiência é uma linha em duas colunas (`sm:grid-cols-[9rem_1fr]`), com o **ano de início grande** em Jost na cor accent à esquerda, o período completo logo abaixo em `text-muted`, e cargo, empresa e descrição à direita. No celular as colunas empilham. A lista tem `max-w-3xl` para manter o texto perto de 68 caracteres por linha.
+
+`ExperienceEntrance` (client) renderiza o `ol` e anima cada item uma vez, quando ele entra na tela (`IntersectionObserver`, `threshold: 0.3`): o ano é revelado da esquerda pra direita (`clipPath` + `translateX` de −24px, 1200ms, o mesmo gesto do primeiro nome do hero), e 400ms depois o período e o texto sobem 16px com fade (900ms). Os alvos são marcados com `data-experience-year` e `data-experience-body`.
 
 ### Hover e foco nos cards
 
-Card (`ProjectCard`): sobe 4px e a borda vira `--accent` a 60% de opacidade; a imagem (ou painel decorativo, quando não há imagem) ganha zoom de 1.03, contido pelo `overflow-hidden` do painel. Tudo em 300ms com `--ease-expressive`. `:focus-within` aplica o mesmo destaque para quem navega por teclado (o foco costuma estar num link dentro do card). Com movimento reduzido, só a cor da borda muda — sem translate nem zoom.
+Card de projeto (`ProjectCard`): a borda vira `--accent` a 60% de opacidade em 500ms com `--ease-soft`. O card não sobe nem dá zoom: só a borda muda. Dentro dele:
+
+- A pílula da seta expande e mostra o rótulo ("Demo" ou "Repo").
+- O chevron gira e abre o bloco de contribuição do projeto.
+- No projeto com várias capturas, a fatia sob o mouse cresce (`grow-[3]`) para mostrar mais da sua página.
+
+`:focus-within` aplica o mesmo destaque para quem navega por teclado (o foco costuma estar num link dentro do card). Com movimento reduzido, as transições de layout (expansão e fatias) ficam desativadas.
 
 ## Menu mobile
 
@@ -165,15 +181,13 @@ O menu fecha ao: acionar um link, pressionar Esc (o foco volta pro botão), clic
 - 3 manchas (`div`, `border-radius: 9999px`, `filter: blur(170px)`, cor sólida em `--glow-1`/`--glow-2`, opacidade em `--glow-opacity`). As duas cores ficam separadas horizontalmente (teal mais à esquerda, azul mais à direita, com uma faixa de transição no meio) — com muito overlap entre elas o brilho lê como uma cor só em vez de gradiente.
 - `pointermove` na `window` define um alvo normalizado (-1 a 1); um loop `requestAnimationFrame` interpola a posição atual até o alvo (fator `0.18`) e grava `--glow-x`/`--glow-y` no container. Cada mancha tem uma profundidade (`--glow-depth`) diferente — `150`, `240`, `340`px de deslocamento máximo — criando parallax entre elas. O loop para quando a distância até o alvo fica abaixo de 0.1px e só recomeça no próximo `pointermove`.
 - Ativo só com `(pointer: fine) and (prefers-reduced-motion: no-preference)`; com toque ou movimento reduzido as manchas ficam paradas na posição base.
-- `--glow-opacity` é bem mais alto no claro (`0.8`) que no escuro (`0.5`) — nos dois temas o texto que fica sobre o brilho (hero e nav do header antes de rolar) usa `--foreground`, não `--muted`/`--accent`; os números de contraste que sustentam esses valores estão em "Texto sobre o brilho" acima.
+- `--glow-opacity` é um pouco mais alto no claro (`0.6`) que no escuro (`0.5`) — nos dois temas o texto que fica sobre o brilho (hero e nav do header antes de rolar) usa `--foreground`, não `--muted`/`--accent`; os números de contraste que sustentam esses valores estão em "Texto sobre o brilho" acima.
 
 ## Padrões de componentes
 
 Ainda não implementados com a identidade visual final. Serão documentados aqui conforme forem construídos:
 
-- Card de projeto vertical (painel visual, pill de tipo, botão principal)
-- Pill
+- Card de projeto vertical (painel visual, botão principal)
 - Botão principal e link secundário
-- Timeline de experiências
 
 Até lá, a especificação de cada um está na seção "Decisions" do design do change `portfolio-mvp`.

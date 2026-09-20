@@ -1,4 +1,5 @@
 import { getFormatter, getTranslations } from "next-intl/server";
+import { ExperienceEntrance } from "@/components/ExperienceEntrance";
 import { localize, type Experience, type Locale } from "@/data/types";
 
 function toDate(yearMonth: string) {
@@ -20,26 +21,29 @@ export async function ExperienceTimeline({
     format.dateTime(toDate(yearMonth), { month: "short", year: "numeric" });
 
   return (
-    <ol className="mt-10 max-w-3xl space-y-14">
+    <ExperienceEntrance className="mt-10 max-w-3xl space-y-14">
       {experiences.map((item) => (
         <li key={item.id} className="grid gap-3 sm:grid-cols-[9rem_1fr] sm:gap-8">
           <div>
-            <p className="font-display text-5xl leading-none font-bold tracking-wide text-accent">
+            <p
+              data-experience-year
+              className="w-fit font-display text-5xl leading-none font-bold tracking-wide text-accent"
+            >
               {item.start.slice(0, 4)}
             </p>
-            <p className="mt-3 text-sm text-muted">
+            <p data-experience-body className="mt-3 text-sm text-muted">
               <time dateTime={item.start}>{formatMonth(item.start)}</time>
               {" – "}
               {item.end ? <time dateTime={item.end}>{formatMonth(item.end)}</time> : t("present")}
             </p>
           </div>
-          <div>
+          <div data-experience-body>
             <h3 className="text-lg font-semibold">{localize(item.role, locale)}</h3>
             <p className="text-sm font-medium text-accent">{item.company}</p>
             <p className="mt-3 leading-7">{localize(item.description, locale)}</p>
           </div>
         </li>
       ))}
-    </ol>
+    </ExperienceEntrance>
   );
 }
