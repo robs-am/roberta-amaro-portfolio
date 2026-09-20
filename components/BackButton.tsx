@@ -1,19 +1,28 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { CapsuleSvg, menuButtonClass } from "@/components/header/capsuleIcon";
-import { OPEN_MENU_EVENT } from "@/components/header/menuEvents";
+import { OPEN_MENU_EVENT, backTarget, cameFromMenu } from "@/components/header/menuEvents";
+import { useRouter } from "@/i18n/navigation";
 
-// In-page back arrow, drawn like the menu's buttons. The menu is how you get to every page, so
-// going back means reopening it.
+// In-page back arrow, drawn like the menu's buttons. It goes back to the home when the page was opened
+// from a link there (the hero's); otherwise the menu is how you got here, so it reopens the menu.
 export function BackButton() {
   const t = useTranslations("Header");
+  const router = useRouter();
+  // Read once, when the page opens: a direct load never came from the home.
+  const [toHome] = useState(() => backTarget.toHome);
 
   return (
     <button
       type="button"
-      aria-label={t("backToMenu")}
-      onClick={() => window.dispatchEvent(new Event(OPEN_MENU_EVENT))}
+      aria-label={toHome ? t("home") : t("backToMenu")}
+      onClick={() => {
+        cameFromMenu.current = false;
+        if (toHome) router.push("/");
+        else window.dispatchEvent(new Event(OPEN_MENU_EVENT));
+      }}
       className={`${menuButtonClass} -ml-2.5 mb-4`}
     >
       <CapsuleSvg>

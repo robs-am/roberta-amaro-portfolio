@@ -138,19 +138,28 @@ O CSS só oculta os elementos dentro de `@media (scripting: enabled) and (prefer
 
 - Com movimento reduzido nada é ocultado e a animação nem roda.
 - Se o JavaScript não rodar, o fallback `show-fallback` mostra tudo após 3s. Esse fallback só existe **enquanto** `data-ready` não estiver marcado: uma versão anterior deixava o fallback ativo sempre, e ele mostrava o conteúdo fora da tela após 3s, antes de o usuário rolar até ele.
-- Como a entrada depende de hidratação, ela começa quando o JS carrega, não no primeiro paint.
+- Como a entrada dos itens depende de hidratação, ela começa quando o JS carrega. O nome do hero é a exceção: é CSS puro e começa no primeiro paint (ver Hero).
 
 ### Hero
 
-Animada num `useEffect` do `Hero` (client), em três etapas, todas com a curva `outExpo`:
+O nome é CSS (`@keyframes hero-word-left` / `hero-word-top` em `globals.css`), para começar no primeiro paint e não depender da hidratação (no dev isso deixava ~1s de página em branco). O resto é anime.js num `useEffect` do `Hero`, que mede quanto da animação do nome já passou e desconta esse tempo. Os shapes 3D (`HeroShapes.tsx`) entram com fade de opacidade, na mesma duração do texto, um depois do outro, de cima pra baixo.
 
 | Etapa | Alvo | Efeito | Início | Duração |
 |---|---|---|---|---|
-| 1 | primeira palavra do nome (`data-hero-word`) | revelada da esquerda pra direita (`clipPath` + `translateX` de −32px) | 0ms | 1400ms |
-| 2 | demais palavras do nome | reveladas de cima pra baixo (`clipPath` + `translateY` de −40px), 250ms entre elas | 900ms | 1400ms |
-| 3 | barra, cargo, textos, CTAs e ícones (`data-hero-item`, na ordem do DOM) | fade + subida de 28px, 180ms entre itens | 1900ms | 1300ms |
+| 1 | primeira palavra do nome (`data-hero-word="0"`) | revelada da esquerda pra direita (`clipPath` + `translateX` de −32px), `cubic-bezier(0.16, 1, 0.3, 1)` (= outExpo) | 0ms | 1300ms |
+| 2 | demais palavras do nome | reveladas de cima pra baixo (`clipPath` + `translateY` de −40px), 200ms entre elas | 400ms | 1300ms |
+| 3 | barra, cargo, CTAs, ícones e créditos (`data-hero-item`, ordem do DOM) | fade + subida de 28px (`outExpo`), 140ms entre itens | 1000ms | 1100ms |
+| shapes | anel, nó, esfera vinho, esfera pequena | fade de opacidade (`inOutQuad`), o último termina junto com o texto | 0 / 500 / 950 / 1400ms | 1300ms |
 
-O hero completo leva cerca de 4s. Ele ocupa 100dvh, então a seção seguinte só aparece ao rolar e não disputa atenção com a entrada.
+O hero completo leva cerca de 2,7s (`HERO_ENTRANCE_MS` em `shapesScene.ts`; mudou um tempo, mude o outro).
+
+**A entrada completa só toca na primeira visita e no reload.** `heroEntrance.played` (módulo, em `shapesScene.ts`) marca que ela já rodou; ao voltar pra home por navegação interna, o `Hero` monta com `data-settled` e usa a entrada curta: nome e itens sobem e aparecem em cascata (`hero-settle-in`, 700ms, 250ms + 80ms por item, os mesmos números do menu), e os shapes fazem fade no mesmo passo.
+
+**A seta de voltar** (`BackButton`) leva à home quando a página foi aberta por um link do hero (`backTarget.toHome` em `header/menuEvents.ts`) e abre o menu nos demais casos.
+
+#### Pendência: volta à home pelo menu
+
+Ao clicar em "Início" no menu, a entrada curta ainda parece truncada (relato dela, testado duas vezes, ainda não resolvido). A hipótese é que o menu leva 700ms fechando por cima (`clip-path`), e a home monta por baixo, então a cascata acontece escondida. A tentativa foi atrasar a cascata em `MENU_CLOSE_WAIT_MS` (500ms, `menuEvents.ts`) quando a navegação vem de um link do menu (`cameFromMenu`); não resolveu. Ainda não verificado: se os shapes (importados dinamicamente) montam depois do texto; se a transição de página do Next (`::view-transition` em `globals.css`, 250ms) interfere; e o ritmo real, já que os screenshots do Chrome são lentos demais para capturar a transição. Próximo passo: gravar a transição (tela ou performance) em vez de amostrar, ou fazer o menu revelar a home em vez de cobri-la (por exemplo, fechar o menu antes de navegar).
 
 ### Experiências
 

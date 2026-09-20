@@ -106,4 +106,6 @@ export function fitPlacements(rects: DOMRect[], width: number, height: number, u
 // item starts at 1000 + 4 x 140 ms and lasts 1100 ms); Hero stamps when it started, and the shapes, which
 // mount later because Three.js loads separately, work out how much of that time is left.
 export const HERO_ENTRANCE_MS = 2700;
-export const heroEntrance = { startedAt: 0 };
+// `played` is set once the entrance has run, so going back to the home from another page (client-side)
+// shows it already settled: the entrance is for the first visit and for reloads only.
+export const heroEntrance = { startedAt: 0, played: false };

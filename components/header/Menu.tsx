@@ -10,7 +10,7 @@ import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
 import { CapsuleSvg, menuButtonClass } from "./capsuleIcon";
 import { LocaleSwitcher } from "./LocaleSwitcher";
-import { OPEN_MENU_EVENT } from "./menuEvents";
+import { OPEN_MENU_EVENT, backTarget, cameFromMenu } from "./menuEvents";
 import { MenuShapes } from "./MenuShapes";
 import { navItems } from "./navItems";
 import { ThemeToggle } from "./ThemeToggle";
@@ -161,7 +161,11 @@ export function Menu() {
                         <Link
                           href={item.href}
                           aria-current={active ? "page" : undefined}
-                          onClick={() => setOpen(false)}
+                          onClick={() => {
+                            backTarget.toHome = false;
+                            cameFromMenu.current = true;
+                            setOpen(false);
+                          }}
                           className={`menu-nav-link inline-flex items-baseline gap-3 rounded-sm font-display text-[clamp(2rem,10.5vw,3rem)] leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${
                             active ? "text-accent" : "text-foreground"
                           }`}
