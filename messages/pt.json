@@ -12,7 +12,8 @@
     "nav": {
       "home": "Início",
       "experience": "Experiências",
-      "projects": "Projetos"
+      "projects": "Projetos",
+      "awards": "Prêmios"
     },
     "menu": {
       "label": "Menu",
@@ -50,6 +51,16 @@
     "newTab": "(abre em nova aba)",
     "whatIDid": "Minha atuação",
     "close": "Fechar"
+  },
+  "Awards": {
+    "title": "Prêmios",
+    "issuedBy": "Emitido por",
+    "visit": "Ver projeto",
+    "newTab": "(abre em nova aba)"
+  },
+  "AwardsPage": {
+    "title": "Prêmios | Roberta Amaro",
+    "description": "Prêmios e reconhecimentos de Roberta Amaro."
   },
   "ExperiencePage": {
     "title": "Experiências | Roberta Amaro",

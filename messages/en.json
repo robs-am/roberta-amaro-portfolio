@@ -12,7 +12,8 @@
     "nav": {
       "home": "Home",
       "experience": "Experience",
-      "projects": "Projects"
+      "projects": "Projects",
+      "awards": "Awards"
     },
     "menu": {
       "label": "Menu",
@@ -50,6 +51,16 @@
     "newTab": "(opens in a new tab)",
     "whatIDid": "My contribution",
     "close": "Close"
+  },
+  "Awards": {
+    "title": "Awards",
+    "issuedBy": "Issued by",
+    "visit": "View project",
+    "newTab": "(opens in a new tab)"
+  },
+  "AwardsPage": {
+    "title": "Awards | Roberta Amaro",
+    "description": "Awards and recognition for Roberta Amaro."
   },
   "ExperiencePage": {
     "title": "Experience | Roberta Amaro",

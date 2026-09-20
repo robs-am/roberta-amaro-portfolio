@@ -28,6 +28,18 @@ export type Experience = {
   description: Localized;
 };
 
+export type Award = {
+  id: string;
+  /** Placement, e.g. "3rd Place". */
+  title: Localized;
+  event: Localized;
+  issuer: string;
+  /** YYYY-MM */
+  date: string;
+  description: Localized;
+  url?: string;
+};
+
 export type ProjectImage = {
   src: string;
   width: number;
