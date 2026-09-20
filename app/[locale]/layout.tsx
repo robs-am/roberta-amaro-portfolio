@@ -5,6 +5,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
 import { BackgroundGlow } from "@/components/BackgroundGlow";
+import { Footer } from "@/components/Footer";
 import { Header } from "@/components/header/Header";
 import { RevealObserver } from "@/components/RevealObserver";
 import { ScrollReset } from "@/components/ScrollReset";
@@ -101,6 +102,7 @@ export default async function LocaleLayout({
           >
             <Header />
             {children}
+            <Footer />
             <RevealObserver />
           </ThemeProvider>
         </NextIntlClientProvider>

@@ -10,7 +10,7 @@ const linkClass =
   "inline-flex size-14 items-center justify-center rounded-full text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 const ctaPrimaryClass =
-  "inline-flex h-11 shrink-0 items-center gap-2.5 overflow-hidden rounded-full border border-accent bg-accent px-6 text-sm font-semibold text-accent-foreground transition-[gap,padding,transform] duration-300 ease-expressive motion-safe:hover:gap-3.5 motion-safe:hover:scale-105 hover:pr-7 focus-visible:gap-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent data-reveal:animate-cta-reveal";
+  "inline-flex h-11 shrink-0 items-center gap-2.5 overflow-hidden rounded-full border border-accent/60 bg-accent/25 px-6 text-sm font-semibold text-highlight transition-[gap,padding,transform,background-color] duration-300 ease-expressive hover:bg-accent/35 dark:border-accent dark:bg-accent dark:text-accent-foreground dark:hover:bg-accent motion-safe:hover:gap-3.5 motion-safe:hover:scale-105 hover:pr-7 focus-visible:gap-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent data-reveal:animate-cta-reveal";
 
 const ctaSecondaryClass =
   "inline-flex h-11 shrink-0 items-center gap-2 overflow-hidden rounded-full border border-accent/40 bg-accent/15 px-5 text-sm font-semibold text-accent transition-[gap,padding,border-color,background-color,color] duration-300 ease-expressive motion-safe:hover:gap-3 hover:border-accent hover:bg-accent/25 focus-visible:gap-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent data-reveal:animate-cta-reveal";

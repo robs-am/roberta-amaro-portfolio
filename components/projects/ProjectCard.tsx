@@ -25,26 +25,13 @@ export async function ProjectCard({
       : undefined;
 
   return (
-    <article
-      data-reveal
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border transition-[transform,border-color] duration-300 ease-expressive hover:border-accent/60 focus-within:border-accent/60 motion-safe:hover:-translate-y-1 motion-safe:focus-within:-translate-y-1"
-    >
-      <div className="aspect-video overflow-hidden">
-        {project.image ? (
-          <Image
-            src={project.image.src}
-            width={project.image.width}
-            height={project.image.height}
-            alt={localize(project.image.alt, locale)}
-            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="h-full w-full rounded-xl object-cover"
-          />
-        ) : (
-          <div aria-hidden="true" className="project-panel h-full w-full rounded-xl" />
-        )}
-      </div>
+    // The reveal (data-reveal) lives on this outer wrapper and the hover lift on the inner card, so
+    // the reveal's slower duration/stagger delay never leak into the hover transition.
+    <article data-reveal className="h-full">
+    <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border transition-[transform,border-color] duration-500 ease-soft hover:border-accent/60 focus-within:border-accent/60 motion-safe:hover:-translate-y-1 motion-safe:focus-within:-translate-y-1">
+      <ProjectPanel project={project} locale={locale} newTab={t("newTab")} />
 
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-col bg-card/40 p-5 backdrop-blur-sm">
         <p className="text-xs font-medium tracking-wide text-muted uppercase">
           {localize(project.category, locale)}
         </p>
@@ -73,7 +60,7 @@ export async function ProjectCard({
           {localize(project.description, locale)}
         </p>
         {project.tech.length > 0 && (
-          <p aria-label={t("tech")} className="mt-4 text-xs font-medium text-accent">
+          <p aria-label={t("tech")} className="mt-4 text-sm font-medium text-accent">
             {project.tech.join(" · ")}
           </p>
         )}
@@ -89,8 +76,9 @@ export async function ProjectCard({
             stand-in until we write real per-project copy for this part. */}
         <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-expressive motion-reduce:transition-none group-hover:grid-rows-[1fr] group-focus-within:grid-rows-[1fr]">
           <p className="overflow-hidden pt-1 text-sm leading-6 text-muted">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nec dolor at nunc
-            feugiat cursus.
+            {project.contribution
+              ? localize(project.contribution, locale)
+              : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nec dolor at nunc feugiat cursus."}
           </p>
         </div>
 
@@ -106,6 +94,7 @@ export async function ProjectCard({
           </a>
         )}
       </div>
+    </div>
     </article>
   );
 }
@@ -141,5 +130,71 @@ function ChevronIcon({ className }: Readonly<{ className?: string }>) {
     >
       <path d="M4 6l4 4 4-4" />
     </svg>
+  );
+}
+
+function ProjectPanel({
+  project,
+  locale,
+  newTab,
+}: Readonly<{ project: Project; locale: Locale; newTab: string }>) {
+  if (project.images?.length) {
+    // Diagonal slices, one per screenshot; the hovered/focused slice grows to show more of its page.
+    return (
+      <div className="project-panel flex aspect-video overflow-hidden rounded-xl">
+        {project.images.map((image) => {
+          const picture = (
+            <Image
+              src={image.src}
+              width={image.width}
+              height={image.height}
+              alt={localize(image.alt, locale)}
+              sizes="(min-width: 640px) 30vw, 60vw"
+              className="h-full w-full object-cover object-[30%_50%]"
+            />
+          );
+          const sliceClass =
+            "project-slice min-w-0 flex-1 overflow-hidden transition-[flex-grow] duration-500 ease-soft motion-reduce:transition-none hover:grow-[3] focus-visible:grow-[3] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-accent";
+
+          return image.href ? (
+            <a
+              key={image.src}
+              href={image.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={sliceClass}
+            >
+              {picture}
+              <span className="sr-only"> ({newTab})</span>
+            </a>
+          ) : (
+            <div key={image.src} className={sliceClass}>
+              {picture}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (project.image) {
+    return (
+      <div className="aspect-video overflow-hidden">
+        <Image
+          src={project.image.src}
+          width={project.image.width}
+          height={project.image.height}
+          alt={localize(project.image.alt, locale)}
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          className="h-full w-full rounded-xl object-cover"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="aspect-video overflow-hidden">
+      <div aria-hidden="true" className="project-panel h-full w-full rounded-xl" />
+    </div>
   );
 }

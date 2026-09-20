@@ -11,19 +11,18 @@
   --accent: #2a5c68;
   --accent-foreground: #fffdf8;
   --border: rgba(67, 126, 142, 0.22);
-  --glow-1: #7eb3c1;
-  --glow-2: #7cc0f0;
-  --glow-opacity: 0.8;
+  --glow-1: #8ccfc9;
+  --glow-2: #9dd6e2;
+  --glow-opacity: 0.6;
   /* Teal accent tuned to clear AA over the glow's worst point (unlike --accent, which fails there); see docs/design-system.md. */
   --highlight: #1c4750;
-  --duration-reveal: 600ms;
-  --reveal-stagger: 80ms;
-  --reveal-distance: 16px;
+  --duration-reveal: 900ms;
+  --reveal-stagger: 120ms;
+  --reveal-distance: 28px;
   --duration-hero: 900ms;
   --hero-stagger: 150ms;
   --hero-distance: 12px;
   --hero-blur: 6px;
-  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
   /* Matches the hero's full sequence (last line's delay + its own duration) so later sections don't reveal mid-animation. */
   --reveal-hold: calc(var(--duration-hero) + 2 * var(--hero-stagger));
 }
@@ -59,6 +58,7 @@
   --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
   --ease-expressive: cubic-bezier(0.2, 0, 0, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -105,6 +105,22 @@
   background:
     radial-gradient(circle at 16% 0%, color-mix(in oklab, var(--glow-1) 45%, transparent), transparent 55%),
     color-mix(in oklab, var(--accent) 12%, var(--card));
+}
+
+/* Diagonal gallery slices: each leans by --slant and overlaps its neighbour by most of it, leaving a thin even gap. */
+.project-slice {
+  --slant: 20px;
+  margin-left: calc(var(--slant) * -0.85);
+  clip-path: polygon(var(--slant) 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+}
+
+.project-slice:first-child {
+  margin-left: 0;
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+}
+
+.project-slice:last-child {
+  clip-path: polygon(var(--slant) 0, 100% 0, 100% 100%, 0 100%);
 }
 
 @keyframes hero-in {
@@ -162,8 +178,8 @@
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
   [data-reveal] {
     transition:
-      opacity var(--duration-reveal) var(--ease-expressive),
-      translate var(--duration-reveal) var(--ease-expressive);
+      opacity var(--duration-reveal) var(--ease-soft),
+      translate var(--duration-reveal) var(--ease-soft);
     transition-delay: calc(var(--reveal-index, 0) * var(--reveal-stagger));
   }
 

@@ -28,20 +28,28 @@ export type Experience = {
   description: Localized;
 };
 
+export type ProjectImage = {
+  src: string;
+  width: number;
+  height: number;
+  alt: Localized;
+  /** Makes the image (e.g. a gallery slice) a link to this URL. */
+  href?: string;
+};
+
 export type Project = {
   id: string;
   category: Localized;
   title: Localized;
   description: Localized;
+  /** What the author specifically did; shown in the card's hover/focus blurb. */
+  contribution?: Localized;
   tech: string[];
   repoUrl?: string;
   demoUrl?: string;
-  image?: {
-    src: string;
-    width: number;
-    height: number;
-    alt: Localized;
-  };
+  image?: ProjectImage;
+  /** Up to 3 screenshots, shown as diagonal slices in the card's panel instead of `image`. */
+  images?: ProjectImage[];
   /** Shows this project in the home's curated highlights; the full list still appears on /projects. */
   featured?: boolean;
 };

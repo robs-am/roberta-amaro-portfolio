@@ -55,7 +55,7 @@ export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) 
         {/* Odd cards sit a little lower (`sm:translate-y-6`) for a hint of the /projects page's
             interleaved feel, kept small since this row has no room to spare inside the fixed
             viewport height above. */}
-        <div className="scrollbar-hide mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto sm:grid sm:snap-none sm:gap-6 sm:overflow-visible sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="scrollbar-hide mt-8 flex items-start snap-x snap-mandatory gap-4 overflow-x-auto sm:grid sm:snap-none sm:gap-6 sm:overflow-visible sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {highlighted.map((project, index) => (
             <div
               key={project.id}
