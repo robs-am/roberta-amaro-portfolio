@@ -194,11 +194,50 @@
 /* Hidden only until the anime.js entrance takes over (Hero, ExperienceEntrance and ProjectShowcase
    set data-ready on their root on mount), shown anyway after 3s otherwise. */
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  .hero-reveal:not([data-ready]) :is([data-hero-word], [data-hero-item]),
+  .hero-reveal:not([data-ready]) [data-hero-item],
   [data-experience-list]:not([data-ready]) :is([data-experience-year], [data-experience-body]),
   [data-showcase]:not([data-ready]) :is([data-showcase-title], [data-showcase-meta]) {
     opacity: 0;
     animation: show-fallback 0s 3s forwards;
+  }
+}
+
+/* The name's entrance is CSS, not anime.js, so it starts at the first paint instead of waiting for React to
+   hydrate (in dev that took about a second of blank page). The first word is wiped in from the left, the
+   following ones from the top, one after another; the items below take over from Hero.tsx and are timed
+   from where this animation is. Keep the durations in sync with HERO_ENTRANCE_MS in shapesScene.ts. */
+@keyframes hero-word-left {
+  from {
+    opacity: 0;
+    clip-path: inset(0% 100% 0% 0%);
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0% 0% 0% 0%);
+    transform: none;
+  }
+}
+
+@keyframes hero-word-top {
+  from {
+    opacity: 0;
+    clip-path: inset(0% 0% 100% 0%);
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0% 0% 0% 0%);
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-hero-word] {
+    animation: hero-word-top 1300ms cubic-bezier(0.16, 1, 0.3, 1) calc(400ms + var(--hero-index, 1) * 200ms) both;
+  }
+  [data-hero-word="0"] {
+    animation: hero-word-left 1300ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 }
 

@@ -35,7 +35,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const tFooter = useTranslations("Footer");
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Enters each `[data-hero-item]` in DOM order (name words → bar → role → text → CTAs → links).
+  // Enters each `[data-hero-item]` in DOM order (bar → role → CTAs → links); the name words are CSS (globals.css).
   // CSS hides them only until this runs (see `[data-hero-item]` in globals.css), with a fallback
   // that shows them anyway. Reduced motion never hides them, so there is nothing to do.
   useEffect(() => {
@@ -43,45 +43,26 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     if (!section) return;
     if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
 
-    heroEntrance.startedAt = performance.now();
-    const words = section.querySelectorAll<HTMLElement>("[data-hero-word]");
+    // The name is a CSS animation that started at the first paint, before this ran: time everything else from it.
+    const nameAnimation = section.querySelector<HTMLElement>("[data-hero-word]")?.getAnimations()[0];
+    const elapsed = Number(nameAnimation?.currentTime ?? 0);
+    heroEntrance.startedAt = performance.now() - elapsed;
     const items = section.querySelectorAll<HTMLElement>("[data-hero-item]");
-    for (const target of [...words, ...items]) target.style.opacity = "0";
+    for (const target of items) target.style.opacity = "0";
     section.dataset.ready = "";
 
-    const [first, ...rest] = words;
-    const animations = [
-      // First name: wiped in from the left, sliding slightly to the right as it is revealed.
-      animate(first, {
-        opacity: [0, 1],
-        clipPath: ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"],
-        translateX: [-32, 0],
-        duration: 1300,
-        ease: "outExpo",
-      }),
-      // Following names: wiped in from the top, dropping into the same line.
-      animate(rest, {
-        opacity: [0, 1],
-        clipPath: ["inset(0% 0% 100% 0%)", "inset(0% 0% 0% 0%)"],
-        translateY: [-40, 0],
-        duration: 1300,
-        delay: stagger(200, { start: 400 }),
-        ease: "outExpo",
-      }),
-      animate(items, {
-        opacity: [0, 1],
-        translateY: [28, 0],
-        duration: 1100,
-        delay: stagger(140, { start: 1000 }),
-        ease: "outExpo",
-      }),
-    ];
+    const animation = animate(items, {
+      opacity: [0, 1],
+      translateY: [28, 0],
+      duration: 1100,
+      delay: stagger(140, { start: Math.max(1000 - elapsed, 0) }),
+      ease: "outExpo",
+    });
 
     return () => {
-      for (const animation of animations) animation.cancel();
+      animation.cancel();
     };
   }, []);
-
   const links = [
     profile.email && { href: `mailto:${profile.email}`, label: t("email"), Icon: EmailIcon, external: false },
     profile.linkedinUrl && { href: profile.linkedinUrl, label: t("linkedin"), Icon: LinkedinIcon, external: true },
@@ -100,7 +81,11 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
           <h1 className="text-5xl leading-[1.05] font-bold uppercase sm:text-6xl lg:text-8xl xl:text-9xl">
             {profile.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="block">
-                <span data-hero-word className="inline-block">
+                <span
+                  data-hero-word={index}
+                  style={{ "--hero-index": index } as React.CSSProperties}
+                  className="inline-block"
+                >
                   {word}
                 </span>
               </span>
