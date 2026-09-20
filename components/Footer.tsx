@@ -1,12 +1,19 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { routing } from '@/i18n/routing'
 
 export function Footer() {
   const t = useTranslations('Footer')
+  const pathname = usePathname()
+  // The page-wide `snap-mandatory` only has snap points on the home (its sections). The footer
+  // needs one there so it can be reached; elsewhere it would be the *only* point and pin the page
+  // to the bottom, blocking scroll back up.
+  const isHome = routing.locales.some((locale) => pathname === `/${locale}`)
 
   return (
-    <footer className="snap-end border-t border-border py-6 text-center text-sm">
+    <footer className={`${isHome ? 'snap-end ' : ''}border-t border-border py-6 text-center text-sm`}>
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-6 sm:flex-row sm:justify-between sm:gap-8 sm:px-8">
         <p className="text-muted font-sans sm:text-left">
           {t('credits')} {t('copyright')}
