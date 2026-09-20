@@ -4,9 +4,11 @@ import { animate, type JSAnimation } from "animejs";
 import { useEffect, useRef } from "react";
 
 const DURATION = 700;
+// Distance from an item's top to its dot's center (`top-1` + half of `size-3` in ExperienceTimeline).
+const DOT_CENTER = 10;
 
-// The line that runs down the timeline. It grows to the dot of the last card the RevealObserver has
-// revealed, so it follows the cards regardless of which container scrolls. CSS hides it only when
+// The line that runs down the timeline. It grows to the dot of the last item the RevealObserver has
+// revealed, so it follows the items regardless of which container scrolls. CSS hides it only when
 // this can run (see `[data-timeline-line]` in globals.css), with a fallback that shows it anyway.
 export function TimelineLine() {
   const lineRef = useRef<HTMLSpanElement>(null);
@@ -27,13 +29,7 @@ export function TimelineLine() {
     const sync = () => {
       const items = list.querySelectorAll<HTMLElement>("li[data-revealed]");
       const last = items[items.length - 1];
-      let progress = 0;
-      if (last) {
-        progress =
-          last === list.lastElementChild
-            ? 1
-            : (last.offsetTop + last.offsetHeight / 2) / list.offsetHeight;
-      }
+      const progress = last ? (last.offsetTop + DOT_CENTER) / list.offsetHeight : 0;
 
       animation?.cancel();
       animation = animate(line, { scaleY: progress, duration: DURATION, ease: "outQuad" });
