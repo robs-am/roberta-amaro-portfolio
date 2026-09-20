@@ -45,7 +45,7 @@ const blobs: Blob[] = [
   { anchor: [0.48, 0.5], z: 0, radius: 0.95, shape: "torus", tilt: [1.1, 0.4], drift: 0.12, tone: 0 },
   { anchor: [0.54, -0.5], z: 0.4, radius: 0.75, shape: "knot", tilt: [0.3, 0.8], drift: -0.1, tone: 1 },
   { anchor: [0.85, 0.1], z: -1, radius: 0.7, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1 },
-  { anchor: [0.3, -0.05], z: 0.8, radius: 0.32, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0 },
+  { anchor: [0.42, -0.05], z: 0.8, radius: 0.32, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0 },
 ];
 
 // Decorative layer behind the menu items. Mount it only while the menu is visible: it owns a WebGL
@@ -76,8 +76,8 @@ export function MenuShapes() {
         new MeshPhysicalMaterial({
           roughness: 0.6,
           metalness: 0,
-          clearcoat: 0.3,
-          clearcoatRoughness: 0.45,
+          clearcoat: 0.5,
+          clearcoatRoughness: 0.35,
           sheen: 1,
           sheenRoughness: 0.35,
         }),
@@ -104,12 +104,16 @@ export function MenuShapes() {
       const styles = getComputedStyle(document.documentElement);
       const token = (name: string) => new Color(styles.getPropertyValue(name).trim());
       const dark = document.documentElement.classList.contains("dark");
-      materials[0].color = token(dark ? "--elevated" : "--card");
-      materials[1].color = token(dark ? "--card" : "--glow-1");
+      // On the dark page the surface tokens are nearly the background, so the shapes would vanish:
+      // one tone is a neutral stone grey, so the pink stays with the active menu item, the other a deeper wine red, so the two read apart.
+      materials[0].color = dark ? new Color(0x9d9797) : token("--glow-2").lerp(new Color(0xd9855f), 0.35);
+      materials[1].color = dark ? token("--glow-1").lerp(new Color(0x6b2a35), 0.5) : token("--accent").lerp(new Color(0x5a4652), 0.45);
       materials.forEach((material) => material.sheenColor.copy(material.color).lerp(new Color(0xffffff), dark ? 0.15 : 0.5));
-      key.color = token(dark ? "--highlight" : "--card");
-      rim.color = token("--glow-2");
-      ambient.intensity = dark ? 0.5 : 1.6;
+      // The theme's highlight and glow tokens are pink and would tint the stone shape, so on dark the
+      // lights are plain white.
+      key.color = dark ? new Color(0xffffff) : token("--card");
+      rim.color = dark ? new Color(0xf2f2f6) : token("--glow-2");
+      ambient.intensity = dark ? 0.8 : 1.0;
       key.intensity = dark ? 2.5 : 1.6;
       rim.intensity = dark ? 1.5 : 0.8;
     };
