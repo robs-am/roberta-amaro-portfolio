@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { ProjectCard } from "@/components/projects/ProjectCard";
+import { ProjectShowcase, type ShowcaseItem } from "@/components/projects/ProjectShowcase";
 import { projects } from "@/data/projects";
+import { localize, type Project } from "@/data/types";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
@@ -39,6 +40,28 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
   const t = await getTranslations("Projects");
   const tPage = await getTranslations("ProjectsPage");
 
+  const list: Project[] = projects;
+  const items: ShowcaseItem[] = list.flatMap((project) => {
+    const href = project.demoUrl ?? project.repoUrl;
+    if (!href) return [];
+    const images = project.images ?? (project.image ? [project.image] : []);
+    return {
+      id: project.id,
+      title: localize(project.title, locale),
+      category: localize(project.category, locale),
+      href,
+      description: localize(project.description, locale),
+      contribution: project.contribution && localize(project.contribution, locale),
+      tech: project.tech,
+      images: images.map((image) => ({
+        src: image.src,
+        width: image.width,
+        height: image.height,
+        alt: localize(image.alt, locale),
+      })),
+    };
+  });
+
   return (
     <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 sm:px-8">
       <Link
@@ -50,17 +73,16 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
       <h1 className="mt-8 text-3xl font-semibold">
         {t("title")}
       </h1>
-      {/* Capped narrower than the page's own max-w-7xl and centered: at full width, 2 columns of
-          these landscape cards read as oversized. The offset on odd cards (`sm:translate-y-28`)
-          reads as an interleaved pair of columns while scrolling; `gap-y-36` keeps that offset
-          from overlapping the row below. A transform doesn't take up layout space, so `sm:pb-28`
-          reserves the same offset at the bottom, keeping the last card clear of the footer. */}
-      <div className="mx-auto mt-8 grid max-w-4xl items-start gap-x-16 gap-y-36 sm:grid-cols-2 sm:pb-28">
-        {projects.map((project, index) => (
-          <div key={project.id} className={index % 2 === 1 ? "sm:translate-y-28" : undefined}>
-            <ProjectCard project={project} locale={locale} />
-          </div>
-        ))}
+      <div className="mt-12">
+        <ProjectShowcase
+          items={items}
+          labels={{
+            visit: t("demo"),
+            newTab: t("newTab"),
+            tech: t("tech"),
+            whatIDid: t("whatIDid"),
+          }}
+        />
       </div>
     </main>
   );
