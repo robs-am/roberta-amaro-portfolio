@@ -42,6 +42,12 @@ const CAMERA_FOV = 12;
 
 const SCENE_OPACITY = 1;
 
+// Entrance: each shape fades in until it reaches its form, at the pace of the text (same duration), one
+// after another from the top down, the last one landing when the text finishes (HERO_ENTRANCE_MS).
+// Order of `blobs`: ring, knot, wine sphere, small sphere.
+const FADE_MS = 1300;
+const FADE_STARTS = [0, HERO_ENTRANCE_MS - FADE_MS, 500, 950];
+
 // The scene fades out over the first stretch of scroll, as a fraction of the viewport height.
 const FADE_DISTANCE = 0.45;
 
@@ -73,13 +79,16 @@ export function HeroShapes() {
     const unitSphere = new SphereGeometry(1, 48, 48);
     const geometries: BufferGeometry[] = [unitSphere];
     const meshes: Mesh[] = [];
+    // Each shape has its own copy of its tone's material, so it can fade on its own.
+    const shapeMaterials = blobs.map((blob) => materials[blob.tone].clone());
+    shapeMaterials.forEach((material) => (material.transparent = true));
     const groups = blobs.map((blob) => {
       const group = new Group();
       let geometry: BufferGeometry = unitSphere;
       if (blob.shape === "torus") geometry = new TorusGeometry(1, 0.42, 48, 96);
       if (blob.shape === "knot") geometry = new TorusKnotGeometry(1, 0.38, 200, 32, 2, 3);
       if (geometry !== unitSphere) geometries.push(geometry);
-      const mesh = new Mesh(geometry, materials[blob.tone]);
+      const mesh = new Mesh(geometry, shapeMaterials[blobs.indexOf(blob)]);
       mesh.scale.setScalar(blob.radius);
       group.add(mesh);
       meshes.push(mesh);
@@ -87,7 +96,14 @@ export function HeroShapes() {
       return group;
     });
 
-    const applyColors = () => applyShapeColors(materials, lights);
+    const applyColors = () => {
+      applyShapeColors(materials, lights);
+      shapeMaterials.forEach((material, index) => {
+        const base = materials[blobs[index].tone];
+        material.color.copy(base.color);
+        material.sheenColor.copy(base.sheenColor);
+      });
+    };
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
     const pointerQuery = window.matchMedia("(pointer: fine)");
@@ -105,21 +121,19 @@ export function HeroShapes() {
     let glides: JSAnimation[] = [];
     let laidOut = false;
 
-    // Entrance: each shape grows in, one after another from the top down (ring, wine sphere, small
-    // sphere, knot). It starts with the text and ends with it: the delays are counted from when the hero
-    // started, and each shape's duration is whatever is left until HERO_ENTRANCE_MS. `grown` is 0..1 per shape.
-    const grown = blobs.map(() => ({ value: 0 }));
-    const growDelays = [0, 450, 150, 300]; // in the order of `blobs`: ring, knot, wine sphere, small sphere
-    const growth: JSAnimation[] = [];
+    // Entrance: `faded` is 0..1 per shape (see FADE_STARTS). The delays are counted from when the hero's text
+    // started, and the shapes mount later (Three.js loads separately), so what has already passed is cut off.
+    const faded = blobs.map(() => ({ value: 0 }));
+    const fades: JSAnimation[] = [];
     if (motionQuery.matches) {
       const elapsed = heroEntrance.startedAt ? performance.now() - heroEntrance.startedAt : 0;
-      grown.forEach((shape, index) => {
-        const delay = Math.max(growDelays[index] - elapsed, 0);
-        const duration = Math.max(HERO_ENTRANCE_MS - elapsed - delay, 500);
-        growth.push(animate(shape, { value: 1, duration, delay, ease: "outCubic" }));
+      faded.forEach((shape, index) => {
+        const start = Math.max(FADE_STARTS[index] - elapsed, 0);
+        const duration = Math.max(FADE_STARTS[index] + FADE_MS - elapsed - start, 300);
+        fades.push(animate(shape, { value: 1, duration, delay: start, ease: "inOutQuad" }));
       });
     } else {
-      for (const shape of grown) shape.value = 1;
+      for (const shape of faded) shape.value = 1;
     }
 
     const draw = (seconds: number) => {
@@ -134,12 +148,14 @@ export function HeroShapes() {
         group.rotation.x = blob.tilt[0] + Math.sin(time * 0.25) * blob.drift * 3;
         group.rotation.y = blob.tilt[1] + Math.sin(time * 0.2 + 1) * blob.drift * 2;
         const place = displayed[index];
-        meshes[index].scale.setScalar(place.radius * Math.max(grown[index].value, 0.001));
+        meshes[index].scale.setScalar(place.radius);
         group.position.set(
           place.x * halfWidth - current.x * POINTER_SHIFT * depth,
           place.y * halfHeight - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
           blob.z,
         );
+        shapeMaterials[index].opacity = SHAPE_OPACITY * faded[index].value;
+        shapeMaterials[index].visible = faded[index].value > 0.001;
       });
       renderer.render(scene, camera);
     };
@@ -239,7 +255,7 @@ export function HeroShapes() {
       cancelAnimationFrame(frame);
       window.clearTimeout(settled);
       for (const glide of glides) glide.cancel();
-      for (const grow of growth) grow.cancel();
+      for (const fade of fades) fade.cancel();
       resizeObserver.disconnect();
       themeObserver.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
@@ -248,6 +264,7 @@ export function HeroShapes() {
       motionQuery.removeEventListener("change", sync);
       geometries.forEach((geometry) => geometry.dispose());
       materials.forEach((material) => material.dispose());
+      shapeMaterials.forEach((material) => material.dispose());
       renderer.dispose();
     };
   }, []);

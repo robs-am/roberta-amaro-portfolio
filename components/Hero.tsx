@@ -56,7 +56,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
         opacity: [0, 1],
         clipPath: ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"],
         translateX: [-32, 0],
-        duration: 900,
+        duration: 1300,
         ease: "outExpo",
       }),
       // Following names: wiped in from the top, dropping into the same line.
@@ -64,15 +64,15 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
         opacity: [0, 1],
         clipPath: ["inset(0% 0% 100% 0%)", "inset(0% 0% 0% 0%)"],
         translateY: [-40, 0],
-        duration: 900,
-        delay: stagger(160, { start: 600 }),
+        duration: 1300,
+        delay: stagger(200, { start: 400 }),
         ease: "outExpo",
       }),
       animate(items, {
         opacity: [0, 1],
         translateY: [28, 0],
-        duration: 800,
-        delay: stagger(110, { start: 1200 }),
+        duration: 1100,
+        delay: stagger(140, { start: 1000 }),
         ease: "outExpo",
       }),
     ];
