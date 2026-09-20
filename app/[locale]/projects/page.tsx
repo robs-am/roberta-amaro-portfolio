@@ -5,9 +5,9 @@ import { getTranslations } from "next-intl/server";
 import { ProjectShowcase, type ShowcaseItem } from "@/components/projects/ProjectShowcase";
 import { projects } from "@/data/projects";
 import { localize, type Project } from "@/data/types";
+import { siteUrl } from "@/data/site";
+import { alternatesFor } from "@/i18n/alternates";
 import { routing } from "@/i18n/routing";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export async function generateMetadata({
   params,
@@ -23,12 +23,7 @@ export async function generateMetadata({
     metadataBase: new URL(siteUrl),
     title: t("title"),
     description: t("description"),
-    alternates: {
-      canonical: `/${locale}/projects`,
-      languages: Object.fromEntries(
-        routing.locales.map((option) => [option, `/${option}/projects`]),
-      ),
-    },
+    alternates: alternatesFor(locale, "/projects"),
   };
 }
 

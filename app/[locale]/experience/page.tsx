@@ -4,9 +4,9 @@ import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { ExperienceTimeline } from "@/components/ExperienceTimeline";
 import { experiences } from "@/data/experiences";
+import { siteUrl } from "@/data/site";
+import { alternatesFor } from "@/i18n/alternates";
 import { routing } from "@/i18n/routing";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export async function generateMetadata({
   params,
@@ -22,12 +22,7 @@ export async function generateMetadata({
     metadataBase: new URL(siteUrl),
     title: t("title"),
     description: t("description"),
-    alternates: {
-      canonical: `/${locale}/experience`,
-      languages: Object.fromEntries(
-        routing.locales.map((option) => [option, `/${option}/experience`]),
-      ),
-    },
+    alternates: alternatesFor(locale, "/experience"),
   };
 }
 

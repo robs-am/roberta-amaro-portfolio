@@ -9,7 +9,9 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/header/Header";
 import { ScrollReset } from "@/components/ScrollReset";
 import { ThemeClassSync } from "@/components/ThemeClassSync";
-import type { Locale } from "@/data/types";
+import { profile } from "@/data/profile";
+import { siteUrl } from "@/data/site";
+import { alternatesFor, htmlLang, ogLocale } from "@/i18n/alternates";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -22,13 +24,6 @@ const plexSans = IBM_Plex_Sans({
   variable: "--font-plex-sans",
   subsets: ["latin"],
 });
-
-const htmlLang: Record<Locale, string> = {
-  pt: "pt-BR",
-  en: "en",
-};
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -55,12 +50,13 @@ export async function generateMetadata({
     metadataBase: new URL(siteUrl),
     title: t("title"),
     description: t("description"),
-    alternates: {
-      canonical: `/${locale}`,
-      languages: Object.fromEntries(
-        routing.locales.map((option) => [htmlLang[option], `/${option}`]),
-      ),
+    alternates: alternatesFor(locale, ""),
+    openGraph: {
+      type: "website",
+      siteName: profile.name,
+      locale: ogLocale[locale],
     },
+    twitter: { card: "summary_large_image" },
   };
 }
 

@@ -38,7 +38,7 @@ export async function ExperienceTimeline({
             </p>
           </div>
           <div data-experience-body>
-            <h3 className="text-lg font-semibold">{localize(item.role, locale)}</h3>
+            <h2 className="text-lg font-semibold">{localize(item.role, locale)}</h2>
             <p className="text-sm font-medium text-accent">{item.company}</p>
             <p className="mt-3 leading-7">{localize(item.description, locale)}</p>
           </div>

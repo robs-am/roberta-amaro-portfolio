@@ -43,7 +43,7 @@ export async function AwardList({
             </p>
           </div>
           <div data-experience-body>
-            <h3 className="text-lg font-semibold">{localize(item.title, locale)}</h3>
+            <h2 className="text-lg font-semibold">{localize(item.title, locale)}</h2>
             <p className="text-sm font-medium text-accent">{localize(item.event, locale)}</p>
             <p className="mt-1 text-sm text-muted">
               {t("issuedBy")} {item.issuer}
