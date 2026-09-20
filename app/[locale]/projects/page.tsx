@@ -53,8 +53,9 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
       {/* Capped narrower than the page's own max-w-7xl and centered: at full width, 2 columns of
           these landscape cards read as oversized. The offset on odd cards (`sm:translate-y-28`)
           reads as an interleaved pair of columns while scrolling; `gap-y-36` keeps that offset
-          from overlapping the row below. */}
-      <div className="mx-auto mt-8 grid max-w-4xl gap-x-16 gap-y-36 sm:grid-cols-2">
+          from overlapping the row below. A transform doesn't take up layout space, so `sm:pb-28`
+          reserves the same offset at the bottom, keeping the last card clear of the footer. */}
+      <div className="mx-auto mt-8 grid max-w-4xl items-start gap-x-16 gap-y-36 sm:grid-cols-2 sm:pb-28">
         {projects.map((project, index) => (
           <div key={project.id} className={index % 2 === 1 ? "sm:translate-y-28" : undefined}>
             <ProjectCard project={project} locale={locale} />
