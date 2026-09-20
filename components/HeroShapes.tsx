@@ -202,14 +202,18 @@ export function HeroShapes() {
       const styles = getComputedStyle(document.documentElement);
       const token = (name: string) => new Color(styles.getPropertyValue(name).trim());
       const dark = document.documentElement.classList.contains("dark");
-      materials[0].color = token(dark ? "--elevated" : "--card");
-      materials[1].color = token(dark ? "--card" : "--glow-1");
+      // Dark: the surface tokens are nearly the background colour, so the shapes take the glow
+      // tones instead (dusty rose and a wine leaning toward the accent) to stand out from it.
+      materials[0].color = token(dark ? "--glow-2" : "--card");
+      materials[1].color = dark
+        ? token("--glow-1").lerp(token("--accent"), 0.25)
+        : token("--glow-1");
       // Sheen lifts the grazing edges toward the tone itself, so the rim fades instead of going black.
       materials.forEach((material) => material.sheenColor.copy(material.color).lerp(new Color(0xffffff), dark ? 0.15 : 0.5));
       key.color = token(dark ? "--highlight" : "--card");
       rim.color = token("--glow-2");
       // A light background needs much more fill so the shaded sides stay soft instead of turning dark.
-      ambient.intensity = dark ? 0.5 : 1.6;
+      ambient.intensity = dark ? 0.8 : 1.6;
       key.intensity = dark ? 2.5 : 1.6;
       rim.intensity = dark ? 1.5 : 0.8;
     };

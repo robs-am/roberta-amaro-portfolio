@@ -10,7 +10,11 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border py-8 text-base">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 sm:px-8">
+      <div
+        className={`mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-3 px-6 sm:px-8 ${
+          isHome ? 'justify-center' : 'justify-between'
+        }`}
+      >
         <p className="text-muted font-sans">
           {t('credits')} {t('copyright')}
         </p>
