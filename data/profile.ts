@@ -3,8 +3,8 @@ import type { Profile } from "./types";
 export const profile = {
   name: "Roberta Amaro",
   role: {
-    pt: "Engenheira de Software",
-    en: "Software Engineer",
+    pt: "Engenheira de Software, Front-end & IA",
+    en: "Software Engineer, Front-end & AI",
   },
   bio: {
     pt: "Transformo ideias em interfaces claras, rápidas e feitas para durar.",

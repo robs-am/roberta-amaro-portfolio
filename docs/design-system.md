@@ -34,20 +34,22 @@ Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` r
 
 | Token | Classe Tailwind | Claro | Escuro | Uso |
 |---|---|---|---|---|
-| `--background` | `bg-background` | `#f1ede6` | `#14181c` | fundo da página |
-| `--card` | `bg-card` | `#fffdf8` | `#1c2227` | cards e blocos de conteúdo |
-| `--elevated` | `bg-elevated` | `#faf8f5` | `#232a30` | superfícies internas e hover |
-| `--foreground` | `text-foreground` | `#2a2622` | `#f5f5f4` | texto principal |
-| `--muted` | `text-muted` | `#5f574d` | `#bcbcbc` | texto secundário (datas, empresa, descrições) |
-| `--accent` | `text-accent`, `bg-accent` | `#2a5c68` | `#7eb3c1` | destaque: links, traço decorativo do hero, pills, botão principal |
-| `--accent-foreground` | `text-accent-foreground` | `#fffdf8` | `#0f2a31` | texto sobre fundo `bg-accent` |
-| `--border` | `border-border` | `rgba(67,126,142,0.22)` | `rgba(126,179,193,0.18)` | bordas e divisórias (decorativo, nunca texto) |
-| `--highlight` | `text-highlight` | `#1c4750` | `#c9ecf5` | teal de texto ajustado para passar AA sobre o brilho (o `--accent` não passa lá); usado no botão principal do hero |
-| `--glow-1` | `bg-glow-1` | `#8ccfc9` | `#0f7482` | brilho de fundo, tom teal (decorativo) |
-| `--glow-2` | `bg-glow-2` | `#9dd6e2` | `#2f8fe0` | brilho de fundo, tom azul (decorativo) |
-| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.6` | `0.5` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
+| `--background` | `bg-background` | `#faf6f6` | `#181216` | fundo da página |
+| `--card` | `bg-card` | `#ffffff` | `#221a20` | cards e blocos de conteúdo |
+| `--elevated` | `bg-elevated` | `#f5eded` | `#2b2128` | superfícies internas e hover |
+| `--foreground` | `text-foreground` | `#2b1f27` | `#f7eff3` | texto principal |
+| `--muted` | `text-muted` | `#6b5560` | `#c9b7c1` | texto secundário (datas, empresa, descrições) |
+| `--accent` | `text-accent`, `bg-accent` | `#7f2f5f` | `#e59cc2` | destaque: links, traço decorativo do hero, pills, botão principal |
+| `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1029` | texto sobre fundo `bg-accent` |
+| `--border` | `border-border` | `rgba(127,47,95,0.18)` | `rgba(229,156,194,0.18)` | bordas e divisórias (decorativo, nunca texto) |
+| `--highlight` | `text-highlight` | `#66264c` | `#f8d8e8` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
+| `--glow-1` | `bg-glow-1` | `#f5d5e5` | `#5c2a47` | brilho de fundo, primeira mancha (decorativo; ameixa no escuro, rosa no claro) |
+| `--glow-2` | `bg-glow-2` | `#f9e4da` | `#74424f` | brilho de fundo, segunda mancha (decorativo; rosa-terra no escuro, pêssego no claro) |
+| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.5` | `0.4` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
 
 Opacidades sobre tokens funcionam normalmente (`bg-background/85`, `bg-accent/10`).
+
+**Botões do hero.** No claro usam o accent (o principal em `bg-accent/25` com `text-highlight`, o secundário em `bg-accent/15` com `text-accent`). No escuro são **neutros**: o principal é sólido em `--foreground` com texto `--background` (contraste 16.36), e o secundário é só um contorno `--foreground`/40% com texto `--foreground`. O rosa vivo sobre a névoa ameixa apagada ficava doce demais, então no escuro a cor fica só no brilho e nos detalhes (links, anos, traço do hero).
 
 ### Contraste verificado
 
@@ -55,16 +57,16 @@ Razão de contraste WCAG dos pares de texto usados hoje:
 
 | Par (texto / fundo) | Claro | Escuro |
 |---|---|---|
-| `foreground` / `background` | 12.87 | 16.35 |
-| `foreground` / `card` | 14.77 | 14.72 |
-| `muted` / `background` | 6.09 | 9.39 |
-| `muted` / `card` | 6.99 | 8.46 |
-| `accent` / `background` | 4.76 | 7.73 |
-| `accent` / `card` | 5.46 | 6.96 |
-| `accent` / pill (`bg-accent/10` sobre `card`) | 4.78 | 5.81 |
-| `accent-foreground` / `accent` | 5.46 | 6.52 |
+| `foreground` / `background` | 14.74 | 16.36 |
+| `foreground` / `card` | 15.81 | 15.04 |
+| `muted` / `background` | 6.33 | 9.70 |
+| `muted` / `card` | 6.79 | 8.92 |
+| `accent` / `background` | 7.91 | 8.68 |
+| `accent` / `card` | 8.49 | 7.98 |
+| `accent` / pill (`bg-accent/10` sobre `card`) | 7.20 | 6.63 |
+| `accent-foreground` / `accent` | 8.49 | 7.67 |
 
-Os pares mais apertados são os de `accent` no tema claro. Não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
+Todos os pares passam AA com folga. Ainda assim, não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
 
 ### Texto sobre o brilho
 
@@ -76,12 +78,13 @@ Com isso, o único par que precisa passar no pior caso é `foreground`:
 
 | Tema | `--glow-opacity` | `foreground` no pior caso (2 blobs sobrepostos) |
 |---|---|---|
-| Escuro | 0.65 | 4.26 (falha) |
-| Escuro | 0.55 | 4.93 |
-| Escuro | **0.5 (valor em uso)** | **5.36** |
-| Claro | **0.6 (valor em uso, com as cores atuais)** | **9.65** |
+| Escuro | 0.8 | 7.76 |
+| Escuro | 0.65 | 8.60 |
+| Escuro | 0.5 | 9.79 |
+| Escuro | **0.4 (valor em uso, com as cores atuais)** | **10.81** |
+| Claro | **0.5 (valor em uso, com as cores atuais)** | **13.03** |
 
-A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **4.67 no escuro** e **7.61 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
+A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **9.08 no escuro** e **9.91 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
 
 Se `--glow-1`, `--glow-2` ou `--glow-opacity` de qualquer tema mudarem, recalcule esse pior caso antes de assumir que o texto continua legível — cores mais claras de `--glow-2` custam mais opacidade no escuro. Se `muted`/`accent` voltarem a aparecer sobre o brilho em algum ponto, a opacidade segura cai bem mais (no claro, `muted` só passa com `--glow-opacity` em torno de 0.3 ou menos com as cores atuais).
 
@@ -177,11 +180,14 @@ O menu fecha ao: acionar um link, pressionar Esc (o foco volta pro botão), clic
 
 `components/BackgroundGlow.tsx` (client, `aria-hidden`, `pointer-events-none`), renderizado no layout antes do `Header`. Inspirado em [alignerr.com](https://www.alignerr.com), aprovado com a autora após algumas rodadas de calibração.
 
-- Camada `absolute` de `95vh` de altura no topo da página, com `mask-image: radial-gradient(120% 85% at 55% 0%, #000 45%, transparent 92%)` — suaviza as quatro bordas (não só embaixo), pra o `overflow-hidden` do container nunca cortar o blur numa linha reta.
-- 3 manchas (`div`, `border-radius: 9999px`, `filter: blur(170px)`, cor sólida em `--glow-1`/`--glow-2`, opacidade em `--glow-opacity`). As duas cores ficam separadas horizontalmente (teal mais à esquerda, azul mais à direita, com uma faixa de transição no meio) — com muito overlap entre elas o brilho lê como uma cor só em vez de gradiente.
+- Camada `absolute` de `100dvh` de altura no topo da página, com máscara radial (`.glow`, em `globals.css`) que suaviza as quatro bordas (não só embaixo), pra o `overflow-hidden` do container nunca cortar o blur numa linha reta. Na home, a partir de 1024px, o hero é centralizado na vertical e não ancorado no topo, então a máscara centra mais baixo (`.glow-home`, `55% 42%`) para iluminar o conteúdo e não o espaço vazio acima dele.
+- **Tema escuro, máscara mais fechada.** O brilho é muito mais saturado contra o fundo quase preto, e uma mancha cobrindo a largura toda lê como o "aurora gradient" genérico. Por isso `.dark .glow` e `.dark .glow-home` usam uma elipse menor (`80% 65%` no topo; `52% 58%` centrada no conteúdo na home em desktop): o brilho fica como uma poça de luz atrás do nome e dos botões, com fundo liso ao redor. O tema claro mantém a máscara ampla. Como só as bordas enfraquecem e o centro continua igual, o contraste do pior caso (tabela em "Texto sobre o brilho") não piora.
+- 3 manchas (`div`, `border-radius: 9999px`, `filter: blur(170px)`, cor sólida em `--glow-1`/`--glow-2`, opacidade em `--glow-opacity`). As duas cores ficam separadas horizontalmente (`--glow-1` mais à esquerda, `--glow-2` mais à direita, com uma faixa de transição no meio) — com muito overlap entre elas o brilho lê como uma cor só em vez de gradiente.
 - `pointermove` na `window` define um alvo normalizado (-1 a 1); um loop `requestAnimationFrame` interpola a posição atual até o alvo (fator `0.18`) e grava `--glow-x`/`--glow-y` no container. Cada mancha tem uma profundidade (`--glow-depth`) diferente — `150`, `240`, `340`px de deslocamento máximo — criando parallax entre elas. O loop para quando a distância até o alvo fica abaixo de 0.1px e só recomeça no próximo `pointermove`.
 - Ativo só com `(pointer: fine) and (prefers-reduced-motion: no-preference)`; com toque ou movimento reduzido as manchas ficam paradas na posição base.
-- `--glow-opacity` é um pouco mais alto no claro (`0.6`) que no escuro (`0.5`) — nos dois temas o texto que fica sobre o brilho (hero e nav do header antes de rolar) usa `--foreground`, não `--muted`/`--accent`; os números de contraste que sustentam esses valores estão em "Texto sobre o brilho" acima.
+- `--glow-opacity` é `0.5` no claro (cores bem pálidas, então já dá um brilho suave) e `0.4` no escuro (as cores do escuro são ameixa e rosa-terra apagados de propósito: uma versão magenta mais saturada lia forte demais sobre o fundo quase preto) — nos dois temas o texto que fica sobre o brilho (hero e nav do header antes de rolar) usa `--foreground`, não `--muted`/`--accent`; os números de contraste que sustentam esses valores estão em "Texto sobre o brilho" acima.
+
+O brilho existe só no topo da página (o hero). A seção de Projetos não tem brilho próprio: ela chegou a ter duas manchas e uma camada de fade, mas destoavam do resto e foram removidas. Os painéis decorativos dos cards sem imagem (`.project-panel`) ainda usam `--glow-1` num gradiente radial pequeno.
 
 ## Padrões de componentes
 
