@@ -7,7 +7,6 @@ import { ThemeProvider } from "next-themes";
 import { BackgroundGlow } from "@/components/BackgroundGlow";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/header/Header";
-import { RevealObserver } from "@/components/RevealObserver";
 import { ScrollReset } from "@/components/ScrollReset";
 import { SectionScrollSync } from "@/components/SectionScrollSync";
 import { ThemeClassSync } from "@/components/ThemeClassSync";
@@ -103,7 +102,6 @@ export default async function LocaleLayout({
             <Header />
             {children}
             <Footer />
-            <RevealObserver />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

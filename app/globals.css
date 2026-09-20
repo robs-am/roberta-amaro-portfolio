@@ -16,9 +16,6 @@
   --glow-opacity: 0.6;
   /* Teal accent tuned to clear AA over the glow's worst point (unlike --accent, which fails there); see docs/design-system.md. */
   --highlight: #1c4750;
-  --duration-reveal: 900ms;
-  --reveal-stagger: 120ms;
-  --reveal-distance: 28px;
 }
 
 .dark {
@@ -117,54 +114,12 @@
   clip-path: polygon(var(--slant) 0, 100% 0, 100% 100%, 0 100%);
 }
 
-@keyframes reveal-fallback {
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
   /* Animates the native scroll-snap correction on wheel/trackpad/touch scroll. Click-triggered
      navigation (smoothScroll.ts) temporarily switches this to "auto" so its own easing isn't
      double-applied by the browser, then restores it once the animation finishes. */
   html {
     scroll-behavior: smooth;
-  }
-}
-
-/* Content is only hidden when JavaScript can reveal it. The 3s fallback shows it anyway, but only
-   until RevealObserver takes over (it sets data-reveal-ready on <html> on mount); otherwise it would
-   show below-the-fold content after 3s, before the person scrolls to it. */
-@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  [data-reveal] {
-    transition:
-      opacity var(--duration-reveal) var(--ease-soft),
-      translate var(--duration-reveal) var(--ease-soft);
-    transition-delay: calc(var(--reveal-index, 0) * var(--reveal-stagger));
-  }
-
-  [data-reveal]:not([data-revealed]) {
-    opacity: 0;
-    translate: 0 var(--reveal-distance);
-  }
-
-  html:not([data-reveal-ready]) [data-reveal]:not([data-revealed]) {
-    animation: reveal-fallback 0s 3s forwards;
-  }
-}
-
-@keyframes timeline-line-fallback {
-  to {
-    transform: scaleY(1);
-  }
-}
-
-/* Same idea as [data-reveal]: hidden only when TimelineLine can draw it (it sets data-ready on mount), shown anyway after 3s otherwise. */
-@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  [data-timeline-line]:not([data-ready]) {
-    transform: scaleY(0);
-    animation: timeline-line-fallback 0s 3s forwards;
   }
 }
 

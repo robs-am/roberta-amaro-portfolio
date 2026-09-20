@@ -20,18 +20,19 @@ export async function ExperienceTimeline({
     format.dateTime(toDate(yearMonth), { month: "short", year: "numeric" });
 
   return (
-    <ol className="mt-10 max-w-3xl divide-y divide-border border-y border-border">
+    <ol className="mt-10 max-w-3xl space-y-14">
       {experiences.map((item) => (
-        <li
-          key={item.id}
-          data-reveal
-          className="grid gap-2 py-8 sm:grid-cols-[13rem_1fr] sm:gap-8"
-        >
-          <p className="text-sm text-muted sm:pt-1">
-            <time dateTime={item.start}>{formatMonth(item.start)}</time>
-            {" – "}
-            {item.end ? <time dateTime={item.end}>{formatMonth(item.end)}</time> : t("present")}
-          </p>
+        <li key={item.id} className="grid gap-3 sm:grid-cols-[9rem_1fr] sm:gap-8">
+          <div>
+            <p className="font-display text-5xl leading-none font-bold tracking-wide text-accent">
+              {item.start.slice(0, 4)}
+            </p>
+            <p className="mt-3 text-sm text-muted">
+              <time dateTime={item.start}>{formatMonth(item.start)}</time>
+              {" – "}
+              {item.end ? <time dateTime={item.end}>{formatMonth(item.end)}</time> : t("present")}
+            </p>
+          </div>
           <div>
             <h3 className="text-lg font-semibold">{localize(item.role, locale)}</h3>
             <p className="text-sm font-medium text-accent">{item.company}</p>
