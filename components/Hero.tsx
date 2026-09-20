@@ -8,10 +8,10 @@ import { useEffect, useRef } from "react";
 import { ArrowIcon } from "@/components/ArrowIcon";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
 import {
-  textLinkArrowClass,
-  textLinkClass,
+  textLinkArrowLargeClass,
   textLinkLabelActiveClass,
   textLinkLabelClass,
+  textLinkLargeClass,
 } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
 import { localize, type Locale } from "@/data/types";
@@ -23,7 +23,7 @@ const HeroShapes = dynamic(() => import("@/components/HeroShapes").then((mod) =>
 });
 
 const linkClass =
-  "group/link relative inline-flex size-14 items-center justify-center rounded-full text-foreground/70 transition-colors hover:text-accent dark:hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+  "group/link relative inline-flex size-16 items-center justify-center rounded-full text-foreground/70 transition-colors hover:text-accent dark:hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 // Visual label for the icon-only links (they already have an aria-label, so it is hidden from assistive tech).
 const tooltipClass =
@@ -108,12 +108,12 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             {localize(profile.role, locale)}
           </p>
           <div data-hero-item className="mt-8 flex flex-wrap gap-x-8 gap-y-1">
-            <Link href="/experience" className={textLinkClass}>
-              <ArrowIcon className={textLinkArrowClass} />
+            <Link href="/experience" className={textLinkLargeClass}>
+              <ArrowIcon className={textLinkArrowLargeClass} />
               <span className={textLinkLabelClass}>{t("experienceCta")}</span>
             </Link>
-            <Link href="/projects" className={textLinkClass}>
-              <ArrowIcon className={textLinkArrowClass} />
+            <Link href="/projects" className={textLinkLargeClass}>
+              <ArrowIcon className={textLinkArrowLargeClass} />
               <span className={textLinkLabelActiveClass}>{t("projectsCta")}</span>
             </Link>
           </div>
@@ -128,7 +128,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
                     aria-label={link.external ? `${link.label} ${t("newTab")}` : link.label}
                     className={linkClass}
                   >
-                    <link.Icon badge={false} className="size-8" />
+                    <link.Icon badge={false} className="size-10" />
                     <span aria-hidden="true" className={tooltipClass}>
                       {link.label}
                     </span>

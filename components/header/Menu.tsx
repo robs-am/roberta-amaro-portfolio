@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react"
 import { createPortal } from "react-dom";
 import { ArrowIcon } from "@/components/ArrowIcon";
 import { Grain } from "@/components/Grain";
-import { textLinkArrowClass, textLinkClass, textLinkLabelClass } from "@/components/textLinkStyles";
+import { textLinkArrowLargeClass, textLinkLabelClass, textLinkLargeClass } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LocaleSwitcher } from "./LocaleSwitcher";
@@ -171,7 +171,7 @@ export function Menu() {
 
               {contacts.length > 0 && (
                 <ul
-                  className={`flex flex-wrap gap-x-8 gap-y-1 ${contactsEnter.className}`}
+                  className={`flex flex-wrap gap-x-10 gap-y-1 ${contactsEnter.className}`}
                   style={contactsEnter.style}
                 >
                   {contacts.map((link) => (
@@ -181,9 +181,9 @@ export function Menu() {
                         target={link.external ? "_blank" : undefined}
                         rel={link.external ? "noopener noreferrer" : undefined}
                         aria-label={link.external ? `${link.label} ${tHero("newTab")}` : link.label}
-                        className={textLinkClass}
+                        className={textLinkLargeClass}
                       >
-                        <ArrowIcon className={textLinkArrowClass} />
+                        <ArrowIcon className={textLinkArrowLargeClass} />
                         <span className={textLinkLabelClass}>{link.label}</span>
                       </a>
                     </li>
