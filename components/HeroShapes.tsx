@@ -1,5 +1,6 @@
 "use client";
 
+import { animate, type JSAnimation } from "animejs";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -12,18 +13,22 @@ import {
   SphereGeometry,
   TorusGeometry,
   TorusKnotGeometry,
-  Vector3,
   WebGLRenderer,
 } from "three";
 import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
 import {
+  PLACEMENT_MS,
   PORTRAIT_ASPECT,
   POINTER_SHIFT,
   SHAPE_OPACITY,
   UNIT_SHARE,
   blobs,
+  collectTextRects,
+  fitPlacements,
+  heroPlacements,
   pointerCurrent,
   pointerTarget,
+  type Placement,
 } from "@/components/shapesScene";
 
 const POINTER_EASING = 0.06;
@@ -79,7 +84,6 @@ export function HeroShapes() {
       scene.add(group);
       return group;
     });
-    const bases = blobs.map(() => new Vector3());
 
     const applyColors = () => applyShapeColors(materials, lights);
 
@@ -90,6 +94,14 @@ export function HeroShapes() {
     let frame = 0;
     let visible = true;
     let unit = 1;
+    let halfWidth = 1;
+    let halfHeight = 1;
+    // Where each shape is drawn (`displayed`) glides, through anime.js, to where the layout wants it (`targets`).
+    const targets: Placement[] = blobs.map((blob) => ({ x: blob.anchor[0], y: blob.anchor[1], radius: blob.radius }));
+    const displayed: Placement[] = targets.map((place) => ({ ...place }));
+    heroPlacements.current = targets;
+    let glides: JSAnimation[] = [];
+    let laidOut = false;
 
     const draw = (seconds: number) => {
       const time = motionQuery.matches ? seconds : 0;
@@ -102,10 +114,12 @@ export function HeroShapes() {
         // edge-on, where it reads as a pill.
         group.rotation.x = blob.tilt[0] + Math.sin(time * 0.25) * blob.drift * 3;
         group.rotation.y = blob.tilt[1] + Math.sin(time * 0.2 + 1) * blob.drift * 2;
+        const place = displayed[index];
+        meshes[index].scale.setScalar(place.radius);
         group.position.set(
-          bases[index].x - current.x * POINTER_SHIFT * depth,
-          bases[index].y - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
-          bases[index].z,
+          place.x * halfWidth - current.x * POINTER_SHIFT * depth,
+          place.y * halfHeight - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
+          blob.z,
         );
       });
       renderer.render(scene, camera);
@@ -128,6 +142,21 @@ export function HeroShapes() {
       else draw(0);
     };
 
+    // Moves the drawn placements to the targets: the first layout, and any with reduced motion, snap;
+    // later ones (the text was measured again, or the screen was resized) glide.
+    const glideToTargets = () => {
+      for (const glide of glides) glide.cancel();
+      if (!laidOut || !motionQuery.matches) {
+        displayed.forEach((place, index) => Object.assign(place, targets[index]));
+        glides = [];
+        laidOut = true;
+        return;
+      }
+      glides = displayed.map((place, index) =>
+        animate(place, { ...targets[index], duration: PLACEMENT_MS, ease: "outExpo" }),
+      );
+    };
+
     // Smoothstep of the scroll position, so the fade eases in and out instead of tracking linearly.
     const fade = () => {
       const progress = MathUtils.clamp(window.scrollY / (window.innerHeight * FADE_DISTANCE), 0, 1);
@@ -145,15 +174,16 @@ export function HeroShapes() {
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
-      const halfHeight = Math.tan(MathUtils.degToRad(CAMERA_FOV / 2)) * CAMERA_Z;
-      const halfWidth = halfHeight * camera.aspect;
+      halfHeight = Math.tan(MathUtils.degToRad(CAMERA_FOV / 2)) * CAMERA_Z;
+      halfWidth = halfHeight * camera.aspect;
       unit = Math.min(halfHeight, halfWidth * 0.7) * UNIT_SHARE;
-      const portrait = camera.aspect < PORTRAIT_ASPECT;
-      blobs.forEach((blob, index) => {
-        const [x, y] = portrait ? blob.portrait.anchor : blob.anchor;
-        bases[index].set(x * halfWidth, y * halfHeight, blob.z);
-        meshes[index].scale.setScalar(portrait ? blob.portrait.radius : blob.radius);
-      });
+      const textColumn = document.querySelector("#hero h1")?.parentElement;
+      const fitted: Placement[] =
+        camera.aspect < PORTRAIT_ASPECT && textColumn
+          ? fitPlacements(collectTextRects(textColumn), width, height, unit * (height / (2 * halfHeight)))
+          : blobs.map((blob) => ({ x: blob.anchor[0], y: blob.anchor[1], radius: blob.radius }));
+      fitted.forEach((place, index) => Object.assign(targets[index], place));
+      glideToTargets();
       sync();
     };
 
@@ -168,6 +198,9 @@ export function HeroShapes() {
     applyColors();
     resize();
     fade();
+    // The text moves while the hero's entrance runs and its size changes once the fonts load, so measure again.
+    void document.fonts?.ready.then(resize);
+    const settled = window.setTimeout(resize, 3000);
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(canvas);
@@ -185,6 +218,8 @@ export function HeroShapes() {
 
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(settled);
+      for (const glide of glides) glide.cancel();
       resizeObserver.disconnect();
       themeObserver.disconnect();
       window.removeEventListener("pointermove", onPointerMove);

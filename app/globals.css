@@ -112,6 +112,26 @@
   display: none;
 }
 
+/* Menu on a short screen (a phone held sideways): the items scale with the height so the whole menu,
+   contacts included, fits without scrolling, and the contacts sit in one row. Not in a layer, so these
+   win over the utility classes on the same elements. */
+@media (max-height: 600px) {
+  .menu-body {
+    gap: 1.25rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .menu-nav-link {
+    font-size: min(3rem, 8.5vh);
+  }
+
+  .menu-contacts {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 2rem;
+  }
+}
+
 .project-panel {
   background:
     radial-gradient(circle at 16% 0%, color-mix(in oklab, var(--glow-1) 45%, transparent), transparent 55%),

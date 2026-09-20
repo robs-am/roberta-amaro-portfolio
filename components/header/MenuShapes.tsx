@@ -1,5 +1,6 @@
 "use client";
 
+import { animate, type JSAnimation } from "animejs";
 import { useEffect, useRef } from "react";
 import {
   BufferGeometry,
@@ -11,18 +12,22 @@ import {
   SphereGeometry,
   TorusGeometry,
   TorusKnotGeometry,
-  Vector3,
   WebGLRenderer,
 } from "three";
 import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
 import {
+  PLACEMENT_MS,
   PORTRAIT_ASPECT,
   POINTER_SHIFT,
   SHAPE_OPACITY,
   UNIT_SHARE,
   blobs,
+  collectTextRects,
+  fitPlacements,
+  heroPlacements,
   pointerCurrent,
   pointerTarget,
+  type Placement,
 } from "@/components/shapesScene";
 
 const MAX_PIXEL_RATIO = 1.5;
@@ -30,13 +35,23 @@ const CAMERA_Z = 30;
 const CAMERA_FOV = 12;
 const POINTER_EASING = 0.05;
 
-// The same scene as the hero's (see shapesScene.ts): same shapes, places, sizes, material and pointer
-// offset, so opening the menu over the home does not make the shapes jump. The menu only needs
-// atmosphere behind the big type, so there is no morphing and no per-frame geometry.
+// The same scene as the hero's (see shapesScene.ts): same shapes, sizes, material and pointer offset.
+// On a portrait screen the shapes fit themselves around the text, which differs between the home and
+// the menu, so they start from where the hero left them and glide to the menu's places when it opens
+// (and back when it closes). The menu only needs atmosphere behind the big type, so there is no
+// morphing and no per-frame geometry.
 // Decorative layer behind the menu items. Mount it only while the menu is visible: it owns a WebGL
 // context and an animation loop, which are torn down on unmount.
-export function MenuShapes() {
+export function MenuShapes({ open }: Readonly<{ open: boolean }>) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const openRef = useRef(open);
+  const retargetRef = useRef<() => void>(undefined);
+
+  // While the menu is open the shapes go to the menu's places; once it starts closing, back to the hero's.
+  useEffect(() => {
+    openRef.current = open;
+    retargetRef.current?.();
+  }, [open]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -69,7 +84,6 @@ export function MenuShapes() {
       scene.add(group);
       return group;
     });
-    const bases = blobs.map(() => new Vector3());
 
     const applyColors = () => applyShapeColors(materials, lights);
 
@@ -80,6 +94,27 @@ export function MenuShapes() {
     const current = { ...pointerCurrent };
     let frame = 0;
     let unit = 1;
+    let halfWidth = 1;
+    let halfHeight = 1;
+    // `menuTargets` are the menu's own places; `displayed` is what is drawn, gliding between them and the hero's.
+    const menuTargets: Placement[] = blobs.map((blob) => ({ x: blob.anchor[0], y: blob.anchor[1], radius: blob.radius }));
+    const displayed: Placement[] = (heroPlacements.current ?? menuTargets).map((place) => ({ ...place }));
+    let glides: JSAnimation[] = [];
+
+    const retarget = () => {
+      for (const glide of glides) glide.cancel();
+      const goal = openRef.current ? menuTargets : (heroPlacements.current ?? menuTargets);
+      if (!motionQuery.matches) {
+        displayed.forEach((place, index) => Object.assign(place, goal[index]));
+        glides = [];
+        if (!frame) draw(0);
+        return;
+      }
+      glides = displayed.map((place, index) =>
+        animate(place, { ...goal[index], duration: PLACEMENT_MS, ease: "outExpo" }),
+      );
+    };
+    retargetRef.current = retarget;
 
     const draw = (seconds: number) => {
       const time = motionQuery.matches ? seconds : 0;
@@ -91,10 +126,12 @@ export function MenuShapes() {
         // edge-on, where it reads as a pill.
         group.rotation.x = blob.tilt[0] + Math.sin(time * 0.25) * blob.drift * 3;
         group.rotation.y = blob.tilt[1] + Math.sin(time * 0.2 + 1) * blob.drift * 2;
+        const place = displayed[index];
+        meshes[index].scale.setScalar(place.radius);
         group.position.set(
-          bases[index].x - current.x * POINTER_SHIFT * depth,
-          bases[index].y - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
-          bases[index].z,
+          place.x * halfWidth - current.x * POINTER_SHIFT * depth,
+          place.y * halfHeight - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
+          blob.z,
         );
       });
       renderer.render(scene, camera);
@@ -120,15 +157,16 @@ export function MenuShapes() {
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
-      const halfHeight = Math.tan(MathUtils.degToRad(CAMERA_FOV / 2)) * CAMERA_Z;
-      const halfWidth = halfHeight * camera.aspect;
+      halfHeight = Math.tan(MathUtils.degToRad(CAMERA_FOV / 2)) * CAMERA_Z;
+      halfWidth = halfHeight * camera.aspect;
       unit = Math.min(halfHeight, halfWidth * 0.7) * UNIT_SHARE;
-      const portrait = camera.aspect < PORTRAIT_ASPECT;
-      blobs.forEach((blob, index) => {
-        const [x, y] = portrait ? blob.portrait.anchor : blob.anchor;
-        bases[index].set(x * halfWidth, y * halfHeight, blob.z);
-        meshes[index].scale.setScalar(portrait ? blob.portrait.radius : blob.radius);
-      });
+      const textColumn = canvas.parentElement?.querySelector(".menu-body");
+      const fitted: Placement[] =
+        camera.aspect < PORTRAIT_ASPECT && textColumn
+          ? fitPlacements(collectTextRects(textColumn), width, height, unit * (height / (2 * halfHeight)))
+          : blobs.map((blob) => ({ x: blob.anchor[0], y: blob.anchor[1], radius: blob.radius }));
+      fitted.forEach((place, index) => Object.assign(menuTargets[index], place));
+      retarget();
       sync();
     };
 
@@ -140,6 +178,8 @@ export function MenuShapes() {
 
     applyColors();
     resize();
+    // The items slide in while the menu opens, so measure again once they have settled.
+    const settled = window.setTimeout(resize, 1200);
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(canvas);
@@ -155,6 +195,9 @@ export function MenuShapes() {
 
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(settled);
+      for (const glide of glides) glide.cancel();
+      retargetRef.current = undefined;
       resizeObserver.disconnect();
       themeObserver.disconnect();
       window.removeEventListener("pointermove", onPointerMove);

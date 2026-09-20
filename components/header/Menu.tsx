@@ -132,7 +132,7 @@ export function Menu() {
           >
             {/* Before the shapes in the DOM, so the grain stays behind them. */}
             <Grain layerClassName="z-0" />
-            {shapesMounted && <MenuShapes />}
+            {shapesMounted && <MenuShapes open={open} />}
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}
             <div className="relative mx-auto flex min-h-11 max-w-7xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
@@ -149,7 +149,7 @@ export function Menu() {
               </button>
             </div>
 
-            <div className="relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 sm:px-8">
+            <div className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 sm:px-8">
               <nav aria-label={t("navLabel")}>
                 <ul className="flex flex-col gap-1">
                   {navItems.map((item, index) => {
@@ -162,7 +162,7 @@ export function Menu() {
                           href={item.href}
                           aria-current={active ? "page" : undefined}
                           onClick={() => setOpen(false)}
-                          className={`inline-flex items-baseline gap-3 rounded-sm font-display text-[clamp(2rem,10.5vw,3rem)] leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${
+                          className={`menu-nav-link inline-flex items-baseline gap-3 rounded-sm font-display text-[clamp(2rem,10.5vw,3rem)] leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${
                             active ? "text-accent" : "text-foreground"
                           }`}
                         >
@@ -179,7 +179,7 @@ export function Menu() {
 
               {contacts.length > 0 && (
                 <ul
-                  className={`flex flex-col items-start gap-y-1 sm:flex-row sm:flex-wrap sm:gap-x-10 ${contactsEnter.className}`}
+                  className={`menu-contacts flex flex-col items-start gap-y-1 sm:flex-row sm:flex-wrap sm:gap-x-10 ${contactsEnter.className}`}
                   style={contactsEnter.style}
                 >
                   {contacts.map((link) => (
