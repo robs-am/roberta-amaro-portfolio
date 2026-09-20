@@ -31,6 +31,7 @@ const tooltipClass =
 
 export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const t = useTranslations("Hero");
+  const tFooter = useTranslations("Footer");
   const sectionRef = useRef<HTMLElement>(null);
 
   // Enters each `[data-hero-item]` in DOM order (name words → bar → role → text → CTAs → links).
@@ -148,6 +149,10 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
               ))}
             </ul>
           )}
+          {/* Phones only: the footer is hidden on the home there, and the credits sit under the icons. */}
+          <p data-hero-item className="mt-10 font-sans text-sm text-muted sm:hidden">
+            {tFooter("credits")} {tFooter("copyright")}
+          </p>
         </div>
       </div>
     </section>

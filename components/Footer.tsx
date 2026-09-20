@@ -10,8 +10,9 @@ export function Footer() {
 
   return (
     // No rule on the home: it would cut across the hero's shapes. There the credits line up with the
-    // hero's text column (max-w-5xl, left). The other pages keep the full-width rule.
-    <footer className={`py-8 text-base ${isHome ? '' : 'border-t border-border'}`}>
+    // hero's text column (max-w-5xl, left), and on a phone they move into the hero, under the contact
+    // icons, so the footer is hidden. The other pages keep the full-width rule.
+    <footer className={`py-8 text-base ${isHome ? 'max-sm:hidden' : 'border-t border-border'}`}>
       <div
         className={`mx-auto flex flex-wrap items-center gap-x-6 gap-y-3 px-6 sm:px-8 ${
           isHome ? 'max-w-5xl justify-start' : 'max-w-7xl justify-between'

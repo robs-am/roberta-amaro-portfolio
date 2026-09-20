@@ -43,13 +43,12 @@ type Blob = {
 
 const blobs: Blob[] = [
   // The same cluster as the menu, in the free space to the right of the text: a ring, a knot and two
-  // spheres, overlapping in depth. On a portrait screen the shapes keep the menu's sizes and take the
-  // gaps the stacked text leaves: beside the links, after the contact icons, and a corner at the top
-  // (the rest of the top is the header's controls, so nothing goes behind them).
-  { anchor: [0.5, 0.42], z: 0, radius: 1.05, shape: "torus", tilt: [0.9, 0.4], drift: 0.1, tone: 0, portrait: { anchor: [0.59, -0.04], radius: 0.95 } },
-  { anchor: [0.52, -0.5], z: 0.4, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.08, tone: 1, portrait: { anchor: [0.69, -0.59], radius: 0.75 } },
-  { anchor: [0.86, 0.08], z: -1, radius: 0.62, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1, portrait: { anchor: [-0.9, 0.9], radius: 0.7 } },
-  { anchor: [0.36, -0.02], z: 0.8, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0, portrait: { anchor: [0.32, -0.69], radius: 0.32 } },
+  // spheres, overlapping in depth. On a portrait screen they keep the menu's arrangement and sizes:
+  // a column down the right edge (ring, wine sphere, small sphere, knot), beside the short lines of text.
+  { anchor: [0.5, 0.42], z: 0, radius: 1.05, shape: "torus", tilt: [0.9, 0.4], drift: 0.1, tone: 0, portrait: { anchor: [0.64, 0.52], radius: 0.95 } },
+  { anchor: [0.52, -0.5], z: 0.4, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.08, tone: 1, portrait: { anchor: [0.6, -0.72], radius: 0.75 } },
+  { anchor: [0.86, 0.08], z: -1, radius: 0.62, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1, portrait: { anchor: [0.85, 0.1], radius: 0.7 } },
+  { anchor: [0.36, -0.02], z: 0.8, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0, portrait: { anchor: [0.42, -0.05], radius: 0.32 } },
 ];
 
 // Below this width-to-height ratio the screen is treated as portrait (a phone, or a tablet held upright).
