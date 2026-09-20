@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { BackButton } from "@/components/BackButton";
 import { AwardList } from "@/components/AwardList";
 import { awards } from "@/data/awards";
 import { siteUrl } from "@/data/site";
@@ -35,6 +36,7 @@ export default async function AwardsPage({ params }: PageProps<"/[locale]/awards
 
   return (
     <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 sm:px-8">
+      <BackButton />
       <h1 className="text-3xl font-semibold">{t("title")}</h1>
       <AwardList awards={sorted} locale={locale} />
     </main>

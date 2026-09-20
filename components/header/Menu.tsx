@@ -8,7 +8,9 @@ import { Grain } from "@/components/Grain";
 import { textLinkArrowLargeClass, textLinkLabelClass, textLinkLargeClass } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
+import { CapsuleSvg, menuButtonClass } from "./capsuleIcon";
 import { LocaleSwitcher } from "./LocaleSwitcher";
+import { OPEN_MENU_EVENT } from "./menuEvents";
 import { MenuShapes } from "./MenuShapes";
 import { navItems } from "./navItems";
 import { ThemeToggle } from "./ThemeToggle";
@@ -17,10 +19,6 @@ const subscribe = () => () => {};
 
 // Matches the overlay's `duration-700` reveal transition.
 const CLOSE_DURATION_MS = 700;
-
-// Bare line icon, no box, so it stands apart from the bordered language/theme controls beside it.
-const menuButtonClass =
-  "inline-flex size-11 cursor-pointer items-center justify-center rounded-md text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 // Full-screen menu. The overlay is portaled to <body>: the header may carry a `backdrop-filter`,
 // which would otherwise become the containing block of a `fixed` child and clip it to the header.
@@ -39,6 +37,16 @@ export function Menu() {
     () => true,
     () => false,
   );
+
+  // The in-page back arrow (see BackButton) reopens the menu from outside the header.
+  useEffect(() => {
+    const openMenu = () => {
+      setShapesMounted(true);
+      setOpen(true);
+    };
+    window.addEventListener(OPEN_MENU_EVENT, openMenu);
+    return () => window.removeEventListener(OPEN_MENU_EVENT, openMenu);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -154,7 +162,7 @@ export function Menu() {
                           href={item.href}
                           aria-current={active ? "page" : undefined}
                           onClick={() => setOpen(false)}
-                          className={`inline-flex items-baseline gap-3 rounded-sm font-display text-5xl leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${
+                          className={`inline-flex items-baseline gap-3 rounded-sm font-display text-[clamp(2rem,10.5vw,3rem)] leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${
                             active ? "text-accent" : "text-foreground"
                           }`}
                         >
@@ -171,7 +179,7 @@ export function Menu() {
 
               {contacts.length > 0 && (
                 <ul
-                  className={`flex flex-wrap gap-x-10 gap-y-1 ${contactsEnter.className}`}
+                  className={`flex flex-col items-start gap-y-1 sm:flex-row sm:flex-wrap sm:gap-x-10 ${contactsEnter.className}`}
                   style={contactsEnter.style}
                 >
                   {contacts.map((link) => (
@@ -195,23 +203,6 @@ export function Menu() {
           document.body,
         )}
     </>
-  );
-}
-
-// Both marks are drawn as hollow capsules (outlined pills): two stacked for "open", crossed for "close".
-function CapsuleSvg({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="size-9"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {children}
-    </svg>
   );
 }
 

@@ -8,10 +8,10 @@ import { useEffect, useRef } from "react";
 import { ArrowIcon } from "@/components/ArrowIcon";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
 import {
-  textLinkArrowLargeClass,
+  textLinkArrowHeroClass,
+  textLinkHeroClass,
   textLinkLabelActiveClass,
   textLinkLabelClass,
-  textLinkLargeClass,
 } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
 import { localize, type Locale } from "@/data/types";
@@ -94,7 +94,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       <HeroShapes />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
         <div className="max-w-2xl">
-          <h1 className="text-6xl leading-[1.05] font-bold uppercase lg:text-8xl xl:text-9xl">
+          <h1 className="text-5xl leading-[1.05] font-bold uppercase sm:text-6xl lg:text-8xl xl:text-9xl">
             {profile.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="block">
                 <span data-hero-word className="inline-block">
@@ -105,15 +105,26 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
           </h1>
           <div data-hero-item aria-hidden="true" className="mt-6 h-1 w-10 rounded-full bg-accent" />
           <p data-hero-item className="mt-6 text-xl font-semibold tracking-wide text-foreground sm:text-2xl lg:text-3xl">
-            {localize(profile.role, locale)}
+            {/* One part per line on a phone (split at the commas), a single line from `sm` up. */}
+            {localize(profile.role, locale)
+              .split(", ")
+              .map((part, index, parts) => (
+                <span key={part}>
+                  {index > 0 && " "}
+                  <span className="block sm:inline">
+                    {part}
+                    {index < parts.length - 1 && ","}
+                  </span>
+                </span>
+              ))}
           </p>
-          <div data-hero-item className="mt-8 flex flex-wrap gap-x-8 gap-y-1">
-            <Link href="/experience" className={textLinkLargeClass}>
-              <ArrowIcon className={textLinkArrowLargeClass} />
+          <div data-hero-item className="mt-6 flex flex-col items-start gap-y-1 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-x-8">
+            <Link href="/experience" className={`${textLinkHeroClass} order-2 sm:order-1`}>
+              <ArrowIcon className={textLinkArrowHeroClass} />
               <span className={textLinkLabelClass}>{t("experienceCta")}</span>
             </Link>
-            <Link href="/projects" className={textLinkLargeClass}>
-              <ArrowIcon className={textLinkArrowLargeClass} />
+            <Link href="/projects" className={`${textLinkHeroClass} order-1 sm:order-2`}>
+              <ArrowIcon className={textLinkArrowHeroClass} />
               <span className={textLinkLabelActiveClass}>{t("projectsCta")}</span>
             </Link>
           </div>

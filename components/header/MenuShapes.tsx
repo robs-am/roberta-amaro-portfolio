@@ -96,8 +96,10 @@ export function MenuShapes() {
         const blob = blobs[index];
         const depth = 1 + blob.z * 0.3;
         group.scale.setScalar(unit);
-        group.rotation.x = blob.tilt[0] + time * blob.drift;
-        group.rotation.y = blob.tilt[1] + time * blob.drift * 0.7;
+        // A slow sway around the resting tilt, never a full turn: a ring that keeps spinning ends up
+        // edge-on, where it reads as a pill.
+        group.rotation.x = blob.tilt[0] + Math.sin(time * 0.25) * blob.drift * 3;
+        group.rotation.y = blob.tilt[1] + Math.sin(time * 0.2 + 1) * blob.drift * 2;
         group.position.set(
           bases[index].x - current.x * POINTER_SHIFT * depth,
           bases[index].y - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,

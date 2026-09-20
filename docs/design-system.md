@@ -39,7 +39,7 @@ Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` r
 | `--elevated` | `bg-elevated` | `#f4f0ef` | `#292427` | superfícies internas e hover |
 | `--foreground` | `text-foreground` | `#2a2427` | `#f5f1f3` | texto principal |
 | `--muted` | `text-muted` | `#675d63` | `#c5babf` | texto secundário (datas, empresa, descrições) |
-| `--accent` | `text-accent`, `bg-accent` | `#7f2f5f` | `#e59cc2` | destaque: links, traço decorativo do hero, pills, botão principal |
+| `--accent` | `text-accent`, `bg-accent` | `#7f2f5f` | `#e08a9f` | destaque: links, traço decorativo do hero, pills, botão principal |
 | `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1029` | texto sobre fundo `bg-accent` |
 | `--border` | `border-border` | `rgba(42,36,39,0.13)` | `rgba(255,255,255,0.12)` | bordas e divisórias (decorativo, nunca texto) |
 | `--highlight` | `text-highlight` | `#66264c` | `#f8d8e8` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
@@ -61,10 +61,10 @@ Razão de contraste WCAG dos pares de texto usados hoje:
 | `foreground` / `card` | 15.22 | 15.05 |
 | `muted` / `background` | 5.97 | 9.71 |
 | `muted` / `card` | 6.32 | 8.95 |
-| `accent` / `background` | 8.02 | 8.59 |
-| `accent` / `card` | 8.49 | 7.92 |
-| `accent` / pill (`bg-accent/10` sobre `card`) | 7.20 | 6.63 |
-| `accent-foreground` / `accent` | 8.49 | 7.67 |
+| `accent` / `background` | 8.02 | 7.23 |
+| `accent` / `card` | 8.49 | 6.66 |
+| `accent` / pill (`bg-accent/10` sobre `card`) | 7.20 | 5.66 |
+| `accent-foreground` / `accent` | 8.49 | 6.46 |
 
 Todos os pares passam AA com folga. Ainda assim, não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
 

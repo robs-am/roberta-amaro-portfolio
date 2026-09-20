@@ -37,16 +37,23 @@ type Blob = {
   tilt: [number, number];
   drift: number;
   tone: 0 | 1;
+  /** Where and how big it is on a portrait screen (see PORTRAIT_ASPECT). */
+  portrait: { anchor: [number, number]; radius: number };
 };
 
 const blobs: Blob[] = [
   // The same cluster as the menu, in the free space to the right of the text: a ring, a knot and two
-  // spheres, overlapping in depth.
-  { anchor: [0.5, 0.42], z: 0, radius: 1.05, shape: "torus", tilt: [0.9, 0.4], drift: 0.1, tone: 0 },
-  { anchor: [0.52, -0.5], z: 0.4, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.08, tone: 1 },
-  { anchor: [0.86, 0.08], z: -1, radius: 0.62, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1 },
-  { anchor: [0.36, -0.02], z: 0.8, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0 },
+  // spheres, overlapping in depth. On a portrait screen the shapes keep the menu's sizes and take the
+  // gaps the stacked text leaves: beside the links, after the contact icons, and a corner at the top
+  // (the rest of the top is the header's controls, so nothing goes behind them).
+  { anchor: [0.5, 0.42], z: 0, radius: 1.05, shape: "torus", tilt: [0.9, 0.4], drift: 0.1, tone: 0, portrait: { anchor: [0.59, -0.04], radius: 0.95 } },
+  { anchor: [0.52, -0.5], z: 0.4, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.08, tone: 1, portrait: { anchor: [0.69, -0.59], radius: 0.75 } },
+  { anchor: [0.86, 0.08], z: -1, radius: 0.62, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1, portrait: { anchor: [-0.9, 0.9], radius: 0.7 } },
+  { anchor: [0.36, -0.02], z: 0.8, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0, portrait: { anchor: [0.32, -0.69], radius: 0.32 } },
 ];
+
+// Below this width-to-height ratio the screen is treated as portrait (a phone, or a tablet held upright).
+const PORTRAIT_ASPECT = 0.85;
 
 // One blob unit, as a fraction of the smaller of the viewport's height and 0.7 of its width.
 const UNIT_SHARE = 0.3;
@@ -86,6 +93,7 @@ export function HeroShapes() {
 
     const unitSphere = new SphereGeometry(1, 48, 48);
     const geometries: BufferGeometry[] = [unitSphere];
+    const meshes: Mesh[] = [];
     const groups = blobs.map((blob) => {
       const group = new Group();
       let geometry: BufferGeometry = unitSphere;
@@ -95,6 +103,7 @@ export function HeroShapes() {
       const mesh = new Mesh(geometry, materials[blob.tone]);
       mesh.scale.setScalar(blob.radius);
       group.add(mesh);
+      meshes.push(mesh);
       scene.add(group);
       return group;
     });
@@ -165,7 +174,12 @@ export function HeroShapes() {
       const halfHeight = Math.tan(MathUtils.degToRad(CAMERA_FOV / 2)) * CAMERA_Z;
       const halfWidth = halfHeight * camera.aspect;
       unit = Math.min(halfHeight, halfWidth * 0.7) * UNIT_SHARE;
-      blobs.forEach(({ anchor: [x, y], z }, index) => bases[index].set(x * halfWidth, y * halfHeight, z));
+      const portrait = camera.aspect < PORTRAIT_ASPECT;
+      blobs.forEach((blob, index) => {
+        const [x, y] = portrait ? blob.portrait.anchor : blob.anchor;
+        bases[index].set(x * halfWidth, y * halfHeight, blob.z);
+        meshes[index].scale.setScalar(portrait ? blob.portrait.radius : blob.radius);
+      });
       sync();
     };
 
@@ -213,8 +227,7 @@ export function HeroShapes() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 -z-5 opacity-0"
     >
-      {/* Under the text on narrow screens, so it is dimmed there. */}
-      <canvas ref={canvasRef} className="size-full max-md:opacity-50" />
+      <canvas ref={canvasRef} className="size-full" />
     </div>,
     document.body,
   );

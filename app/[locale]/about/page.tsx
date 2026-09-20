@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { BackButton } from "@/components/BackButton";
 import { alsoWorkingWith, mainStack } from "@/data/skills";
 import { siteUrl } from "@/data/site";
 import { alternatesFor } from "@/i18n/alternates";
@@ -33,6 +34,7 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
 
   return (
     <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 sm:px-8">
+      <BackButton />
       <h1 className="text-3xl font-semibold">{t("title")}</h1>
       <div className="mt-10 max-w-3xl space-y-6 text-lg leading-8">
         <p>{t("intro")}</p>

@@ -29,7 +29,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ loc
         }}
       >
         <div style={{ fontSize: 112, fontWeight: 700, lineHeight: 1.05 }}>{profile.name}</div>
-        <div style={{ width: 72, height: 6, borderRadius: 3, background: "#e59cc2", marginTop: 32 }} />
+        <div style={{ width: 72, height: 6, borderRadius: 3, background: "#e08a9f", marginTop: 32 }} />
         <div style={{ fontSize: 44, fontWeight: 600, marginTop: 32 }}>
           {localize(profile.role, locale)}
         </div>

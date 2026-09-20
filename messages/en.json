@@ -9,6 +9,7 @@
   "Header": {
     "navLabel": "Main navigation",
     "home": "Home",
+    "backToMenu": "Back to menu",
     "nav": {
       "home": "Home",
       "about": "About",

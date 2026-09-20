@@ -10,8 +10,13 @@ export const textLinkArrowClass =
   "size-4 shrink-0 transition-transform duration-300 ease-expressive motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5";
 
 // Larger variant, for links that sit next to big type (the hero and the menu's contact links).
-export const textLinkLargeClass = textLinkClass.replace("text-base", "text-xl sm:text-2xl");
-export const textLinkArrowLargeClass = textLinkArrowClass.replace("size-4", "size-5 sm:size-6");
+export const textLinkLargeClass = textLinkClass.replace("text-base", "text-base sm:text-xl lg:text-2xl");
+export const textLinkArrowLargeClass = textLinkArrowClass.replace("size-4", "size-4 sm:size-5 lg:size-6");
+
+// The hero's calls to action: large from the smallest screen, since on a phone they are stacked and
+// are the main thing to tap.
+export const textLinkHeroClass = textLinkClass.replace("text-base", "text-xl lg:text-2xl");
+export const textLinkArrowHeroClass = textLinkArrowClass.replace("size-4", "size-5 lg:size-6");
 
 // Emphasised variant of the label: the underline is always drawn instead of growing on hover.
 export const textLinkLabelActiveClass =
