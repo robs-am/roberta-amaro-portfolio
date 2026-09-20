@@ -40,7 +40,7 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
   const tPage = await getTranslations("ProjectsPage");
 
   return (
-    <main id="main-content" className="mx-auto max-w-7xl px-6 py-16 sm:px-8">
+    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 sm:px-8">
       <Link
         href="/"
         className="inline-block rounded-sm font-medium text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"

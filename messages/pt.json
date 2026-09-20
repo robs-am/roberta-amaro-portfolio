@@ -46,8 +46,11 @@
     "repo": "Repositório",
     "demo": "Ver site",
     "newTab": "(abre em nova aba)",
-    "whatIDid": "Minha atuação",
-    "viewAll": "Ver todos os projetos"
+    "whatIDid": "Minha atuação"
+  },
+  "ExperiencePage": {
+    "title": "Experiências | Roberta Amaro",
+    "description": "Experiências profissionais de Roberta Amaro."
   },
   "ProjectsPage": {
     "title": "Todos os projetos | Roberta Amaro",

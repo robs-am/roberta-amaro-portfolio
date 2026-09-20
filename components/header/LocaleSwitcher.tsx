@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { currentSectionHash } from "./currentSection";
 
 export function LocaleSwitcher() {
   const t = useTranslations("Header.language");

@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useLayoutEffect, useState, type ReactNode } from "react";
+import { usePathname } from "@/i18n/navigation";
 import { HeaderScrollProvider } from "./HeaderScrollContext";
-import { HeroVisibilityProvider } from "./HeroVisibilityContext";
 
 export function HeaderShell({ children }: { children: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
-  // Defaults to false (contact links shown) so pages without a hero — the all-projects page —
-  // never need a synchronous correction; the observer below flips it true almost immediately
-  // wherever a hero does exist.
-  const [heroVisible, setHeroVisible] = useState(false);
-  const ref = useRef<HTMLElement>(null);
+  const isHome = usePathname() === "/";
 
   // useLayoutEffect (not useEffect) so a locale switch's remount corrects `scrolled`
   // before paint, matching ThemeClassSync's fix for the same class of flicker.
@@ -21,48 +17,17 @@ export function HeaderShell({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useLayoutEffect(() => {
-    const hero = document.querySelector("#hero");
-    if (!hero) return;
-
-    // Sync the initial state before paint to avoid flicker on locale remount
-    const rect = hero.getBoundingClientRect();
-    const isVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
-    setHeroVisible(isVisible);
-
-    const observer = new IntersectionObserver(([entry]) => setHeroVisible(entry.isIntersecting), {
-      threshold: 0.5,
-    });
-    observer.observe(hero);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const header = ref.current;
-    if (!header) return;
-
-    // Exposed so #hero can offset its scroll-margin-top and land at scrollY 0 (header height varies by breakpoint).
-    const setHeight = () =>
-      document.documentElement.style.setProperty("--header-height", `${header.offsetHeight}px`);
-
-    setHeight();
-    const observer = new ResizeObserver(setHeight);
-    observer.observe(header);
-    return () => observer.disconnect();
-  }, []);
-
+  // On the home page the header floats over the hero (no space of its own) so the hero can use
+  // the full viewport; elsewhere it stays in the flow.
   return (
     <header
-      ref={ref}
-      className={`sticky top-0 z-20 border-b transition-colors duration-300 ${
-        scrolled
+      className={`${isHome ? "fixed inset-x-0" : "sticky"} top-0 z-20 border-b transition-colors duration-300 ${
+        scrolled && !isHome
           ? "border-border bg-background/95 backdrop-blur"
           : "border-transparent bg-transparent"
       }`}
     >
-      <HeaderScrollProvider scrolled={scrolled}>
-        <HeroVisibilityProvider visible={heroVisible}>{children}</HeroVisibilityProvider>
-      </HeaderScrollProvider>
+      <HeaderScrollProvider scrolled={scrolled}>{children}</HeaderScrollProvider>
     </header>
   );
 }

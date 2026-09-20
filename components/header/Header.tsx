@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { ContactLinks } from "./ContactLinks";
 import { DesktopNav } from "./DesktopNav";
 import { HeaderShell } from "./HeaderShell";
+import { HideOnHome } from "./HideOnHome";
 import { HomeLink } from "./HomeLink";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { MobileMenu } from "./MobileMenu";
@@ -18,13 +19,19 @@ export async function Header() {
   return (
     <HeaderShell>
       <div className="mx-auto flex max-w-5xl items-center gap-6 px-6 py-3 sm:px-8">
-        <HomeLink label={t("home")} />
-        <DesktopNav navLabel={t("navLabel")} labels={labels} />
+        <HideOnHome>
+          <HomeLink label={t("home")} />
+          <DesktopNav navLabel={t("navLabel")} labels={labels} />
+        </HideOnHome>
         <div className="ml-auto flex items-center gap-2">
-          <ContactLinks className="hidden md:flex" />
+          <HideOnHome>
+            <ContactLinks className="hidden md:flex" />
+          </HideOnHome>
           <LocaleSwitcher />
           <ThemeToggle />
-          <MobileMenu />
+          <HideOnHome>
+            <MobileMenu />
+          </HideOnHome>
         </div>
       </div>
     </HeaderShell>

@@ -128,9 +128,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Animates the native scroll-snap correction on wheel/trackpad/touch scroll. Click-triggered
-     navigation (smoothScroll.ts) temporarily switches this to "auto" so its own easing isn't
-     double-applied by the browser, then restores it once the animation finishes. */
+  /* Smooth in-page jumps (e.g. the footer's back-to-top link). */
   html {
     scroll-behavior: smooth;
   }

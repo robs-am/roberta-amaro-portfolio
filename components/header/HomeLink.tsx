@@ -1,30 +1,16 @@
 "use client";
 
-import { useLocale } from "next-intl";
-import { usePathname } from "@/i18n/navigation";
-import { useHeroVisible } from "./HeroVisibilityContext";
-import { sectionHref } from "./sectionHref";
-import { onSmoothAnchorClick } from "./smoothScroll";
+import { Link } from "@/i18n/navigation";
 
 export function HomeLink({ label }: { label: string }) {
-  const pathname = usePathname();
-  const locale = useLocale();
-  const heroVisible = useHeroVisible();
-
   return (
-    <a
-      href={sectionHref(pathname, locale, "#hero")}
+    <Link
+      href="/"
       aria-label={label}
-      onClick={onSmoothAnchorClick}
-      className={`flex size-11 shrink-0 items-center justify-center rounded-sm text-foreground transition-opacity duration-500 hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-        heroVisible
-          ? "pointer-events-none opacity-0"
-          : "opacity-100"
-      }`}
-      tabIndex={heroVisible ? -1 : 0}
+      className="flex size-11 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >
       <HomeIcon />
-    </a>
+    </Link>
   );
 }
 

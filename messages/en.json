@@ -46,8 +46,11 @@
     "repo": "Repository",
     "demo": "Visit site",
     "newTab": "(opens in a new tab)",
-    "whatIDid": "My contribution",
-    "viewAll": "View all projects"
+    "whatIDid": "My contribution"
+  },
+  "ExperiencePage": {
+    "title": "Experience | Roberta Amaro",
+    "description": "Roberta Amaro's professional experience."
   },
   "ProjectsPage": {
     "title": "All projects | Roberta Amaro",

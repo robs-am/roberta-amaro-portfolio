@@ -8,7 +8,6 @@ import { BackgroundGlow } from "@/components/BackgroundGlow";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/header/Header";
 import { ScrollReset } from "@/components/ScrollReset";
-import { SectionScrollSync } from "@/components/SectionScrollSync";
 import { ThemeClassSync } from "@/components/ThemeClassSync";
 import type { Locale } from "@/data/types";
 import { routing } from "@/i18n/routing";
@@ -77,11 +76,11 @@ export default async function LocaleLayout({
   return (
     <html
       lang={htmlLang[locale]}
-      className={`${jost.variable} ${plexSans.variable} snap-y snap-mandatory antialiased`}
+      className={`${jost.variable} ${plexSans.variable} antialiased`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
-      <body className="min-h-dvh overflow-x-hidden bg-background font-sans text-foreground">
+      <body className="flex min-h-dvh flex-col overflow-x-hidden bg-background font-sans text-foreground">
         <a
           href="#main-content"
           className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:left-4 focus-visible:z-50 focus-visible:rounded-md focus-visible:bg-accent focus-visible:px-4 focus-visible:py-2 focus-visible:text-accent-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
@@ -90,7 +89,6 @@ export default async function LocaleLayout({
         </a>
         <ScrollReset />
         <ThemeClassSync />
-        <SectionScrollSync />
         <BackgroundGlow />
         <NextIntlClientProvider>
           <ThemeProvider

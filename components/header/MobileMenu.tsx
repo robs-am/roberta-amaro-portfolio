@@ -1,12 +1,10 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
-import { usePathname } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { ContactLinks } from "./ContactLinks";
 import { navItems } from "./navItems";
-import { sectionHref } from "./sectionHref";
-import { onSmoothAnchorClick } from "./smoothScroll";
 
 const barClass =
   "absolute left-0 h-0.5 w-full rounded-full bg-current transition duration-300 ease-expressive motion-reduce:transition-none";
@@ -16,8 +14,6 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const pathname = usePathname();
-  const locale = useLocale();
 
   useEffect(() => {
     if (!open) return;
@@ -80,16 +76,13 @@ export function MobileMenu() {
           <ul className="mx-auto flex max-w-5xl flex-col px-6 py-2 sm:px-8">
             {navItems.map((item) => (
               <li key={item.href}>
-                <a
-                  href={sectionHref(pathname, locale, item.href)}
-                  onClick={(event) => {
-                    setOpen(false);
-                    onSmoothAnchorClick(event);
-                  }}
+                <Link
+                  href={item.href}
+                  onClick={() => setOpen(false)}
                   className="flex min-h-11 items-center rounded-sm text-base font-medium text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   {t(`nav.${item.key}`)}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

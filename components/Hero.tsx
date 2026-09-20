@@ -6,10 +6,10 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
-import { onSmoothAnchorClick } from "@/components/header/smoothScroll";
 import { textLinkArrowClass, textLinkClass, textLinkLabelClass } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
 import { localize, type Locale } from "@/data/types";
+import { Link } from "@/i18n/navigation";
 
 // three.js is only loaded in the browser, after the hero text, so it never delays first paint.
 const HeroShapes = dynamic(() => import("@/components/HeroShapes").then((mod) => mod.HeroShapes), {
@@ -83,7 +83,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     <section
       ref={sectionRef}
       id="hero"
-      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen snap-start flex h-[calc(100dvh-var(--header-height,0px))] flex-col justify-center overflow-x-hidden scroll-mt-(--header-height,0px)"
+      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden scroll-mt-(--header-height,0px)"
     >
       <HeroShapes />
       {/* Full-bleed for the same reason as the experience/projects sections: `main` caps content
@@ -126,14 +126,14 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             .
           </p>
           <div data-hero-item className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-1">
-            <a href="#experience" onClick={onSmoothAnchorClick} className={textLinkClass}>
+            <Link href="/experience" className={textLinkClass}>
               <ArrowIcon className={textLinkArrowClass} />
               <span className={textLinkLabelClass}>{t("experienceCta")}</span>
-            </a>
-            <a href="#projects" onClick={onSmoothAnchorClick} className={textLinkClass}>
+            </Link>
+            <Link href="/projects" className={textLinkClass}>
               <ArrowIcon className={textLinkArrowClass} />
               <span className={textLinkLabelClass}>{t("projectsCta")}</span>
-            </a>
+            </Link>
           </div>
           {links.length > 0 && (
             <ul data-hero-item className="mt-8 flex justify-center gap-3">
