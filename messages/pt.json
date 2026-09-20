@@ -58,5 +58,10 @@
     "title": "Página não encontrada",
     "description": "O endereço que você procurou não existe.",
     "back": "Voltar para o início"
+  },
+  "Footer": {
+    "copyright": "© 2026",
+    "credits": "Design & Código por Roberta Amaro",
+    "backToTop": "Voltar ao topo"
   }
 }
