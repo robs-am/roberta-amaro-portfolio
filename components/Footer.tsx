@@ -9,12 +9,12 @@ export function Footer() {
   const isHome = usePathname() === '/'
 
   return (
-    // No rule on the home: it would cut across the hero's shapes, and the hero's own fade already
-    // separates it from the footer. The other pages keep the full-width rule.
+    // No rule on the home: it would cut across the hero's shapes. There the credits line up with the
+    // hero's text column (max-w-5xl, left). The other pages keep the full-width rule.
     <footer className={`py-8 text-base ${isHome ? '' : 'border-t border-border'}`}>
       <div
-        className={`mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-3 px-6 sm:px-8 ${
-          isHome ? 'justify-center' : 'justify-between'
+        className={`mx-auto flex flex-wrap items-center gap-x-6 gap-y-3 px-6 sm:px-8 ${
+          isHome ? 'max-w-5xl justify-start' : 'max-w-7xl justify-between'
         }`}
       >
         <p className="text-muted font-sans">

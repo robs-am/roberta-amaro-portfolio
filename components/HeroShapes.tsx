@@ -24,7 +24,7 @@ const MAX_PIXEL_RATIO = 1.5;
 const CAMERA_Z = 30;
 const CAMERA_FOV = 12;
 
-// Rounded 3D forms (a ring, a knot, spheres) that bleed off the corners of the hero, in the same
+// Rounded 3D forms (a ring, a knot, spheres) grouped beside the hero text, in the same
 // material and colours as the menu (see shapeStyle.ts). `anchor` is the shape's center in normalized
 // viewport coordinates (-1..1, y up), so values near ±1 push it partly off screen; `radius` scales the
 // shape in blob units (one unit is UNIT_SHARE of the viewport). Kept abstract on purpose: elongated
@@ -40,13 +40,12 @@ type Blob = {
 };
 
 const blobs: Blob[] = [
-  // A big ring bleeding off the top-left, with a small sphere tucked in front of it.
-  { anchor: [-0.86, 0.5], z: 0, radius: 1.3, shape: "torus", tilt: [0.55, 0.3], drift: 0.08, tone: 0 },
-  { anchor: [-0.63, 0.13], z: 0.9, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1 },
-  // A small sphere on its own on the right, far behind, between the top controls and the knot.
-  { anchor: [0.88, 0.32], z: -1, radius: 0.4, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0 },
-  // The knot, cut by the bottom-right corner.
-  { anchor: [0.82, -0.52], z: 0.2, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.06, tone: 1 },
+  // The same cluster as the menu, in the free space to the right of the text: a ring, a knot and two
+  // spheres, overlapping in depth.
+  { anchor: [0.5, 0.42], z: 0, radius: 1.05, shape: "torus", tilt: [0.9, 0.4], drift: 0.1, tone: 0 },
+  { anchor: [0.52, -0.5], z: 0.4, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.08, tone: 1 },
+  { anchor: [0.86, 0.08], z: -1, radius: 0.62, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1 },
+  { anchor: [0.36, -0.02], z: 0.8, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0 },
 ];
 
 // One blob unit, as a fraction of the smaller of the viewport's height and 0.7 of its width.
@@ -55,14 +54,10 @@ const POINTER_SHIFT = 0.3;
 
 const SCENE_OPACITY = 1;
 // How solid the shapes are; below 1 the hero's glow shows through them.
-const SHAPE_OPACITY = 0.85;
+const SHAPE_OPACITY = 0.92;
 
 // The scene fades out over the first stretch of scroll, as a fraction of the viewport height.
 const FADE_DISTANCE = 0.45;
-
-// Fine film grain over the scene. An SVG turbulence filter as a data URI: no image file to load.
-const GRAIN =
-  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 
 // Decorative and mouse-reactive only with a fine pointer and no reduced-motion preference; with
 // reduced motion the scene is drawn once and never animated. Its opacity follows the scroll position
@@ -218,11 +213,8 @@ export function HeroShapes() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 -z-5 opacity-0"
     >
-      <canvas ref={canvasRef} className="size-full" />
-      <div
-        className="absolute inset-0 opacity-[0.16] mix-blend-overlay"
-        style={{ backgroundImage: GRAIN }}
-      />
+      {/* Under the text on narrow screens, so it is dimmed there. */}
+      <canvas ref={canvasRef} className="size-full max-md:opacity-50" />
     </div>,
     document.body,
   );

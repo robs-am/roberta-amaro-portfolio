@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { ArrowIcon } from "@/components/ArrowIcon";
+import { Grain } from "@/components/Grain";
 import { textLinkArrowClass, textLinkClass, textLinkLabelClass } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -121,6 +122,8 @@ export function Menu() {
               open ? "visible [clip-path:inset(0)]" : "invisible [clip-path:inset(0_0_100%_0)]"
             }`}
           >
+            {/* Before the shapes in the DOM, so the grain stays behind them. */}
+            <Grain layerClassName="z-0" />
             {shapesMounted && <MenuShapes />}
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}

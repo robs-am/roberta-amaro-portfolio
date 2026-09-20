@@ -92,46 +92,22 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden scroll-mt-(--header-height,0px)"
     >
       <HeroShapes />
-      {/* Full-bleed for the same reason as the experience/projects sections: `main` caps content
-          at max-w-7xl, which would otherwise clip this fade before it reaches the real edges. The
-          shared glow's own radial mask still leaves a sliver of visible color right at this edge,
-          which read as a hard line against the next (plain) section — this guarantees a clean
-          fade to the real background color over the last stretch, regardless of the mask's math.
-          -z-10, same as the glow, but painted after it in the DOM so it layers on top. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 -z-10 h-1/3 bg-linear-to-b from-transparent to-background"
-      />
-      <div className="px-6 sm:px-8">
-        <div className="mx-auto w-full max-w-3xl text-center">
-          <h1 className="text-6xl font-bold lg:text-8xl">
+      <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
+        <div className="max-w-2xl">
+          <h1 className="text-6xl leading-[1.05] font-bold uppercase lg:text-8xl xl:text-9xl">
             {profile.name.split(" ").map((word, index) => (
-              <span key={`${word}-${index}`}>
-                {index > 0 && " "}
+              <span key={`${word}-${index}`} className="block">
                 <span data-hero-word className="inline-block">
                   {word}
                 </span>
               </span>
             ))}
           </h1>
-          <div data-hero-item aria-hidden="true" className="mx-auto mt-6 h-1 w-10 rounded-full bg-accent" />
-          <p data-hero-item className="mt-4 text-2xl font-semibold tracking-wide text-foreground sm:text-3xl lg:text-4xl">
+          <div data-hero-item aria-hidden="true" className="mt-6 h-1 w-10 rounded-full bg-accent" />
+          <p data-hero-item className="mt-6 text-xl font-semibold tracking-wide text-foreground sm:text-2xl lg:text-3xl">
             {localize(profile.role, locale)}
           </p>
-          <p data-hero-item className="mt-8 text-pretty text-xl leading-8 tracking-wide text-foreground/90">
-            {localize(profile.bio, locale)}
-          </p>
-          <p data-hero-item className="mt-2 text-pretty text-lg leading-8 text-foreground/90">
-            {localize(profile.focus, locale)}{" "}
-            {profile.interests.map((interest, index) => (
-              <span key={localize(interest, locale)}>
-                {index > 0 && (index === profile.interests.length - 1 ? ` ${t("and")} ` : ", ")}
-                {localize(interest, locale)}
-              </span>
-            ))}
-            .
-          </p>
-          <div data-hero-item className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-1">
+          <div data-hero-item className="mt-8 flex flex-wrap gap-x-8 gap-y-1">
             <Link href="/experience" className={textLinkClass}>
               <ArrowIcon className={textLinkArrowClass} />
               <span className={textLinkLabelClass}>{t("experienceCta")}</span>
@@ -142,7 +118,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             </Link>
           </div>
           {links.length > 0 && (
-            <ul data-hero-item className="mt-8 flex justify-center gap-3">
+            <ul data-hero-item className="-ml-3 mt-8 flex gap-3">
               {links.map((link) => (
                 <li key={link.href} className="relative">
                   <a

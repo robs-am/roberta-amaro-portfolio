@@ -34,18 +34,18 @@ Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` r
 
 | Token | Classe Tailwind | Claro | Escuro | Uso |
 |---|---|---|---|---|
-| `--background` | `bg-background` | `#faf6f6` | `#181216` | fundo da página |
-| `--card` | `bg-card` | `#ffffff` | `#221a20` | cards e blocos de conteúdo |
-| `--elevated` | `bg-elevated` | `#f5eded` | `#2b2128` | superfícies internas e hover |
-| `--foreground` | `text-foreground` | `#2b1f27` | `#f7eff3` | texto principal |
-| `--muted` | `text-muted` | `#6b5560` | `#c9b7c1` | texto secundário (datas, empresa, descrições) |
+| `--background` | `bg-background` | `#faf8f7` | `#171416` | fundo da página |
+| `--card` | `bg-card` | `#ffffff` | `#201c1e` | cards e blocos de conteúdo |
+| `--elevated` | `bg-elevated` | `#f4f0ef` | `#292427` | superfícies internas e hover |
+| `--foreground` | `text-foreground` | `#2a2427` | `#f5f1f3` | texto principal |
+| `--muted` | `text-muted` | `#675d63` | `#c5babf` | texto secundário (datas, empresa, descrições) |
 | `--accent` | `text-accent`, `bg-accent` | `#7f2f5f` | `#e59cc2` | destaque: links, traço decorativo do hero, pills, botão principal |
 | `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1029` | texto sobre fundo `bg-accent` |
-| `--border` | `border-border` | `rgba(127,47,95,0.18)` | `rgba(229,156,194,0.18)` | bordas e divisórias (decorativo, nunca texto) |
+| `--border` | `border-border` | `rgba(42,36,39,0.13)` | `rgba(255,255,255,0.12)` | bordas e divisórias (decorativo, nunca texto) |
 | `--highlight` | `text-highlight` | `#66264c` | `#f8d8e8` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
-| `--glow-1` | `bg-glow-1` | `#f5d5e5` | `#5c2a47` | brilho de fundo, primeira mancha (decorativo; ameixa no escuro, rosa no claro) |
+| `--glow-1` | `bg-glow-1` | `#f5d5e5` | `#532a42` | brilho de fundo, primeira mancha (decorativo; ameixa no escuro, rosa no claro) |
 | `--glow-2` | `bg-glow-2` | `#f9e4da` | `#74424f` | brilho de fundo, segunda mancha (decorativo; rosa-terra no escuro, pêssego no claro) |
-| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.5` | `0.4` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
+| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.32` | `0.32` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
 
 Opacidades sobre tokens funcionam normalmente (`bg-background/85`, `bg-accent/10`).
 
@@ -57,12 +57,12 @@ Razão de contraste WCAG dos pares de texto usados hoje:
 
 | Par (texto / fundo) | Claro | Escuro |
 |---|---|---|
-| `foreground` / `background` | 14.74 | 16.36 |
-| `foreground` / `card` | 15.81 | 15.04 |
-| `muted` / `background` | 6.33 | 9.70 |
-| `muted` / `card` | 6.79 | 8.92 |
-| `accent` / `background` | 7.91 | 8.68 |
-| `accent` / `card` | 8.49 | 7.98 |
+| `foreground` / `background` | 14.37 | 16.34 |
+| `foreground` / `card` | 15.22 | 15.05 |
+| `muted` / `background` | 5.97 | 9.71 |
+| `muted` / `card` | 6.32 | 8.95 |
+| `accent` / `background` | 8.02 | 8.59 |
+| `accent` / `card` | 8.49 | 7.92 |
 | `accent` / pill (`bg-accent/10` sobre `card`) | 7.20 | 6.63 |
 | `accent-foreground` / `accent` | 8.49 | 7.67 |
 
@@ -81,10 +81,10 @@ Com isso, o único par que precisa passar no pior caso é `foreground`:
 | Escuro | 0.8 | 7.76 |
 | Escuro | 0.65 | 8.60 |
 | Escuro | 0.5 | 9.79 |
-| Escuro | **0.4 (valor em uso, com as cores atuais)** | **10.81** |
-| Claro | **0.5 (valor em uso, com as cores atuais)** | **13.03** |
+| Escuro | **0.32 (valor em uso, com as cores atuais)** | **11.93** |
+| Claro | **0.32 (valor em uso, com as cores atuais)** | **13.02** |
 
-A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **9.08 no escuro** e **9.91 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
+A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **9.96 no escuro** e **9.80 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
 
 Se `--glow-1`, `--glow-2` ou `--glow-opacity` de qualquer tema mudarem, recalcule esse pior caso antes de assumir que o texto continua legível — cores mais claras de `--glow-2` custam mais opacidade no escuro. Se `muted`/`accent` voltarem a aparecer sobre o brilho em algum ponto, a opacidade segura cai bem mais (no claro, `muted` só passa com `--glow-opacity` em torno de 0.3 ou menos com as cores atuais).
 

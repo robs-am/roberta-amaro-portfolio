@@ -3,34 +3,36 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #faf6f6;
+  /* Neutrals (background, text, muted, borders) are near-grey with only a trace of warmth, so the
+     plum accent and the glow are the only pink on the page instead of tinting everything. */
+  --background: #faf8f7;
   --card: #ffffff;
-  --elevated: #f5eded;
-  --foreground: #2b1f27;
-  --muted: #6b5560;
+  --elevated: #f4f0ef;
+  --foreground: #2a2427;
+  --muted: #675d63;
   --accent: #7f2f5f;
   --accent-foreground: #ffffff;
-  --border: rgba(127, 47, 95, 0.18);
+  --border: rgba(42, 36, 39, 0.13);
   --glow-1: #f5d5e5;
   --glow-2: #f9e4da;
-  --glow-opacity: 0.5;
+  --glow-opacity: 0.32;
   /* Darker plum for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
   --highlight: #66264c;
 }
 
 .dark {
-  --background: #181216;
-  --card: #221a20;
-  --elevated: #2b2128;
-  --foreground: #f7eff3;
-  --muted: #c9b7c1;
+  --background: #171416;
+  --card: #201c1e;
+  --elevated: #292427;
+  --foreground: #f5f1f3;
+  --muted: #c5babf;
   --accent: #e59cc2;
   --accent-foreground: #3a1029;
-  --border: rgba(229, 156, 194, 0.18);
-  --glow-1: #5c2a47;
+  --border: rgba(255, 255, 255, 0.12);
+  --glow-1: #532a42;
   --glow-2: #74424f;
   /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
-  --glow-opacity: 0.4;
+  --glow-opacity: 0.32;
   --highlight: #f8d8e8;
 }
 
@@ -103,6 +105,11 @@
   .dark .glow-home {
     mask-image: radial-gradient(52% 58% at 50% 42%, #000 25%, transparent 100%);
   }
+}
+
+/* The home has no glow: like the menu it is a flat background, and the 3D shapes carry the colour. */
+.glow-home {
+  display: none;
 }
 
 .project-panel {
