@@ -15,36 +15,24 @@ import {
   WebGLRenderer,
 } from "three";
 import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
+import {
+  PORTRAIT_ASPECT,
+  POINTER_SHIFT,
+  SHAPE_OPACITY,
+  UNIT_SHARE,
+  blobs,
+  pointerCurrent,
+  pointerTarget,
+} from "@/components/shapesScene";
 
 const MAX_PIXEL_RATIO = 1.5;
 const CAMERA_Z = 30;
 const CAMERA_FOV = 12;
 const POINTER_EASING = 0.05;
-const POINTER_SHIFT = 0.4;
-const UNIT_SHARE = 0.3;
 
-// Same material and colours as the hero shapes (see shapeStyle.ts), with static rounded 3D forms (a ring, a knot, spheres):
-// the menu only needs atmosphere behind the big type, so no morphing and no per-frame geometry.
-// `anchor` is the center in normalized viewport coordinates (-1..1, y up); `radius` scales the shape
-// in blob units. Kept abstract on purpose: elongated tubes next to spheres read as anatomy.
-type Blob = {
-  anchor: [number, number];
-  z: number;
-  radius: number;
-  shape: "sphere" | "torus" | "knot";
-  tilt: [number, number];
-  drift: number;
-  tone: 0 | 1;
-};
-
-const blobs: Blob[] = [
-  // One cluster in the free space to the right of the items; the pieces overlap in depth.
-  { anchor: [0.48, 0.5], z: 0, radius: 0.95, shape: "torus", tilt: [1.1, 0.4], drift: 0.12, tone: 0 },
-  { anchor: [0.54, -0.5], z: 0.4, radius: 0.75, shape: "knot", tilt: [0.3, 0.8], drift: -0.1, tone: 1 },
-  { anchor: [0.85, 0.1], z: -1, radius: 0.7, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1 },
-  { anchor: [0.42, -0.05], z: 0.8, radius: 0.32, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0 },
-];
-
+// The same scene as the hero's (see shapesScene.ts): same shapes, places, sizes, material and pointer
+// offset, so opening the menu over the home does not make the shapes jump. The menu only needs
+// atmosphere behind the big type, so there is no morphing and no per-frame geometry.
 // Decorative layer behind the menu items. Mount it only while the menu is visible: it owns a WebGL
 // context and an animation loop, which are torn down on unmount.
 export function MenuShapes() {
@@ -62,10 +50,11 @@ export function MenuShapes() {
     camera.position.z = CAMERA_Z;
 
     const lights = createShapeLights(scene);
-    const materials = createShapeMaterials();
+    const materials = createShapeMaterials(SHAPE_OPACITY);
 
     const unitSphere = new SphereGeometry(1, 48, 48);
     const geometries: BufferGeometry[] = [unitSphere];
+    const meshes: Mesh[] = [];
     const groups = blobs.map((blob) => {
       const group = new Group();
       const material = materials[blob.tone];
@@ -76,6 +65,7 @@ export function MenuShapes() {
       const mesh = new Mesh(geometry, material);
       mesh.scale.setScalar(blob.radius);
       group.add(mesh);
+      meshes.push(mesh);
       scene.add(group);
       return group;
     });
@@ -85,8 +75,9 @@ export function MenuShapes() {
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
     const pointerQuery = window.matchMedia("(pointer: fine)");
-    const target = { x: 0, y: 0 };
-    const current = { x: 0, y: 0 };
+    // Start from where the hero's pointer state was, so nothing jumps.
+    const target = { ...pointerTarget };
+    const current = { ...pointerCurrent };
     let frame = 0;
     let unit = 1;
 
@@ -132,7 +123,12 @@ export function MenuShapes() {
       const halfHeight = Math.tan(MathUtils.degToRad(CAMERA_FOV / 2)) * CAMERA_Z;
       const halfWidth = halfHeight * camera.aspect;
       unit = Math.min(halfHeight, halfWidth * 0.7) * UNIT_SHARE;
-      blobs.forEach(({ anchor: [x, y], z }, index) => bases[index].set(x * halfWidth, y * halfHeight, z));
+      const portrait = camera.aspect < PORTRAIT_ASPECT;
+      blobs.forEach((blob, index) => {
+        const [x, y] = portrait ? blob.portrait.anchor : blob.anchor;
+        bases[index].set(x * halfWidth, y * halfHeight, blob.z);
+        meshes[index].scale.setScalar(portrait ? blob.portrait.radius : blob.radius);
+      });
       sync();
     };
 

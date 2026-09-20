@@ -16,6 +16,15 @@ import {
   WebGLRenderer,
 } from "three";
 import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
+import {
+  PORTRAIT_ASPECT,
+  POINTER_SHIFT,
+  SHAPE_OPACITY,
+  UNIT_SHARE,
+  blobs,
+  pointerCurrent,
+  pointerTarget,
+} from "@/components/shapesScene";
 
 const POINTER_EASING = 0.06;
 const MAX_PIXEL_RATIO = 1.5;
@@ -24,43 +33,7 @@ const MAX_PIXEL_RATIO = 1.5;
 const CAMERA_Z = 30;
 const CAMERA_FOV = 12;
 
-// Rounded 3D forms (a ring, a knot, spheres) grouped beside the hero text, in the same
-// material and colours as the menu (see shapeStyle.ts). `anchor` is the shape's center in normalized
-// viewport coordinates (-1..1, y up), so values near ±1 push it partly off screen; `radius` scales the
-// shape in blob units (one unit is UNIT_SHARE of the viewport). Kept abstract on purpose: elongated
-// tubes next to spheres read as anatomy.
-type Blob = {
-  anchor: [number, number];
-  z: number;
-  radius: number;
-  shape: "sphere" | "torus" | "knot";
-  tilt: [number, number];
-  drift: number;
-  tone: 0 | 1;
-  /** Where and how big it is on a portrait screen (see PORTRAIT_ASPECT). */
-  portrait: { anchor: [number, number]; radius: number };
-};
-
-const blobs: Blob[] = [
-  // The same cluster as the menu, in the free space to the right of the text: a ring, a knot and two
-  // spheres, overlapping in depth. On a portrait screen they keep the menu's arrangement and sizes:
-  // a column down the right edge (ring, wine sphere, small sphere, knot), beside the short lines of text.
-  { anchor: [0.5, 0.42], z: 0, radius: 1.05, shape: "torus", tilt: [0.9, 0.4], drift: 0.1, tone: 0, portrait: { anchor: [0.64, 0.52], radius: 0.95 } },
-  { anchor: [0.52, -0.5], z: 0.4, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.08, tone: 1, portrait: { anchor: [0.6, -0.72], radius: 0.75 } },
-  { anchor: [0.86, 0.08], z: -1, radius: 0.62, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1, portrait: { anchor: [0.85, 0.1], radius: 0.7 } },
-  { anchor: [0.36, -0.02], z: 0.8, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0, portrait: { anchor: [0.42, -0.05], radius: 0.32 } },
-];
-
-// Below this width-to-height ratio the screen is treated as portrait (a phone, or a tablet held upright).
-const PORTRAIT_ASPECT = 0.85;
-
-// One blob unit, as a fraction of the smaller of the viewport's height and 0.7 of its width.
-const UNIT_SHARE = 0.3;
-const POINTER_SHIFT = 0.3;
-
 const SCENE_OPACITY = 1;
-// How solid the shapes are; below 1 the hero's glow shows through them.
-const SHAPE_OPACITY = 0.92;
 
 // The scene fades out over the first stretch of scroll, as a fraction of the viewport height.
 const FADE_DISTANCE = 0.45;
@@ -141,6 +114,8 @@ export function HeroShapes() {
     const tick = (time: number) => {
       current.x += (target.x - current.x) * POINTER_EASING;
       current.y += (target.y - current.y) * POINTER_EASING;
+      pointerCurrent.x = current.x;
+      pointerCurrent.y = current.y;
       draw(time / 1000);
       frame = requestAnimationFrame(tick);
     };
@@ -186,6 +161,8 @@ export function HeroShapes() {
       if (!pointerQuery.matches || !motionQuery.matches) return;
       target.x = (event.clientX / window.innerWidth) * 2 - 1;
       target.y = (event.clientY / window.innerHeight) * 2 - 1;
+      pointerTarget.x = target.x;
+      pointerTarget.y = target.y;
     };
 
     applyColors();
