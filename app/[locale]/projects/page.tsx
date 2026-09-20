@@ -47,7 +47,7 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
       >
         ← {tPage("back")}
       </Link>
-      <h1 data-reveal className="mt-8 text-3xl font-semibold">
+      <h1 className="mt-8 text-3xl font-semibold">
         {t("title")}
       </h1>
       {/* Capped narrower than the page's own max-w-7xl and centered: at full width, 2 columns of

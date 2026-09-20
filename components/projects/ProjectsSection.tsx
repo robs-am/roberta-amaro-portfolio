@@ -39,7 +39,7 @@ export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) 
       />
       <div className="mx-auto max-w-7xl px-6 sm:px-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h2 id="projects-title" data-reveal className="text-3xl font-semibold">
+          <h2 id="projects-title" className="text-3xl font-semibold">
             {t("title")}
           </h2>
           {projects.length > highlighted.length && (

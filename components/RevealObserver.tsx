@@ -22,6 +22,8 @@ export function RevealObserver() {
       { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
     );
 
+    document.documentElement.dataset.revealReady = "";
+
     document
       .querySelectorAll("[data-reveal]:not([data-revealed])")
       .forEach((element) => observer.observe(element));

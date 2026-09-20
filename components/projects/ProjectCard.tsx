@@ -32,10 +32,7 @@ export async function ProjectCard({
       <ProjectPanel project={project} locale={locale} newTab={t("newTab")} />
 
       <div className="flex flex-1 flex-col bg-card/40 p-5 backdrop-blur-sm">
-        <p className="text-xs font-medium tracking-wide text-muted uppercase">
-          {localize(project.category, locale)}
-        </p>
-        <h3 className="mt-1.5 flex items-start justify-between gap-3 text-xl font-semibold">
+        <h3 className="flex items-start justify-between gap-3 text-xl font-semibold">
           {title}
           {primary && (
             <a

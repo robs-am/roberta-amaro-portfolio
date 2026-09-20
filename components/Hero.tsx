@@ -103,13 +103,10 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             ))}
           </h1>
           <div data-hero-item aria-hidden="true" className="mt-6 h-1 w-10 rounded-full bg-accent" />
-          <p
-            data-hero-item
-            className="mt-4 text-xl font-semibold tracking-wide text-foreground uppercase sm:text-2xl"
-          >
+          <p data-hero-item className="mt-4 text-xl font-semibold text-foreground sm:text-2xl">
             {localize(profile.role, locale)}
           </p>
-          <p data-hero-item className="mt-8 text-pretty text-lg leading-8 text-foreground/90">
+          <p data-hero-item className="mt-8 text-pretty text-xl leading-8 tracking-wide text-foreground/90">
             {localize(profile.bio, locale)}
           </p>
           <p data-hero-item className="mt-2 text-pretty text-lg leading-8 text-foreground/90">
@@ -117,7 +114,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             {profile.interests.map((interest, index) => (
               <span key={localize(interest, locale)}>
                 {index > 0 && (index === profile.interests.length - 1 ? ` ${t("and")} ` : ", ")}
-                <span className="font-semibold text-highlight">{localize(interest, locale)}</span>
+                {localize(interest, locale)}
               </span>
             ))}
             .
