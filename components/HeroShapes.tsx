@@ -55,7 +55,7 @@ const POINTER_SHIFT = 0.3;
 
 const SCENE_OPACITY = 1;
 // How solid the shapes are; below 1 the hero's glow shows through them.
-const SHAPE_OPACITY = 0.68;
+const SHAPE_OPACITY = 0.85;
 
 // The scene fades out over the first stretch of scroll, as a fraction of the viewport height.
 const FADE_DISTANCE = 0.45;
@@ -68,7 +68,8 @@ const GRAIN =
 // reduced motion the scene is drawn once and never animated. Its opacity follows the scroll position
 // directly (no timed transition), so it fades as fast as you scroll and never lags. The layer is portaled
 // to <body> and fixed to the viewport: the hero clips its own overflow (and is translated, which would
-// also re-anchor a fixed child), and this way the scene runs under the sticky header too.
+// also re-anchor a fixed child), and this way the scene runs under the sticky header too. It sits
+// just above the glow and the hero's bottom fade (both -z-10), so neither washes the shapes out.
 export function HeroShapes() {
   const layerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -215,7 +216,7 @@ export function HeroShapes() {
     <div
       ref={layerRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 opacity-0"
+      className="pointer-events-none fixed inset-0 -z-5 opacity-0"
     >
       <canvas ref={canvasRef} className="size-full" />
       <div

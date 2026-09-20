@@ -9,7 +9,9 @@ export function Footer() {
   const isHome = usePathname() === '/'
 
   return (
-    <footer className="border-t border-border py-8 text-base">
+    // No rule on the home: it would cut across the hero's shapes, and the hero's own fade already
+    // separates it from the footer. The other pages keep the full-width rule.
+    <footer className={`py-8 text-base ${isHome ? '' : 'border-t border-border'}`}>
       <div
         className={`mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-3 px-6 sm:px-8 ${
           isHome ? 'justify-center' : 'justify-between'
