@@ -21,8 +21,6 @@
   --reveal-distance: 28px;
   --duration-hero: 900ms;
   --hero-stagger: 150ms;
-  --hero-distance: 12px;
-  --hero-blur: 6px;
   /* Matches the hero's full sequence (last line's delay + its own duration) so later sections don't reveal mid-animation. */
   --reveal-hold: calc(var(--duration-hero) + 2 * var(--hero-stagger));
 }
@@ -123,15 +121,6 @@
   clip-path: polygon(var(--slant) 0, 100% 0, 100% 100%, 0 100%);
 }
 
-@keyframes hero-in {
-  from {
-    opacity: 0;
-    scale: 0.85;
-    translate: 0 var(--hero-distance);
-    filter: blur(var(--hero-blur));
-  }
-}
-
 @keyframes reveal-fallback {
   to {
     opacity: 1;
@@ -152,18 +141,6 @@
      double-applied by the browser, then restores it once the animation finishes. */
   html {
     scroll-behavior: smooth;
-  }
-
-  .hero-reveal > * {
-    animation: hero-in var(--duration-hero) var(--ease-soft) both;
-  }
-
-  .hero-reveal > :nth-child(2) {
-    animation-delay: var(--hero-stagger);
-  }
-
-  .hero-reveal > :nth-child(3) {
-    animation-delay: calc(var(--hero-stagger) * 2);
   }
 
   @supports (animation-timeline: view()) {
@@ -201,6 +178,20 @@
   [data-timeline-line]:not([data-ready]) {
     transform: scaleY(0);
     animation: timeline-line-fallback 0s 3s forwards;
+  }
+}
+
+@keyframes hero-item-fallback {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hidden only until Hero's anime.js entrance takes over (it sets data-ready on the section), shown anyway after 3s otherwise. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .hero-reveal:not([data-ready]) :is([data-hero-word], [data-hero-item]) {
+    opacity: 0;
+    animation: hero-item-fallback 0s 3s forwards;
   }
 }
 

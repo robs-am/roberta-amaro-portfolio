@@ -1,6 +1,8 @@
 "use client";
 
+import { animate, stagger } from "animejs";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
 import { onSmoothAnchorClick } from "@/components/header/smoothScroll";
 import { profile } from "@/data/profile";
@@ -17,6 +19,53 @@ const ctaSecondaryClass =
 
 export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const t = useTranslations("Hero");
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Enters each `[data-hero-item]` in DOM order (name words → bar → role → text → CTAs → links).
+  // CSS hides them only until this runs (see `[data-hero-item]` in globals.css), with a fallback
+  // that shows them anyway. Reduced motion never hides them, so there is nothing to do.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+
+    const words = section.querySelectorAll<HTMLElement>("[data-hero-word]");
+    const items = section.querySelectorAll<HTMLElement>("[data-hero-item]");
+    for (const target of [...words, ...items]) target.style.opacity = "0";
+    section.dataset.ready = "";
+
+    const [first, ...rest] = words;
+    const animations = [
+      // First name: wiped in from the left, sliding slightly to the right as it is revealed.
+      animate(first, {
+        opacity: [0, 1],
+        clipPath: ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"],
+        translateX: [-32, 0],
+        duration: 1400,
+        ease: "outExpo",
+      }),
+      // Following names: wiped in from the top, dropping into the same line.
+      animate(rest, {
+        opacity: [0, 1],
+        clipPath: ["inset(0% 0% 100% 0%)", "inset(0% 0% 0% 0%)"],
+        translateY: [-40, 0],
+        duration: 1400,
+        delay: stagger(250, { start: 900 }),
+        ease: "outExpo",
+      }),
+      animate(items, {
+        opacity: [0, 1],
+        translateY: [28, 0],
+        duration: 1300,
+        delay: stagger(180, { start: 1900 }),
+        ease: "outExpo",
+      }),
+    ];
+
+    return () => {
+      for (const animation of animations) animation.cancel();
+    };
+  }, []);
 
   const links = [
     profile.email && { href: `mailto:${profile.email}`, label: t("email"), Icon: EmailIcon, external: false },
@@ -26,6 +75,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="hero-reveal relative left-1/2 w-screen -translate-x-1/2 snap-start flex h-[calc(100dvh-var(--header-height,0px))] flex-col justify-center overflow-x-hidden scroll-mt-(--header-height,0px)"
     >
@@ -42,16 +92,26 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       <div className="px-6 sm:px-8">
         <div className="mx-auto w-full max-w-3xl">
           <h1 className="text-6xl font-bold lg:text-8xl">
-            {profile.name}
+            {profile.name.split(" ").map((word, index) => (
+              <span key={`${word}-${index}`}>
+                {index > 0 && " "}
+                <span data-hero-word className="inline-block">
+                  {word}
+                </span>
+              </span>
+            ))}
           </h1>
-          <div aria-hidden="true" className="mt-6 h-1 w-10 rounded-full bg-accent" />
-          <p className="mt-4 text-xl font-semibold tracking-wide text-foreground uppercase sm:text-2xl">
+          <div data-hero-item aria-hidden="true" className="mt-6 h-1 w-10 rounded-full bg-accent" />
+          <p
+            data-hero-item
+            className="mt-4 text-xl font-semibold tracking-wide text-foreground uppercase sm:text-2xl"
+          >
             {localize(profile.role, locale)}
           </p>
-          <p className="mt-8 text-pretty text-lg leading-8 text-foreground/90">
+          <p data-hero-item className="mt-8 text-pretty text-lg leading-8 text-foreground/90">
             {localize(profile.bio, locale)}
           </p>
-          <p className="mt-2 text-pretty text-lg leading-8 text-foreground/90">
+          <p data-hero-item className="mt-2 text-pretty text-lg leading-8 text-foreground/90">
             {localize(profile.focus, locale)}{" "}
             {profile.interests.map((interest, index) => (
               <span key={localize(interest, locale)}>
@@ -61,7 +121,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             ))}
             .
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div data-hero-item className="mt-8 flex flex-wrap gap-3">
             <a href="#experience" onClick={onSmoothAnchorClick} className={ctaSecondaryClass}>
               <ArrowIcon className="size-4 shrink-0" />
               <span>{t("experienceCta")}</span>
@@ -72,7 +132,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             </a>
           </div>
           {links.length > 0 && (
-            <ul className="mt-8 flex gap-3">
+            <ul data-hero-item className="mt-8 flex gap-3">
               {links.map((link) => (
                 <li key={link.href}>
                   <a
