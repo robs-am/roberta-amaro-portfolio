@@ -2,14 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import {
-  AmbientLight,
   BufferGeometry,
-  Color,
-  DirectionalLight,
   Group,
   MathUtils,
   Mesh,
-  MeshPhysicalMaterial,
   PerspectiveCamera,
   Scene,
   SphereGeometry,
@@ -18,6 +14,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
+import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
 
 const MAX_PIXEL_RATIO = 1.5;
 const CAMERA_Z = 30;
@@ -26,7 +23,7 @@ const POINTER_EASING = 0.05;
 const POINTER_SHIFT = 0.4;
 const UNIT_SHARE = 0.3;
 
-// Same material family as the hero blobs, but static rounded 3D forms (a ring, a knot, spheres):
+// Same material and colours as the hero shapes (see shapeStyle.ts), with static rounded 3D forms (a ring, a knot, spheres):
 // the menu only needs atmosphere behind the big type, so no morphing and no per-frame geometry.
 // `anchor` is the center in normalized viewport coordinates (-1..1, y up); `radius` scales the shape
 // in blob units. Kept abstract on purpose: elongated tubes next to spheres read as anatomy.
@@ -64,24 +61,8 @@ export function MenuShapes() {
     const camera = new PerspectiveCamera(CAMERA_FOV, 1, 0.1, 50);
     camera.position.z = CAMERA_Z;
 
-    const ambient = new AmbientLight(0xffffff, 0.35);
-    const key = new DirectionalLight(0xffffff, 2.5);
-    key.position.set(-4, 5, 5);
-    const rim = new DirectionalLight(0xffffff, 1.5);
-    rim.position.set(5, -3, 3);
-    scene.add(ambient, key, rim);
-
-    const materials = [0, 1].map(
-      () =>
-        new MeshPhysicalMaterial({
-          roughness: 0.6,
-          metalness: 0,
-          clearcoat: 0.5,
-          clearcoatRoughness: 0.35,
-          sheen: 1,
-          sheenRoughness: 0.35,
-        }),
-    );
+    const lights = createShapeLights(scene);
+    const materials = createShapeMaterials();
 
     const unitSphere = new SphereGeometry(1, 48, 48);
     const geometries: BufferGeometry[] = [unitSphere];
@@ -100,23 +81,7 @@ export function MenuShapes() {
     });
     const bases = blobs.map(() => new Vector3());
 
-    const applyColors = () => {
-      const styles = getComputedStyle(document.documentElement);
-      const token = (name: string) => new Color(styles.getPropertyValue(name).trim());
-      const dark = document.documentElement.classList.contains("dark");
-      // On the dark page the surface tokens are nearly the background, so the shapes would vanish:
-      // one tone is a neutral stone grey, so the pink stays with the active menu item, the other a deeper wine red, so the two read apart.
-      materials[0].color = dark ? new Color(0x9d9797) : token("--glow-2").lerp(new Color(0xd9855f), 0.35);
-      materials[1].color = dark ? token("--glow-1").lerp(new Color(0x6b2a35), 0.5) : token("--accent").lerp(new Color(0x5a4652), 0.45);
-      materials.forEach((material) => material.sheenColor.copy(material.color).lerp(new Color(0xffffff), dark ? 0.15 : 0.5));
-      // The theme's highlight and glow tokens are pink and would tint the stone shape, so on dark the
-      // lights are plain white.
-      key.color = dark ? new Color(0xffffff) : token("--card");
-      rim.color = dark ? new Color(0xf2f2f6) : token("--glow-2");
-      ambient.intensity = dark ? 0.8 : 1.0;
-      key.intensity = dark ? 2.5 : 1.6;
-      rim.intensity = dark ? 1.5 : 0.8;
-    };
+    const applyColors = () => applyShapeColors(materials, lights);
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
     const pointerQuery = window.matchMedia("(pointer: fine)");
