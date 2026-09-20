@@ -11,6 +11,7 @@
     "home": "Home",
     "nav": {
       "home": "Home",
+      "about": "About",
       "experience": "Experience",
       "projects": "Projects",
       "awards": "Awards"
@@ -51,6 +52,17 @@
     "newTab": "(opens in a new tab)",
     "whatIDid": "My contribution",
     "close": "Close"
+  },
+  "About": {
+    "title": "About",
+    "intro": "I'm a Front-End Software Engineer who steps into the Back-End when a project needs it. I started my career as a 3D Designer, and that background still shapes how I build: I care as much about how an interface feels as how it works.",
+    "curiosity": "I'm endlessly curious about new technologies and creative coding, and I love turning experiments into real products.",
+    "stack": "Technologies",
+    "alsoWorking": "Also working with"
+  },
+  "AboutPage": {
+    "title": "About | Roberta Amaro",
+    "description": "About Roberta Amaro, a Software Engineer specialized in Front-End."
   },
   "Awards": {
     "title": "Awards",
