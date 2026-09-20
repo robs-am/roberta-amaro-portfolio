@@ -19,10 +19,6 @@
   --duration-reveal: 900ms;
   --reveal-stagger: 120ms;
   --reveal-distance: 28px;
-  --duration-hero: 900ms;
-  --hero-stagger: 150ms;
-  /* Matches the hero's full sequence (last line's delay + its own duration) so later sections don't reveal mid-animation. */
-  --reveal-hold: calc(var(--duration-hero) + 2 * var(--hero-stagger));
 }
 
 .dark {
@@ -128,26 +124,12 @@
   }
 }
 
-@keyframes cta-reveal {
-  from {
-    opacity: 0;
-    translate: 0 8px;
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
   /* Animates the native scroll-snap correction on wheel/trackpad/touch scroll. Click-triggered
      navigation (smoothScroll.ts) temporarily switches this to "auto" so its own easing isn't
      double-applied by the browser, then restores it once the animation finishes. */
   html {
     scroll-behavior: smooth;
-  }
-
-  @supports (animation-timeline: view()) {
-    .animate-cta-reveal {
-      animation: cta-reveal 600ms var(--ease-expressive) both;
-      animation-delay: calc(var(--reveal-hold) + 100ms);
-    }
   }
 }
 
