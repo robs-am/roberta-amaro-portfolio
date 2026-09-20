@@ -25,10 +25,8 @@ export async function ProjectCard({
       : undefined;
 
   return (
-    // The reveal (data-reveal) lives on this outer wrapper and the hover lift on the inner card, so
-    // the reveal's slower duration/stagger delay never leak into the hover transition.
-    <article data-reveal className="h-full">
-    <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border transition-[transform,border-color] duration-500 ease-soft hover:border-accent/60 focus-within:border-accent/60 motion-safe:hover:-translate-y-1 motion-safe:focus-within:-translate-y-1">
+    <article className="h-full">
+    <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border transition-[border-color] duration-500 ease-soft hover:border-accent/60 focus-within:border-accent/60">
       <ProjectPanel project={project} locale={locale} newTab={t("newTab")} />
 
       <div className="flex flex-1 flex-col bg-card/40 p-5 backdrop-blur-sm">
