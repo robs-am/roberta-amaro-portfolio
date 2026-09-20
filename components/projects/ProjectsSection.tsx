@@ -24,19 +24,8 @@ export async function ProjectsSection({ locale }: Readonly<{ locale: Locale }>) 
       className="relative left-1/2 w-screen -translate-x-1/2 snap-start h-[calc(100dvh-var(--header-height,0px))] overflow-hidden scroll-mt-(--header-height,0px) py-16"
     >
       {/* The section itself breaks out to the full viewport width (it would otherwise inherit
-          `main`'s max-w-7xl) so the glow can reach both edges, like the hero's. Content below is
-          reined back into the same max-w-7xl column `main` uses everywhere else. */}
-      <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="glow-blob top-[-10%] right-[8%] h-[140%] w-[38%] bg-glow-2" />
-        <div className="glow-blob top-0 left-[10%] h-[110%] w-[28%] bg-glow-1" />
-      </div>
-      {/* Same technique as the hero's own fade (see Hero.tsx): a layer painted in the real
-          background color, fading to transparent, on top of the glow rather than relying on a
-          mask. Born gradually right where the plain, glow-free experience section ends. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 top-0 -z-10 h-1/3 bg-linear-to-b from-background to-transparent"
-      />
+          `main`'s max-w-7xl). Content below is reined back into the same max-w-7xl column `main`
+          uses everywhere else. */}
       <div className="mx-auto max-w-7xl px-6 sm:px-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h2 id="projects-title" className="text-3xl font-semibold">

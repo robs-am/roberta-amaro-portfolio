@@ -3,19 +3,19 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f1ede6;
-  --card: #fffdf8;
-  --elevated: #faf8f5;
-  --foreground: #2a2622;
-  --muted: #5f574d;
-  --accent: #2a5c68;
-  --accent-foreground: #fffdf8;
-  --border: rgba(67, 126, 142, 0.22);
-  --glow-1: #8ccfc9;
-  --glow-2: #9dd6e2;
-  --glow-opacity: 0.6;
-  /* Teal accent tuned to clear AA over the glow's worst point (unlike --accent, which fails there); see docs/design-system.md. */
-  --highlight: #1c4750;
+  --background: #faf6f6;
+  --card: #ffffff;
+  --elevated: #f5eded;
+  --foreground: #2b1f27;
+  --muted: #6b5560;
+  --accent: #7f2f5f;
+  --accent-foreground: #ffffff;
+  --border: rgba(127, 47, 95, 0.18);
+  --glow-1: #f5d5e5;
+  --glow-2: #f9e4da;
+  --glow-opacity: 0.5;
+  /* Darker plum for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
+  --highlight: #66264c;
 }
 
 .dark {
@@ -89,6 +89,19 @@
      the content instead of the empty area above it. Mobile keeps the top-anchored mask. */
   .glow-home {
     mask-image: radial-gradient(120% 85% at 55% 42%, #000 45%, transparent 100%);
+  }
+}
+
+/* Dark theme: the glow is far more saturated against the near-black background, so a full-width
+   wash reads as a generic aurora. A tighter mask keeps it as a pool of light behind the content,
+   with plain background around it. Declared after the rules above so it wins at equal specificity. */
+.dark .glow {
+  mask-image: radial-gradient(80% 65% at 55% 0%, #000 30%, transparent 100%);
+}
+
+@media (min-width: 1024px) {
+  .dark .glow-home {
+    mask-image: radial-gradient(52% 58% at 50% 42%, #000 25%, transparent 100%);
   }
 }
 
