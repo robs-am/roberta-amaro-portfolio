@@ -26,7 +26,7 @@ export function Grain({ layerClassName }: Readonly<{ layerClassName: string }>) 
     <>
       <div
         aria-hidden="true"
-        className={`${layer} opacity-[0.3] mix-blend-multiply dark:hidden`}
+        className={`${layer} opacity-[0.55] mix-blend-multiply dark:hidden`}
         style={{ backgroundImage: LIGHT_GRAIN }}
       />
       <div

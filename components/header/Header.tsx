@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import { BackButton } from "./BackButton";
-import { ControlDock, DockDivider } from "./ControlDock";
 import { HeaderShell } from "./HeaderShell";
 import { HideOnHome } from "./HideOnHome";
 import { HomeLink } from "./HomeLink";
@@ -20,14 +19,10 @@ export async function Header() {
             <BackButton />
           </div>
         </HideOnHome>
-        <div className="ml-auto">
-          <ControlDock>
-            <LocaleSwitcher />
-            <DockDivider />
-            <ThemeToggle />
-            <DockDivider />
-            <Menu />
-          </ControlDock>
+        <div className="ml-auto flex items-center gap-2">
+          <LocaleSwitcher />
+          <ThemeToggle />
+          <Menu />
         </div>
       </div>
     </HeaderShell>

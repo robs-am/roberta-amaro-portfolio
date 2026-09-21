@@ -94,9 +94,4 @@ Substitui a implementação com `next-themes` das tarefas 3.3 e 3.4, que ficam c
 
 - [x] 10.1 Reorganizar `components/` por assunto (`header`, `theme`, `home`, `shapes`, `experience`, `projects`, `background`, `layout`, `ui`), deixando a raiz vazia, e reescrever os imports; verificar com `pnpm exec tsc --noEmit`, `pnpm build` e `grep` sem nenhum import com o caminho antigo
 - [x] 10.2 Atualizar a árvore de pastas do `design.md`, que estava defasada, e os caminhos citados em `docs/design-system.md` e nos comentários do CSS
-- [x] 10.3 Reconciliar o resto do change com o site multipágina: `specs/portfolio-page` reescrita (páginas, menu em tela cheia, cápsula de controles, formas 3D, grão, animações), `portfolio-content` (lista e detalhe de projetos, página sobre), `localization` (troca de idioma sem âncora), `proposal.md` e `design.md` (sem âncoras, tokens ameixa, menu, formas 3D, animações, riscos). Os changes `projects-showcase-page` e `portfolio-footer` seguem desatualizados e ficam para reconciliar antes do arquivamento
-
-## 11. Prioridade: diagramação no celular
-
-- [x] 11.1 Redefinir a diagramação da home no celular: nome maior (`17.5vw`), cargo fluido em uma linha, bloco começando abaixo do header (`pt-36`), formas 3D reunidas em um agrupamento abaixo do texto (`cluster` em `shapesScene.ts`), nome com `text-foreground/85` e granulado do tema claro em 0.3
-- [x] 11.2 Redefinir o header e o menu: idioma, tema e menu numa única cápsula (`ControlDock`), repetida no menu aberto, e a lista do menu no celular começando na mesma altura do texto da home
+- [ ] 10.3 (pendência) Reconciliar o resto do change com o site multipágina (`specs/portfolio-page`, âncoras e `#hero` no `design.md` e no `proposal.md`, tabela de tokens teal do `design.md`), depois de conferir a home, `/about` e `/projects` no código

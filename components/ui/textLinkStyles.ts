@@ -14,12 +14,9 @@ export const textLinkLargeClass = textLinkClass.replace("text-base", "text-base 
 export const textLinkArrowLargeClass = textLinkArrowClass.replace("size-4", "size-4 sm:size-5 lg:size-6");
 
 // The hero's calls to action: large from the smallest screen, since on a phone they are stacked and
-// are the main thing to tap. On a phone the size follows the width, to fill the line like the name does.
-export const textLinkHeroClass = textLinkClass.replace(
-  "text-base",
-  "text-[clamp(1.375rem,6.6vw,1.75rem)] sm:text-[1.375rem] lg:text-2xl",
-);
-export const textLinkArrowHeroClass = textLinkArrowClass.replace("size-4", "size-6 sm:size-5 lg:size-6");
+// are the main thing to tap.
+export const textLinkHeroClass = textLinkClass.replace("text-base", "text-[1.375rem] lg:text-2xl");
+export const textLinkArrowHeroClass = textLinkArrowClass.replace("size-4", "size-5 lg:size-6");
 
 // Emphasised variant of the label: the underline is always drawn instead of growing on hover.
 export const textLinkLabelActiveClass =

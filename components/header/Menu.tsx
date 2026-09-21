@@ -8,8 +8,7 @@ import { Grain } from "@/components/background/Grain";
 import { textLinkArrowLargeClass, textLinkLabelClass, textLinkLargeClass } from "@/components/ui/textLinkStyles";
 import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
-import { CapsuleSvg } from "./capsuleIcon";
-import { ControlDock, DockDivider, dockButtonClass } from "./ControlDock";
+import { CapsuleSvg, menuButtonClass } from "./capsuleIcon";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { OPEN_MENU_EVENT, backTarget } from "./menuEvents";
 import { MenuShapes } from "./MenuShapes";
@@ -113,7 +112,7 @@ export function Menu() {
           setShapesMounted(true);
           setOpen(true);
         }}
-        className={dockButtonClass}
+        className={menuButtonClass}
       >
         <OpenIcon />
       </button>
@@ -137,26 +136,20 @@ export function Menu() {
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}
             <div className="relative mx-auto flex min-h-11 max-w-7xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
-              <ControlDock>
-                <LocaleSwitcher />
-                <DockDivider />
-                <ThemeToggle />
-                <DockDivider />
-                <button
-                  ref={closeRef}
-                  type="button"
-                  aria-label={t("menu.close")}
-                  onClick={() => setOpen(false)}
-                  className={dockButtonClass}
-                >
-                  <CloseIcon />
-                </button>
-              </ControlDock>
+              <LocaleSwitcher />
+              <ThemeToggle />
+              <button
+                ref={closeRef}
+                type="button"
+                aria-label={t("menu.close")}
+                onClick={() => setOpen(false)}
+                className={menuButtonClass}
+              >
+                <CloseIcon />
+              </button>
             </div>
 
-            {/* On a phone the list starts at the same height as the home's text (Hero: pt-36 = 9rem from the
-                top; the control row above takes 4.25rem, so 4.75rem here). From `sm` up both are centered. */}
-            <div className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 max-sm:justify-start max-sm:pt-[4.75rem] sm:px-8">
+            <div className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 sm:px-8">
               <nav aria-label={t("navLabel")}>
                 <ul className="flex flex-col gap-1">
                   {navItems.map((item, index) => {
@@ -218,7 +211,7 @@ export function Menu() {
 
 function OpenIcon() {
   return (
-    <CapsuleSvg className="size-7">
+    <CapsuleSvg>
       <rect x="3" y="4.5" width="18" height="5" rx="2.5" />
       <rect x="3" y="14.5" width="18" height="5" rx="2.5" />
     </CapsuleSvg>
@@ -227,7 +220,7 @@ function OpenIcon() {
 
 function CloseIcon() {
   return (
-    <CapsuleSvg className="size-7">
+    <CapsuleSvg>
       <rect x="2" y="9.5" width="20" height="5" rx="2.5" transform="rotate(45 12 12)" />
       <rect x="2" y="9.5" width="20" height="5" rx="2.5" transform="rotate(-45 12 12)" />
     </CapsuleSvg>

@@ -4,22 +4,20 @@ O repositório começou vazio (só o scaffolding do OpenSpec), então não há c
 
 A restrição que mais molda a arquitetura é o blog planejado para os próximos meses: ele precisa de URLs indexáveis por idioma. Por isso o i18n já nasce baseado em rotas, mesmo o MVP sendo uma página só.
 
-O plano inicial era uma página única com seções âncora (hero, experiências, projetos). Ele foi trocado por um site de quatro páginas: a home é só o hero (uma tela, com formas 3D), e sobre, experiências e projetos têm páginas próprias, alcançadas pelo menu em tela cheia ou pelos links do hero. Não há mais âncoras `#experience`, `#projects` nem `#hero`.
-
-A identidade visual partiu de uma referência da autora (https://www.alignerr.com/en/process: fundo escuro com brilho que reage ao mouse, cards com borda sutil), mas foi se afastando dela: o teal virou uma paleta ameixa/rosa sobre neutros quase cinza, e o hero ganhou formas 3D. As animações de entrada e hover seguem uma segunda referência, https://tubikstudio.com/works, sem adotar a tipografia dela. Os valores vigentes estão em `app/globals.css` e em `docs/design-system.md`.
+A identidade visual segue a referência escolhida pela autora: https://www.alignerr.com/en/process (fundo quase preto com brilho teal/azul que reage ao mouse, cards escuros com borda teal sutil, destaque teal claro). As animações de entrada e hover seguem uma segunda referência, https://tubikstudio.com/works, sem adotar a tipografia dela.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Páginas renderizadas no servidor e geradas estaticamente para cada idioma
-- JavaScript no cliente restrito aos controles interativos (idioma, tema, menu), às formas 3D, ao brilho de fundo, ao detalhe de projeto e às animações de entrada
+- Página totalmente renderizada no servidor e gerada estaticamente para cada idioma
+- JavaScript no cliente restrito aos controles interativos (idioma, tema, menu mobile), ao brilho de fundo e ao observador das animações de entrada
 - Estrutura `app/[locale]/` que aceite `blog/` depois sem mexer no que já existe
 - Identidade visual centralizada em tokens, para ajustar cores, fontes e movimento sem tocar nos componentes
 
 **Non-Goals:**
 - Suporte a mais de dois idiomas (a estrutura permite, mas não será testada)
-- WebGL fora das formas 3D decorativas (o fundo em si é CSS) ou animação contínua do brilho enquanto o ponteiro está parado
-- Bibliotecas de animação além do anime.js (GSAP, Framer Motion) ou rolagem suavizada por JavaScript
+- Fundo em WebGL/canvas ou animação contínua enquanto o ponteiro está parado
+- Bibliotecas de animação (GSAP, Framer Motion) ou rolagem suavizada por JavaScript
 - Fontes pagas (a "The Future" da Alignerr e a Lausanne do Tubik ficam de fora)
 - Testes automatizados end-to-end (verificação manual pelas specs no MVP)
 - Analytics, SEO avançado (sitemap, Open Graph images), deploy
@@ -33,8 +31,8 @@ A identidade visual partiu de uma referência da autora (https://www.alignerr.co
 ```
 app/
   [locale]/
-    layout.tsx            <html lang>, fontes, script de tema, brilho, grão, header, rodapé, metadados
-    page.tsx              home (só o hero)
+    layout.tsx            <html lang>, fontes, script de tema, brilho, header, rodapé, metadados
+    page.tsx              home (hero)
     about/page.tsx        sobre e stack
     experience/page.tsx   trajetória: experiências, formação e prêmios
     projects/page.tsx     todos os projetos
@@ -45,8 +43,8 @@ app/
   sitemap.ts
   robots.ts
 components/
-  header/                 Header, HeaderShell, HideOnHome, HomeLink, BackButton, ControlDock,
-                          LocaleSwitcher, Menu, MenuShapes, menuEvents, navItems, capsuleIcon
+  header/                 Header, HeaderShell, HideOnHome, HomeLink, BackButton, LocaleSwitcher,
+                          Menu, MenuShapes, menuEvents, navItems, capsuleIcon
   theme/                  theme.ts (lógica do tema), ThemeSync, ThemeToggle
   home/                   Hero, HeroShapes, ContactIcons
   shapes/                 shapesScene, shapeStyle, hoverSpin (3D compartilhado entre hero e menu)
@@ -90,7 +88,7 @@ App Router é o padrão atual e o que o next-intl suporta com mais recursos (Ser
 
 Alternativas: Context + localStorage (descartado por não gerar URLs indexáveis para o blog); `next-i18next` (feito para Pages Router); implementação manual com dicionários (reinventa detecção, cookie e navegação).
 
-**Troca de idioma e âncoras:** o site não usa mais âncoras entre seções, e o `ScrollReset` remove qualquer fragmento da URL ao abrir uma página, então o `LocaleSwitcher` não preserva fragmento: ele troca o idioma na mesma página (`router.replace(pathname, { locale, scroll: false })`) e leva a página ao topo (`window.scrollTo(0, 0)`), para evitar que a navegação do roteador e a rolagem disputem a posição.
+**Preservar a âncora ao trocar idioma:** o fragmento não chega ao servidor. O `LocaleSwitcher` anexa `window.location.hash` ao caminho passado para `router.replace(..., { locale })`; a navegação do next-intl preserva o fragmento.
 
 **Troca de idioma sem espera:** o Next.js trata `/pt` e `/en` como o mesmo layout raiz (ignora o valor do parâmetro), então a troca é uma navegação no cliente que depende do payload da outra rota. O `LocaleSwitcher` chama `router.prefetch(pathname, { locale })` para os outros idiomas ao montar, e o clique usa dados já carregados. O prefetch só roda em produção; no dev server a troca continua mais lenta.
 
@@ -111,24 +109,21 @@ Alternativas: manter o `next-themes` (mesmo comportamento para o visitante, mas 
 ### Tokens de identidade visual
 Cores definidas como variáveis CSS em `globals.css`, com valores em `:root` e sobrescritos para o tema escuro (media query e `data-theme="dark"`), expostos ao Tailwind via `@theme`. Componentes usam só as classes dos tokens (`bg-card`, `text-muted`...), nunca cores cruas. Valores extraídos dos tokens da referência:
 
-Os neutros (fundo, texto, bordas) são quase cinza, com só um traço de calor, para que o acento ameixa e o brilho sejam o único rosa da página em vez de tingir tudo.
-
 | Token | Claro | Escuro | Uso |
 |---|---|---|---|
-| `--background` | `#ebe6e4` | `#171416` | fundo da página |
-| `--card` | `#f5f2f0` | `#201c1e` | superfícies elevadas |
-| `--elevated` | `#e4dfdd` | `#292427` | superfícies internas, detalhe do projeto |
-| `--foreground` | `#2a2427` | `#f5f1f3` | texto principal |
-| `--muted` | `#675d63` | `#c5babf` | texto secundário |
-| `--accent` | `#7f2f5f` | `#e08a9f` | links, traço do hero, item atual do menu |
-| `--accent-foreground` | `#ffffff` | `#3a1029` | texto sobre fundo em `--accent` |
-| `--border` | `rgba(42,36,39,0.13)` | `rgba(255,255,255,0.12)` | bordas |
-| `--glow-1` | `#f5d5e5` | `#532a42` | brilho de fundo e formas |
-| `--glow-2` | `#f9e4da` | `#74424f` | brilho de fundo e formas |
-| `--glow-opacity` | `0.32` | `0.32` | opacidade das manchas do brilho |
-| `--highlight` | `#66264c` | `#f8d8e8` | texto sobre o brilho (mais escuro no claro, mais claro no escuro) |
+| `--background` | `#f1ede6` | `#181818` | fundo da página |
+| `--card` | `#fffdf8` | `#202020` | cards e itens da timeline |
+| `--elevated` | `#faf8f5` | `#262626` | superfícies internas e hover |
+| `--foreground` | `#2a2622` | `#f5f5f4` | texto principal |
+| `--muted` | `#5f574d` | `#bcbcbc` | texto secundário |
+| `--accent` | `#2a5c68` | `#7eb3c1` | links, pontos da timeline, botão |
+| `--accent-foreground` | `#fffdf8` | `#0f2a31` | texto sobre o botão teal |
+| `--border` | `rgba(67,126,142,0.22)` | `rgba(126,179,193,0.18)` | bordas |
+| `--glow-1` | `#7eb3c1` | `#0f7482` | brilho de fundo (teal) |
+| `--glow-2` | `#7cc0f0` | `#2f8fe0` | brilho de fundo (azul) |
+| `--glow-opacity` | `0.8` | `0.5` | opacidade das manchas do brilho — ver "Texto sobre o brilho" em `docs/design-system.md` para o porquê desses valores (contraste AA do texto do hero e da nav sobre o brilho) |
 
-O contraste dos pares de texto desta paleta ainda precisa ser conferido com Lighthouse ou axe (tarefas 7.3 e 9.7); a tabela de contraste que existia aqui era da paleta teal anterior e foi retirada. O nome do hero usa `--foreground` a 85% nos dois temas, para não pesar sobre o fundo (o preto puro no claro e o branco puro no escuro competiam com o resto da página).
+Contraste calculado para todos os pares de texto: o menor é 4.52:1 (texto teal sobre pill com 14% de teal no tema claro), por isso a pill usa 10% de teal. Botão: 6.52:1 no escuro e 5.46:1 no claro. Pares entre 4.5 e 5 ficam na verificação da task de contraste.
 
 A referência viva de tokens e tipografia, para uso no dia a dia, fica em `docs/design-system.md`.
 
@@ -141,62 +136,60 @@ A Geist do template é removida. Alternativas: só IBM Plex Sans (visual mais t�
 
 ### Brilho de fundo interativo
 A referência usa um shader WebGL com 6 cores e animação por tempo. Aqui o efeito é feito com CSS e um componente client pequeno, `BackgroundGlow`:
-- Camada `absolute` no topo da página, atrás do conteúdo, com `pointer-events-none` e `aria-hidden`, altura de uma tela (`h-dvh`) e `mask-image` radial (suaviza as quatro bordas, não só embaixo — evita que o `overflow-hidden` do container corte o blur numa linha reta) para dissolver no `--background`.
-- 3 manchas `div` com `border-radius: 9999px`, cor sólida em `--glow-*` e `filter: blur(170px)`. Como as cores vêm dos tokens, o brilho troca junto com o tema sem JavaScript. As duas cores ficam separadas horizontalmente (`--glow-1` mais à esquerda, `--glow-2` mais à direita, com uma faixa de transição no meio) para ler como um gradiente contínuo em vez de manchas isoladas.
+- Camada `absolute` no topo da página, atrás do conteúdo, com `pointer-events-none` e `aria-hidden`, altura de 95vh e `mask-image` radial (suaviza as quatro bordas, não só embaixo — evita que o `overflow-hidden` do container corte o blur numa linha reta) para dissolver no `--background`.
+- 3 manchas `div` com `border-radius: 9999px`, cor sólida em `--glow-*` e `filter: blur(170px)`. Como as cores vêm dos tokens, o brilho troca junto com o tema sem JavaScript. As duas cores ficam separadas horizontalmente (teal mais à esquerda, azul mais à direita, com uma faixa de transição no meio) para ler como um gradiente contínuo em vez de manchas isoladas.
 - `pointermove` na `window` define um alvo normalizado (-1 a 1). Um loop `requestAnimationFrame` interpola a posição atual até o alvo (fator `0.18`) e grava `--glow-x`/`--glow-y` no container. Cada mancha usa `translate3d` com um multiplicador de profundidade diferente (deslocamento máximo de `340px`), criando profundidade e um movimento perceptível ao mouse.
 - O loop para quando a diferença até o alvo fica abaixo de 0.1px e só recomeça no próximo `pointermove`. Isso cumpre a spec de não manter animação com o ponteiro parado; com a aba oculta, o navegador já suspende o `requestAnimationFrame`.
 - O listener só é registrado quando `(pointer: fine)` e `(prefers-reduced-motion: no-preference)` são verdadeiros, reagindo a mudanças dessas media queries.
-- Renderizado no layout, antes do `Header`. Na home ele fica oculto (`.glow-home { display: none }`): as formas 3D fazem o papel de cor, e o menu, que é opaco, cobre o brilho. Nas páginas internas o `HeaderShell` (client) começa transparente sobre o brilho e só ganha `bg-background/95` + `backdrop-blur` e borda depois de ~8px de rolagem; na home o header é `fixed` e nunca ganha fundo.
+- Renderizado no layout, antes do `Header`. O `HeaderShell` (client) começa transparente sobre o brilho e só ganha `bg-background/85` + `backdrop-blur` depois de ~8px de rolagem (`components/header/HeaderShell.tsx`); enquanto transparente, o texto do header usa `--foreground` em vez de `--muted`/`--accent` pelo mesmo motivo de contraste do hero (ver `docs/design-system.md`).
 
-Alternativa para o brilho: WebGL como na referência (visual mais orgânico, mas processamento contínuo). O WebGL ficou só nas formas 3D, abaixo.
+Alternativa: WebGL como na referência (visual mais orgânico e animado mesmo parado, mas exige uma dependência 3D e processamento contínuo).
 
-### Formas 3D (home e menu)
-Um anel, um nó e duas esferas em three.js, desenhados em um `canvas` fixo, portalizado para o `<body>` (o hero corta o próprio overflow e é transladado, o que reancoraria um filho `fixed`). O `HeroShapes` (home) e o `MenuShapes` (menu) leem o mesmo arranjo, em `components/shapes/shapesScene.ts`: ao abrir o menu na home as formas deslizam de uma composição para a outra em vez de trocar.
-- **Câmera:** campo de visão estreito (12°) a distância grande, para pouca perspectiva; as formas mantêm a proporção onde quer que estejam na tela.
-- **Tamanho e posição:** cada forma tem uma âncora normalizada na viewport e um raio em "unidades de forma" (fração da menor entre a altura e 70% da largura). Assim a composição vale em desktop largo e em celular.
-- **Telas em pé (`aspect < 0.85`):** as formas se reúnem em um agrupamento (`cluster` em cada forma) no espaço livre abaixo do texto, encostado perto da borda inferior; `fitPlacements` mede o texto (`collectTextRects`) e encolhe o agrupamento em degraus se o espaço for curto. Se nem o menor tamanho couber (o menu ocupa boa parte da tela), cai no arranjo antigo: cada forma numa âncora à direita, empurrada só o suficiente para liberar o texto.
-- **Movimento:** balanço lento em torno da inclinação de repouso (nunca uma volta completa, para o anel não ficar de perfil e parecer uma pílula), deslocamento pequeno com o ponteiro, e giro ao passar o ponteiro sobre a forma (`hoverSpin`). Só com ponteiro preciso e sem movimento reduzido; com movimento reduzido a cena é desenhada uma vez.
-- **Entrada:** cada forma aparece em fade, uma após a outra de cima para baixo, no mesmo ritmo do texto, terminando quando o texto termina (`HERO_ENTRANCE_MS`).
-- **Rolagem:** a opacidade da cena segue a posição de rolagem (suavizada), some nos primeiros 45% da altura da tela e o desenho para de rodar quando ela some.
-- **Carga:** three.js só é carregado no navegador, depois do texto do hero (`dynamic` com `ssr: false`); no menu, a camada 3D só existe enquanto ele está visível.
+### Menu mobile
+- Abaixo de 768px (breakpoint `md`), os links da navegação saem do header e vão para um painel aberto por um botão hambúrguer. Seletor de idioma e alternador de tema continuam visíveis, e o header mobile vira uma linha só: ícone de voltar ao topo (`BackToTopLink`) à esquerda; idioma, tema e hambúrguer à direita (cabe em 360px). O nome por extenso foi trocado pelo ícone porque já aparece em destaque no hero logo abaixo; repeti-lo no header era redundante.
+- O `Header` continua Server Component: renderiza a `<nav>` desktop com `hidden md:block` e o `MobileMenu` (client) com `md:hidden`. Os links vêm de `components/header/navItems.ts` (href da âncora + chave de tradução), para a nav desktop e o menu não duplicarem a lista.
+- Botão de 40×40px com três barras que viram um X (`rotate`/`translate` com `--ease-expressive`), `aria-expanded`, `aria-controls` apontando para o painel e rótulo traduzido (`Header.menu.open`/`Header.menu.close`).
+- Painel posicionado com `absolute inset-x-0 top-full` dentro do header, `bg-background/95` com `backdrop-blur` e borda inferior; links empilhados com área de toque mínima de 44px. Abre com fade e deslocamento curto.
+- Fecha ao acionar um link, com Esc (devolvendo o foco ao botão), com `pointerdown` fora do header e quando `(min-width: 768px)` passa a valer (listener de `matchMedia`). A troca de idioma remonta o layout e fecha o menu naturalmente.
+- Painel não modal: sem focus trap nem bloqueio de rolagem, porque não cobre a página e tem só 2 links. Com movimento reduzido, barras e painel mudam sem animação.
 
-### Textura de fundo
-`components/background/Grain.tsx` põe um grão fino sobre o fundo (ruído de um filtro SVG como data URI, sem imagem para baixar), em camada fixa e sem cliques, atrás das formas e do conteúdo. Cada tema tem a sua camada, porque um único modo de mistura não serve aos dois fundos: no escuro, `screen` com pontos claros esparsos; no claro, `multiply` com pontos escuros. O menu, que é opaco, renderiza o próprio grão. A intensidade do tema claro é 0.3 (0.55 chamava atenção demais); a do escuro é 0.26.
-
-### Header e menu em tela cheia
-O site tem quatro páginas, então o menu é a navegação em qualquer largura de tela (não há mais nav desktop nem menu só de celular). Os itens vêm de `components/header/navItems.ts` (caminho + chave de tradução): início, sobre, experiências e projetos.
-- **Painel:** `role="dialog"` com `aria-modal`, portalizado para o `<body>` (o header pode ter `backdrop-filter`, que viraria o bloco de contenção de um filho `fixed` e o cortaria no tamanho do header). Abre revelando de cima para baixo com `clip-path` (700ms, `--ease-expressive`), e cada linha entra um instante depois da anterior (250ms + 80ms por linha); ao fechar, tudo sai junto.
-- **Conteúdo:** os quatro links em Jost gigante e numerados (a numeração é decorativa, `aria-hidden`), a página atual em `--accent` com `aria-current="page"`, e os contatos (e-mail, LinkedIn, GitHub) embaixo. As formas 3D ficam atrás (`MenuShapes`), só montadas enquanto o menu está visível.
-- **Foco e rolagem:** ao abrir, o resto do `<body>` fica `inert` e a rolagem é bloqueada; o foco vai para o botão de fechar e volta ao botão que abriu ao fechar. Fecha com Esc, com o botão ou ao acionar um link. Sem fechar por clique fora: o painel cobre a tela inteira.
-- **Movimento reduzido:** sem transição.
-- **Celular:** a lista começa na mesma altura que o texto da home (`pt-36` no hero menos os 4.25rem da linha de controles), para a home e o menu parecerem a mesma tela; a partir de `sm`, os dois são centralizados na altura.
-
-**Cápsula de controles (`ControlDock`).** Idioma, tema e botão de menu eram três controles com linguagens diferentes (uma pílula com borda, um quadrado com borda, um ícone sem borda) e alturas diferentes, e pareciam soltos no canto, sobretudo no celular. Agora ficam em uma única cápsula com contorno (`rounded-full`, `bg-background/70` com blur, 44px de altura, botões internos de 36px, divisórias finas), no mesmo formato de "pílula oca" dos ícones do menu. O menu aberto repete a cápsula na mesma posição (com o X no lugar do menu), então ela não muda de lugar ao abrir. Alternativas descartadas: manter os três separados só igualando alturas (continuam três peças soltas); deixar só o botão de menu no celular e levar idioma e tema para dentro dele (mais limpo, mas esconde os dois controles um toque mais longe).
-
-**Header por página.** Na home, o header é `fixed` sobre o hero, sem fundo e só com a cápsula (o hero já tem os links e os contatos). Nas outras páginas fica `sticky`, com o link para a home (e o botão de voltar ao menu, omitido quando a página foi aberta por um link do hero) e a cápsula; depois de ~8px de rolagem ganha fundo e borda.
-
-Alternativas descartadas: nav horizontal no desktop mais menu no celular (o site tem poucas páginas e o menu grande faz parte da identidade); painel pequeno sob o header sem focus trap (servia para dois links âncora, não para quatro páginas).
+Alternativas: menu em tela cheia ou gaveta lateral com fundo escurecido (desproporcionais para 2 links e exigem diálogo modal com focus trap); manter a quebra de linha atual da nav (funciona, mas foi explicitamente substituída pelo hambúrguer).
 
 ### Animações de entrada e hover
-Inspiradas em https://tubikstudio.com/works, que usa GSAP + ScrollTrigger. Aqui o mesmo tipo de efeito é feito com anime.js e CSS, e cada animação é dona de um lugar (não há um observador global).
+Inspiradas em https://tubikstudio.com/works, que usa GSAP + ScrollTrigger. Aqui o mesmo efeito é feito com CSS e um observador pequeno.
 
-**Curvas:** `--ease-expressive: cubic-bezier(0.2, 0, 0, 1)` (arranca rápido e desacelera longo, usada no menu e nos hovers) e `--ease-soft: cubic-bezier(0.22, 1, 0.36, 1)` (desacelera devagar, usada no fundo do detalhe de projeto e na imagem das linhas).
+**Tokens de movimento** em `globals.css`: `--ease-expressive: cubic-bezier(0.2, 0, 0, 1)` (curva usada no Tubik: arranca rápido e desacelera longo), `--duration-reveal: 600ms` e `--reveal-stagger: 80ms`.
 
-**Hero (carregamento):** o nome é CSS puro, para começar na primeira pintura sem esperar a hidratação (no dev server isso levava cerca de um segundo de página em branco): a primeira palavra é revelada da esquerda e as seguintes de cima, uma após a outra (1300ms, 200ms entre elas). O resto (traço, cargo, links, contatos e, no celular, os créditos) entra com anime.js a partir de `[data-hero-item]`, em ordem no DOM (1100ms, 140ms entre itens), medido a partir de onde a animação do nome está, e não da montagem do componente. O CSS oculta esses itens só até o anime.js assumir (`data-ready` na raiz), com uma animação de segurança que os revela após 3s se algo falhar. As formas 3D usam o mesmo relógio (`heroEntrance.startedAt`) e terminam quando o texto termina; as durações precisam ficar em sincronia com `HERO_ENTRANCE_MS` em `shapesScene.ts`.
+**Entrada ao rolar:**
+- Títulos de seção, itens da timeline e cards recebem `data-reveal` direto no JSX dos Server Components. A variável `--reveal-index` não fica no JSX: o `RevealObserver` a define pela ordem dos elementos que entram na tela no mesmo lote, para que só elementos que aparecem juntos animem em sequência (com índice fixo, o quarto card esperaria 240ms mesmo entrando sozinho no celular).
+- O CSS só oculta dentro de `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`: `[data-reveal]:not([data-revealed])` fica com `opacity: 0` e `translate: 0 16px`. Quando o atributo `data-revealed` aparece, uma transição de `--duration-reveal` com `--ease-expressive` leva o elemento ao estado final, com atraso de `calc(var(--reveal-index, 0) * var(--reveal-stagger))`. Sem JavaScript ou com movimento reduzido, nada fica oculto.
+- `RevealObserver` (client, renderizado no layout, retorna `null`): ao montar, cria um `IntersectionObserver` para `[data-reveal]`, marca `data-revealed` quando o elemento entra na tela e para de observá-lo, então cada elemento anima uma vez. Como o layout remonta na troca de idioma, o observer remonta junto e observa o conteúdo novo; o que já está visível é revelado na hora.
+- Rede de segurança: `[data-reveal]:not([data-revealed])` também recebe uma animação que o torna visível após 3s, caso o JavaScript carregue mas o observer falhe.
 
-**Listas ao rolar:** `ExperienceEntrance` (linhas da timeline) e `ProjectShowcase` (título da página e linhas) observam cada linha com `IntersectionObserver` (limiar 0.3) e a animam uma vez, ao entrar: o ano ou título é revelado da esquerda (1200ms) e o resto sobe com fade (900ms, atraso de 400ms). O mesmo esquema de ocultação até `data-ready` e de segurança em 3s vale para `[data-experience-list]` e `[data-showcase]`.
+**Hero:** anima no carregamento só com CSS, sem depender de hidratação: nome → título → bio entram em foco com fade, subida de 12px e desfoque de 6px que se desfaz, em 900ms com 150ms entre linhas e a curva `--ease-soft` (`cubic-bezier(0.22, 1, 0.36, 1)`), que desacelera devagar. A versão inicial (400ms com `--ease-expressive`) foi descartada por parecer abrupta no carregamento; a curva expressiva continua boa para o que entra ao rolar.
 
-**Movimento reduzido e sem JavaScript:** o CSS só oculta dentro de `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`, e cada componente só liga a animação com movimento permitido. Fora disso, nada fica oculto.
+**Espera após o hero:** em telas altas, a seção de experiências já está visível no carregamento e animava junto com o hero, disputando o foco. Em páginas com `.hero-reveal`, o `RevealObserver` só começa a observar quando `--reveal-hold` (250ms, lido do CSS) já passou desde o início da animação do hero, medido com `getAnimations()[0].currentTime`. Contar a partir da montagem do componente somava o tempo de hidratação (no dev server, ~4 MB de JavaScript) e as experiências apareciam bem depois do hero; contando da animação, se a hidratação demorar mais que a espera, a revelação é imediata, e na troca de idioma o hero reinicia e a conta recomeça. Com 800ms a espera parecia carregamento lento; páginas sem hero, como o futuro blog, e quem prefere movimento reduzido (sem animação do hero) não esperam.
 
-**Hover nas linhas de projeto:** a imagem do painel aproxima (`scale-105`, 700ms, `--ease-soft`) e o escurecimento que uniformiza as capturas de tela diminui (500ms); com movimento reduzido, nada disso transiciona.
+**Hover e foco nos cards:** `translate: 0 -4px`, borda em `--accent` com baixa opacidade e zoom de 1.03 na imagem do painel (dentro de `overflow-hidden`), em 300ms com `--ease-expressive`. `:focus-within` aplica o mesmo destaque para quem navega por teclado. Com movimento reduzido, só a borda muda.
 
-Alternativas: GSAP/ScrollTrigger como no Tubik (peso alto para efeitos que o anime.js e o CSS resolvem); scroll-driven animations em CSS (`animation-timeline: view()`), que revertem ao rolar de volta e não funcionam no Firefox sem flag; um único `RevealObserver` com `data-reveal` em tudo (foi a primeira versão, trocada porque cada bloco pede uma coreografia diferente: nome em palavras, ano revelado da esquerda, linhas de projeto).
+Alternativas: GSAP/ScrollTrigger como no Tubik (cerca de 70KB para efeitos que o CSS resolve); scroll-driven animations em CSS (`animation-timeline: view()`), que revertem ao rolar de volta, dificultam a sequência e não funcionam no Firefox sem flag.
 
-### Lista de projetos e detalhe
-A página `/projects` é uma lista, não uma grade de cards: cada projeto é uma linha com o painel visual e, ao lado (a partir de `lg`, com o painel à esquerda e o texto à direita), o título e o tipo. Só entram projetos com demonstração ou repositório (o link do detalhe vem de `demoUrl ?? repoUrl`).
-- **Painel:** `aspect-video` no celular, com cantos arredondados (o canto superior direito maior a partir de `lg`). Uma imagem preenche o painel; várias viram faixas inclinadas (`clip-path` com `--slant`), sobrepostas quase por completo, deixando um vão fino e uniforme. Sem imagem, um fundo decorativo `aria-hidden` (`color-mix` de 12% de `--accent` sobre `--card` com um brilho no canto). Um escurecimento de 30% uniformiza as capturas de tela, muito diferentes entre si; ele diminui no hover, e o detalhe mostra a imagem com as cores originais.
-- **Detalhe:** um `<dialog>` modal (`showModal`), com a imagem à esquerda em uma moldura de proporção única (o detalhe tem a mesma altura para todos os projetos e não rola no desktop; a captura é cortada para caber), e à direita título, tipo, descrição, "o que fiz" (`contribution`, opcional, com um rótulo só para leitores de tela), tecnologias e o link. A forma do diálogo cresce a partir da linha clicada (`clip-path` da linha até a caixa cheia, 900ms) e volta para ela ao fechar (700ms); o fundo (`::backdrop`) desfoca e escurece. Fecha com o botão, Esc ou clique fora, e devolve o foco à linha. A rolagem da página fica bloqueada sem a barra de rolagem sumir (`scrollbar-gutter: stable`), para nada se deslocar.
-- **Acessibilidade:** a linha é um `<button>` com `aria-haspopup="dialog"`; o `<dialog>` recebe o título como rótulo; o link abre em nova aba, com um aviso só para leitores de tela.
+### Card de projeto vertical
+```
++---------------------------+
+|  painel (aspect-video)    |  imagem, ou fundo decorativo aria-hidden
++---------------------------+
+|  [tipo]                   |  pill: accent 10% + texto accent
+|  Título (Jost)            |
+|  Descrição (muted)        |
+|  tecnologias              |
+|  [Botão]  link de texto   |
++---------------------------+
+```
+- Card com `bg-card`, `border-border` e cantos arredondados, como o bloco escuro da referência.
+- Painel sem imagem: fundo `color-mix` de 12% de `--accent` sobre `--card` com um `radial-gradient` de brilho no canto (mesma técnica dos cards da referência), marcado com `aria-hidden`.
+- O primeiro link disponível (demonstração, senão repositório) vira botão preenchido em `--accent`; o outro fica como link de texto.
+- Grade: 1 coluna no celular, 2 no tablet, 3 no desktop.
 
 ### Timeline de experiências
 Inspirada no indicador de etapas da referência, na vertical: `<ol>` com uma linha à esquerda (`--accent` com baixa opacidade) e, em cada item, um ponto circular em `--accent`, seguido de período (texto `--muted`), cargo (Jost), empresa e descrição. No celular, a mesma estrutura em uma coluna.
@@ -261,9 +254,7 @@ Experiências, formação e prêmios ficam em `/experience`, em vez de páginas 
 - **Redirect:** `/awards` responde 301 para `/experience` no mesmo idioma, via `redirects()` em `next.config.ts`; a rota, o item do nav e a entrada no sitemap foram removidos.
 
 ### Server vs Client Components
-Tudo é Server Component, exceto o que precisa de estado, do navegador ou de animação: `LocaleSwitcher`, `ThemeToggle`, `ThemeSync`, `Menu`, `MenuShapes`, `BackButton`, `HomeLink`, `HeaderShell`, `HideOnHome`, `Hero`, `HeroShapes`, `Footer` (lê a rota), `BackgroundGlow`, `ScrollReset`, `ExperienceEntrance` e `ProjectShowcase`. `Header`, `ControlDock` e as páginas continuam no servidor, e os dados vêm de `data/*.ts`.
-
-**Rolagem:** não há mais âncoras entre seções nem rolagem animada por JavaScript. A rolagem suave é `scroll-behavior: smooth` em CSS, só com `prefers-reduced-motion: no-preference`, e serve ao link de voltar ao topo do rodapé; `ScrollReset` desliga a restauração de rolagem do navegador e sempre abre a página no topo, removendo qualquer fragmento da URL. (A rolagem por `requestAnimationFrame` de 650ms, com o `smoothScroll.ts`, existia para os links de âncora e saiu junto com eles.)
+Tudo é Server Component, exceto `LocaleSwitcher`, `ThemeToggle`, `ThemeSync`, `MobileMenu`, `BackToTopLink`, `RevealObserver` e `BackgroundGlow`. Os links `<a href="#...">` (nav desktop, menu mobile e o ícone de voltar ao topo) usam `onClick={onSmoothAnchorClick}` (`components/header/smoothScroll.ts`): calcula o alvo a partir de `scroll-margin-top` (lido via `getComputedStyle`, cobrindo tanto o hero, com margem por CSS var, quanto as demais seções, com `scroll-mt` fixo), anima com `requestAnimationFrame` e uma curva cúbica de easing (650ms) em vez de `scroll-behavior: smooth`, atualiza a URL com `history.pushState` ao final, ignora cliques modificados (Cmd/Ctrl/Shift/Alt, botão do meio) para preservar o comportamento nativo, e pula direto para o alvo com `window.scrollTo` quando `prefers-reduced-motion: reduce`. O `scroll-behavior: smooth` em CSS foi removido: ele concorria com o `scrollTo` chamado a cada frame pela animação (o navegador tentava suavizar cada chamada intermediária), o que causava uma trava seguida de um salto rápido.
 
 ### Links externos e imagens
 Links com `target="_blank" rel="noopener noreferrer"`. Imagens de projeto com `next/image`, em `public/projects/`.
@@ -271,18 +262,18 @@ Links com `target="_blank" rel="noopener noreferrer"`. Imagens de projeto com `n
 ## Risks / Trade-offs
 
 - [Brilho atrás do hero pode reduzir o contraste do texto secundário] -> Opacidade e blur altos nas manchas, máscara em gradiente e verificação de contraste do hero sobre o ponto mais claro do brilho, nos dois temas.
-- [Brilho rosa sobre fundo quase cinza no tema claro pode parecer "sujo"] -> Opacidade baixa (0.32) e cores `--glow-*` bem claras no claro; ajustado com a autora.
+- [Brilho teal sobre fundo bege no tema claro pode parecer "sujo"] -> Opacidade menor no claro e ajuste visual das cores `--glow-*` na verificação.
 - [Duas famílias de fonte aumentam o download] -> Fontes variáveis, só subset `latin` e `display: swap` (padrão do `next/font`).
 - [Jost não é idêntica à "The Future"] -> Aceito; a fonte fica isolada no token `--font-display` e pode ser trocada depois.
 - [Mismatch de hidratação no alternador de tema] -> Botão só após hidratar; placeholder com o mesmo tamanho para não causar layout shift.
 - [Os tokens do tema escuro ficam duplicados no CSS (media query e `data-theme="dark"`)] -> Aceito: o CSS não compartilha um bloco entre os dois; um comentário em `globals.css` e `docs/design-system.md` avisam que precisam ficar idênticos.
 - [Chave `theme` e atributo `data-theme` aparecem no script do `<head>` e em `components/theme/theme.ts`] -> Ficam no mesmo arquivo; ao mudar um, conferir o CSS em `globals.css`.
 - [View Transitions não existem em navegadores antigos] -> Detecção de suporte; sem a API a troca de tema é instantânea, como antes.
-- [Animações ocultarem conteúdo se o JavaScript carregar mas falhar] -> Ocultação só com `scripting: enabled` e movimento permitido; animação de segurança que revela após 3s; o nome do hero é CSS puro e não depende de hidratação.
-- [Hero e menu com mesma composição 3D: mudar a posição das formas mexe nos dois] -> Um arranjo só, em `shapesScene.ts`; ao mexer nele, conferir a home e o menu abertos, em celular e em desktop.
-- [Menu em tela cheia em celular baixo pode não caber sem rolar] -> O painel rola (`overflow-y-auto`) e as fontes dos itens escalam com a altura; em telas muito baixas, os contatos ficam em uma linha.
+- [Conteúdo com `data-reveal` ficar oculto se o JavaScript carregar mas falhar] -> Ocultação só com `scripting: enabled`, animação de segurança que revela após 3s e hero animado apenas por CSS.
+- [Animação do hero e espera das experiências passarem sensação de carregamento lento] -> O hero começa imediatamente, sem esperar hidratação, e a espera antes de revelar o conteúdo já visível é contada desde o início da animação do hero, não da hidratação (800ms e depois 350ms contados da hidratação foram percebidos como lentos). `--reveal-hold` virou `calc(var(--duration-hero) + 2 * var(--hero-stagger))` em vez de um valor fixo, pra ficar preso à duração real do hero em vez de um número solto — testado em 250ms fixo, o conteúdo abaixo revelava antes do hero terminar.
+- [Menu mobile sem focus trap] -> Aceito: painel não modal com 2 links; Esc e clique fora fecham o menu e o foco volta ao botão.
 - [Redirect da raiz depende do proxy e não funciona em export estático puro (`output: 'export'`)] -> Não usar export estático; hospedar em plataforma com suporte a proxy (ex: Vercel).
-- [Textos de exemplo publicados por engano] -> Deploy está fora do escopo; o conteúdo já é o real, mas a home não é publicada antes de a autora revisar os textos.
+- [Conteúdo placeholder publicado por engano] -> Deploy está fora do escopo; placeholders claramente fictícios ("Empresa Exemplo").
 - [Mais setup inicial que o toggle simples] -> Aceito conscientemente em troca de não migrar o i18n quando o blog chegar.
 
 ## Migration Plan
@@ -291,8 +282,8 @@ Projeto novo, sem migração. Rollback não se aplica antes do primeiro deploy.
 
 ## Open Questions
 
-- Verificação manual pendente (tarefas 7.2 a 7.4 e 9.7): responsividade, contraste e teclado nos dois temas e idiomas, com a paleta e a home nova.
+- Duração e distância exatas das animações de entrada: começam em 600ms e 16px e podem ser calibradas visualmente só pelos tokens de movimento.
 
 Resolvida: cores, opacidade e movimento do brilho foram calibrados e aprovados com a autora (valores finais na tabela de tokens acima e em `docs/design-system.md`).
 - Plataforma de hospedagem: não afeta o MVP, desde que suporte proxy.
-- Rodapé e projetos em destaque: os changes `portfolio-footer` e `projects-showcase-page` foram escritos para o plano de página única e precisam ser reconciliados com este design antes do arquivamento.
+- Seção de contato ou footer com redes sociais: pode entrar como change separado.
