@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { BackButton } from "@/components/BackButton";
 import { ProjectShowcase, type ShowcaseItem } from "@/components/projects/ProjectShowcase";
 import { projects } from "@/data/projects";
 import { localize, type Project } from "@/data/types";
@@ -57,8 +56,7 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
   });
 
   return (
-    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 sm:px-8">
-      <BackButton />
+    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 pt-8 pb-16 sm:px-8 sm:pt-12 short:pt-6 short:pb-6">
       <ProjectShowcase
         title={t("title")}
         items={items}

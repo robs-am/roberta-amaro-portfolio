@@ -14,7 +14,13 @@ import {
   textLinkLabelClass,
 } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
-import { MENU_CLOSE_WAIT_MS, backTarget, cameFromMenu } from "@/components/header/menuEvents";
+import {
+  MENU_CLOSE_WAIT_MS,
+  MENU_REVEAL_MS,
+  MENU_STATE_EVENT,
+  backTarget,
+  cameFromMenu,
+} from "@/components/header/menuEvents";
 import { heroEntrance } from "@/components/shapesScene";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
@@ -41,17 +47,20 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const t = useTranslations("Hero");
   const tFooter = useTranslations("Footer");
   const sectionRef = useRef<HTMLElement>(null);
-  // Fixed at the first render: true when the home is reached again from another page (client-side), so
-  // there is no entrance. A page load or reload starts with a fresh module, so it is false there.
-  const [settled] = useState(() => heroEntrance.played);
   // Coming back through the menu, the fade-in waits for the overlay to finish closing.
   const [settleWait] = useState(() => (cameFromMenu.current ? MENU_CLOSE_WAIT_MS : 0));
+  // Fixed at the first render: true when the home is reached again from another page (client-side), so
+  // there is no entrance. A page load or reload starts with a fresh module, so it is false there. Coming
+  // from the menu it is always true: the entrance (name wiped in) would play behind the closing overlay
+  // and be seen cut off, so the home rises in the way the menu's rows do instead.
+  const [settled] = useState(() => heroEntrance.played || cameFromMenu.current);
 
   // Enters each `[data-hero-item]` in DOM order (bar → role → CTAs → links); the name words are CSS (globals.css).
   // CSS hides them only until this runs (see `[data-hero-item]` in globals.css), with a fallback
   // that shows them anyway. Reduced motion never hides them, so there is nothing to do.
   useEffect(() => {
     const section = sectionRef.current;
+    if (settled) heroEntrance.played = true;
     if (!section || settled) return;
     if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
 
@@ -77,6 +86,35 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     };
   }, [settled]);
 
+  // While the menu covers the home, the content is left out (data-covered) once the overlay's wipe has
+  // finished; when the menu closes it rises in one row after another, like the menu's own rows.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const onMenuState = (event: Event) => {
+      const { open } = (event as CustomEvent<{ open: boolean }>).detail;
+      clearTimeout(timer);
+      if (open) {
+        timer = setTimeout(() => {
+          section.dataset.covered = "";
+        }, MENU_REVEAL_MS);
+      } else if ("covered" in section.dataset) {
+        // The rise-in is the settled one even if the full entrance had not finished (see globals.css).
+        section.dataset.settled = "";
+        section.style.setProperty("--hero-wait", "0ms");
+        delete section.dataset.covered;
+      }
+    };
+
+    window.addEventListener(MENU_STATE_EVENT, onMenuState);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener(MENU_STATE_EVENT, onMenuState);
+    };
+  }, []);
+
   const links = [
     profile.email && { href: `mailto:${profile.email}`, label: t("email"), Icon: EmailIcon, external: false },
     profile.linkedinUrl && { href: profile.linkedinUrl, label: t("linkedin"), Icon: LinkedinIcon, external: true },
@@ -89,12 +127,12 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       id="hero"
       data-settled={settled ? "" : undefined}
       style={{ "--hero-wait": `${settleWait}ms` } as React.CSSProperties}
-      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden scroll-mt-(--header-height,0px)"
+      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden max-sm:pt-14 scroll-mt-(--header-height,0px)"
     >
       <HeroShapes settled={settled} settleWait={settleWait} />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
         <div className="max-w-2xl">
-          <h1 className="text-5xl leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(8rem,17vh)]">
+          <h1 className="text-[clamp(3rem,14.5vw,3.5rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(8rem,17vh)]">
             {profile.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="block">
                 <span
@@ -108,7 +146,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             ))}
           </h1>
           <div data-hero-item style={{ "--hero-index": 2 } as React.CSSProperties} aria-hidden="true" className="mt-6 short:mt-4 h-1 w-10 rounded-full bg-accent" />
-          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-xl font-semibold tracking-wide text-foreground sm:text-2xl lg:text-3xl">
+          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[1.375rem] font-semibold tracking-wide text-foreground lg:text-3xl">
             {/* One part per line on a phone (split at the commas), a single line from `sm` up. */}
             {localize(profile.role, locale)
               .split(", ")

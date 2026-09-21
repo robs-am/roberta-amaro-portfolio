@@ -280,6 +280,17 @@
   }
 }
 
+/* Home under the open menu: the overlay is wiped in over a blank page and its rows rise afterwards, which is
+   what keeps it smooth. So once the wipe has covered the home, its content is left out (Hero.tsx sets
+   data-covered), and when the menu closes it rises in again the same way instead of being cut by the
+   overlay's edge as it leaves. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-reveal[data-covered] :is([data-hero-word], [data-hero-item]) {
+    animation: none;
+    opacity: 0 !important;
+  }
+}
+
 .glow-blob {
   position: absolute;
   border-radius: 9999px;

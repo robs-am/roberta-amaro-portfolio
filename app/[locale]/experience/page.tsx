@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { BackButton } from "@/components/BackButton";
 import { ExperienceTimeline } from "@/components/ExperienceTimeline";
 import { experiences } from "@/data/experiences";
 import { siteUrl } from "@/data/site";
@@ -35,8 +34,7 @@ export default async function ExperiencePage({ params }: PageProps<"/[locale]/ex
   const sorted = [...experiences].sort((a, b) => b.start.localeCompare(a.start));
 
   return (
-    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 short:py-6 sm:px-8">
-      <BackButton />
+    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 pt-8 pb-16 sm:px-8 sm:pt-12 short:pt-6 short:pb-6">
       <h1 className="text-3xl font-semibold">{t("title")}</h1>
       <ExperienceTimeline experiences={sorted} locale={locale} />
     </main>

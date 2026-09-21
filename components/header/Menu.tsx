@@ -10,7 +10,7 @@ import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
 import { CapsuleSvg, menuButtonClass } from "./capsuleIcon";
 import { LocaleSwitcher } from "./LocaleSwitcher";
-import { OPEN_MENU_EVENT, backTarget, cameFromMenu } from "./menuEvents";
+import { MENU_REVEAL_MS, MENU_STATE_EVENT, OPEN_MENU_EVENT, backTarget, cameFromMenu } from "./menuEvents";
 import { MenuShapes } from "./MenuShapes";
 import { navItems } from "./navItems";
 import { ThemeToggle } from "./ThemeToggle";
@@ -18,7 +18,7 @@ import { ThemeToggle } from "./ThemeToggle";
 const subscribe = () => () => {};
 
 // Matches the overlay's `duration-700` reveal transition.
-const CLOSE_DURATION_MS = 700;
+const CLOSE_DURATION_MS = MENU_REVEAL_MS;
 
 // Full-screen menu. The overlay is portaled to <body>: the header may carry a `backdrop-filter`,
 // which would otherwise become the containing block of a `fixed` child and clip it to the header.
@@ -74,6 +74,10 @@ export function Menu() {
       for (const element of siblings) element.inert = false;
       opener?.focus();
     };
+  }, [open]);
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent(MENU_STATE_EVENT, { detail: { open } }));
   }, [open]);
 
   // The 3D layer exists only while the menu is visible: it starts on open and is torn down once the
