@@ -154,7 +154,9 @@ export function Menu() {
               </ControlDock>
             </div>
 
-            <div className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 sm:px-8">
+            {/* On a phone the list starts at the same height as the home's text (Hero: pt-36 = 9rem from the
+                top; the control row above takes 4.25rem, so 4.75rem here). From `sm` up both are centered. */}
+            <div className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 max-sm:justify-start max-sm:pt-[4.75rem] sm:px-8">
               <nav aria-label={t("navLabel")}>
                 <ul className="flex flex-col gap-1">
                   {navItems.map((item, index) => {

@@ -16,16 +16,19 @@ export type Blob = {
   tone: 0 | 1;
   /** Where and how big it is on a portrait screen (see PORTRAIT_ASPECT). */
   portrait: { anchor: [number, number]; radius: number };
+  /** Its place in the portrait cluster below the text: offset from the cluster's center (blob units, x right, y up). */
+  cluster: { offset: [number, number]; radius: number };
 };
 
 export const blobs: Blob[] = [
   // One cluster in the free space to the right of the text: a ring, a knot and two spheres,
-  // overlapping in depth. On a portrait screen they keep the same order down the right side (ring, wine
-  // sphere, small sphere, knot), and fitPlacements() pushes each one out just far enough to clear the text.
-  { anchor: [0.5, 0.42], z: 0, radius: 1.05, shape: "torus", tilt: [0.9, 0.4], drift: 0.1, tone: 0, portrait: { anchor: [-0.5, 0.8], radius: 0.95 } },
-  { anchor: [0.52, -0.5], z: 0.4, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.08, tone: 1, portrait: { anchor: [0.5, -0.72], radius: 0.75 } },
-  { anchor: [0.86, 0.08], z: -1, radius: 0.62, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1, portrait: { anchor: [0.8, 0.1], radius: 0.7 } },
-  { anchor: [0.36, -0.02], z: 0.8, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0, portrait: { anchor: [0.3, -0.05], radius: 0.32 } },
+  // overlapping in depth. On a portrait screen they gather in one cluster below the text (`cluster`); only
+  // if there is no room for it there do they keep the same order down the right side (ring, wine sphere,
+  // small sphere, knot), and fitPlacements() pushes each one out just far enough to clear the text.
+  { anchor: [0.5, 0.42], z: 0, radius: 1.05, shape: "torus", tilt: [0.9, 0.4], drift: 0.1, tone: 0, portrait: { anchor: [-0.5, 0.8], radius: 0.95 }, cluster: { offset: [-1.5, 0.6], radius: 1.2 } },
+  { anchor: [0.52, -0.5], z: 0.4, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.08, tone: 1, portrait: { anchor: [0.5, -0.72], radius: 0.75 }, cluster: { offset: [1.4, -0.4], radius: 0.95 } },
+  { anchor: [0.86, 0.08], z: -1, radius: 0.62, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1, portrait: { anchor: [0.8, 0.1], radius: 0.7 }, cluster: { offset: [1.6, 1.3], radius: 0.7 } },
+  { anchor: [0.36, -0.02], z: 0.8, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0, portrait: { anchor: [0.3, -0.05], radius: 0.32 }, cluster: { offset: [-0.1, -0.9], radius: 0.32 } },
 ];
 
 // Below this width-to-height ratio the screen is treated as portrait (a phone, or a tablet held upright).
@@ -76,12 +79,38 @@ export function collectTextRects(root: Element): DOMRect[] {
   return rects;
 }
 
+// The portrait cluster: where its center sits across the screen, and how far it reaches above and below
+// that center (blob units, from the offsets in `blobs`), plus the room kept at the bottom edge.
+const CLUSTER_CENTER_X = 0.6;
+const CLUSTER_TOP = 2.3;
+const CLUSTER_BOTTOM = 1.9;
+const CLUSTER_EDGE_MARGIN = 24;
+
 /**
- * Portrait layout that adapts to the text: each shape rests at its portrait anchor, and is pushed right
- * just far enough to clear the widest line of text that overlaps it vertically. If it would not fit on
- * screen, it shrinks a little first. `unitPx` is one blob unit in pixels.
+ * Portrait layout that adapts to the text. The shapes gather in one cluster in the free space below the
+ * text, resting near the bottom edge; if that space is too short they shrink the cluster a little, and
+ * if there is still no room (a menu that fills the screen) they go back to the side layout below.
+ * `unitPx` is one blob unit in pixels.
  */
 export function fitPlacements(rects: DOMRect[], width: number, height: number, unitPx: number): Placement[] {
+  const textBottom = rects.reduce((bottom, rect) => Math.max(bottom, rect.bottom), 0);
+  for (const scale of FIT_SCALES) {
+    const top = CLUSTER_TOP * scale * unitPx;
+    const bottom = CLUSTER_BOTTOM * scale * unitPx;
+    const centerY = height - bottom - CLUSTER_EDGE_MARGIN;
+    if (centerY - top < textBottom + TEXT_GAP) continue;
+    return blobs.map((blob) => {
+      const [offsetX, offsetY] = blob.cluster.offset;
+      const x = width * CLUSTER_CENTER_X + offsetX * scale * unitPx;
+      const y = centerY - offsetY * scale * unitPx;
+      return { x: (x / width) * 2 - 1, y: 1 - (y / height) * 2, radius: blob.cluster.radius * scale };
+    });
+  }
+  return fitBesideText(rects, width, height, unitPx);
+}
+
+/** Each shape rests at its portrait anchor, and is pushed right just far enough to clear the widest line of text that overlaps it vertically. If it would not fit on screen, it shrinks a little first. */
+function fitBesideText(rects: DOMRect[], width: number, height: number, unitPx: number): Placement[] {
   return blobs.map((blob) => {
     const [anchorX, anchorY] = blob.portrait.anchor;
     const restX = ((anchorX + 1) / 2) * width;
