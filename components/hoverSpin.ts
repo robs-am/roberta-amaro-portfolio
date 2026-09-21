@@ -36,7 +36,7 @@ export function createHoverSpin(meshes: Mesh[], camera: PerspectiveCamera) {
       .find((entry) => ((entry.object as Mesh).material as Material).opacity > MIN_OPACITY);
     if (!hit) return;
     const index = meshes.indexOf(hit.object as Mesh);
-    if (index < 0 || running[index]) return;
+    if (index < 0 || running[index] !== null) return;
 
     const state = states[index];
     const done = () => {

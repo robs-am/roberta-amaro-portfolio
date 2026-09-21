@@ -129,8 +129,8 @@ export function MenuShapes({ open }: Readonly<{ open: boolean }>) {
         group.rotation.x = blob.tilt[0] + Math.sin(time * 0.25) * blob.drift * 3;
         group.rotation.y = blob.tilt[1] + Math.sin(time * 0.2 + 1) * blob.drift * 2;
         const place = displayed[index];
-        meshes[index].scale.setScalar(place.radius);
-        meshes[index].rotation.z = spin.angles[index];
+        meshes[index].scale.setScalar(place.radius * spin.scales[index]);
+        spin.apply(index);
         group.position.set(
           place.x * halfWidth - current.x * POINTER_SHIFT * depth,
           place.y * halfHeight - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
