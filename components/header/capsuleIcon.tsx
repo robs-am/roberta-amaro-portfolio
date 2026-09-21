@@ -5,11 +5,14 @@ export const menuButtonClass =
 
 // The marks are drawn as hollow capsules (outlined pills): two stacked for "open", crossed for "close",
 // and a shaft with two angled strokes for "back".
-export function CapsuleSvg({ children }: Readonly<{ children: React.ReactNode }>) {
+export function CapsuleSvg({
+  children,
+  className = "size-9",
+}: Readonly<{ children: React.ReactNode; className?: string }>) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="size-9"
+      className={className}
       fill="none"
       stroke="currentColor"
       strokeWidth="1.5"

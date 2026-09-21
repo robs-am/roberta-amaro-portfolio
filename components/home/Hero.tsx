@@ -80,7 +80,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     <section
       ref={sectionRef}
       id="hero"
-      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden max-sm:pt-14 scroll-mt-(--header-height,0px)"
+      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
     >
       <HeroShapes />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
@@ -99,9 +99,19 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             ))}
           </h1>
           <div data-hero-item style={{ "--hero-index": 2 } as React.CSSProperties} aria-hidden="true" className="mt-6 short:mt-4 h-1 w-10 rounded-full bg-accent" />
-          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[clamp(1rem,4.8vw,1.375rem)] font-semibold tracking-wide text-balance text-foreground sm:text-[1.375rem] lg:text-3xl">
-            {/* The size follows the width: the English role fits one line on a phone, the longer pt one wraps. */}
-            {localize(profile.role, locale)}
+          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[1.375rem] font-semibold tracking-wide text-foreground lg:text-3xl">
+            {/* One part per line on a phone (split at the commas), a single line from `sm` up. */}
+            {localize(profile.role, locale)
+              .split(", ")
+              .map((part, index, parts) => (
+                <span key={part}>
+                  {index > 0 && " "}
+                  <span className="block sm:inline">
+                    {part}
+                    {index < parts.length - 1 && ","}
+                  </span>
+                </span>
+              ))}
           </p>
           <div data-hero-item style={{ "--hero-index": 4 } as React.CSSProperties} className="mt-6 flex flex-col items-start gap-y-1 sm:mt-8 short:mt-5 sm:flex-row sm:flex-wrap sm:gap-x-8">
             <Link href="/experience" onClick={leaveToPage} className={`${textLinkHeroClass} order-2 sm:order-1`}>

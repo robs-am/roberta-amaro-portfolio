@@ -8,7 +8,8 @@ import { Grain } from "@/components/background/Grain";
 import { textLinkArrowLargeClass, textLinkLabelClass, textLinkLargeClass } from "@/components/ui/textLinkStyles";
 import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
-import { CapsuleSvg, menuButtonClass } from "./capsuleIcon";
+import { CapsuleSvg } from "./capsuleIcon";
+import { ControlDock, DockDivider, dockButtonClass } from "./ControlDock";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { OPEN_MENU_EVENT, backTarget } from "./menuEvents";
 import { MenuShapes } from "./MenuShapes";
@@ -112,7 +113,7 @@ export function Menu() {
           setShapesMounted(true);
           setOpen(true);
         }}
-        className={menuButtonClass}
+        className={dockButtonClass}
       >
         <OpenIcon />
       </button>
@@ -136,17 +137,21 @@ export function Menu() {
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}
             <div className="relative mx-auto flex min-h-11 max-w-7xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
-              <LocaleSwitcher />
-              <ThemeToggle />
-              <button
-                ref={closeRef}
-                type="button"
-                aria-label={t("menu.close")}
-                onClick={() => setOpen(false)}
-                className={menuButtonClass}
-              >
-                <CloseIcon />
-              </button>
+              <ControlDock>
+                <LocaleSwitcher />
+                <DockDivider />
+                <ThemeToggle />
+                <DockDivider />
+                <button
+                  ref={closeRef}
+                  type="button"
+                  aria-label={t("menu.close")}
+                  onClick={() => setOpen(false)}
+                  className={dockButtonClass}
+                >
+                  <CloseIcon />
+                </button>
+              </ControlDock>
             </div>
 
             <div className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 sm:px-8">
@@ -211,7 +216,7 @@ export function Menu() {
 
 function OpenIcon() {
   return (
-    <CapsuleSvg>
+    <CapsuleSvg className="size-7">
       <rect x="3" y="4.5" width="18" height="5" rx="2.5" />
       <rect x="3" y="14.5" width="18" height="5" rx="2.5" />
     </CapsuleSvg>
@@ -220,7 +225,7 @@ function OpenIcon() {
 
 function CloseIcon() {
   return (
-    <CapsuleSvg>
+    <CapsuleSvg className="size-7">
       <rect x="2" y="9.5" width="20" height="5" rx="2.5" transform="rotate(45 12 12)" />
       <rect x="2" y="9.5" width="20" height="5" rx="2.5" transform="rotate(-45 12 12)" />
     </CapsuleSvg>

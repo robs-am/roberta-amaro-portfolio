@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
+import { dockButtonClass } from "@/components/header/ControlDock";
 import { getTheme, setTheme, subscribeTheme } from "@/components/theme/theme";
 
 export function ThemeToggle() {
@@ -34,7 +35,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={isDark ? t("toLight") : t("toDark")}
-      className="inline-flex size-9 cursor-pointer items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      className={dockButtonClass}
     >
       {isDark ? <SunIcon /> : <MoonIcon />}
     </button>
