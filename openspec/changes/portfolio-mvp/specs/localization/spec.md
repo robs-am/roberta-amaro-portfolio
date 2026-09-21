@@ -61,17 +61,17 @@ Um caminho que não comece com `/pt` ou `/en` MUST ser redirecionado para o mesm
 - **AND** o documento contém a instrução `noindex`
 
 ### Requirement: Seletor de idioma
-O header MUST oferecer um controle que troca a página para o outro idioma, indica qual idioma está ativo e é operável por teclado. A troca MUST manter o visitante na mesma página e preservar a seção âncora atual da URL, quando houver.
+O header MUST oferecer um controle que troca a página para o outro idioma, indica qual idioma está ativo e é operável por teclado. A troca MUST manter o visitante na mesma página, sem recarregá-la, e MUST deixá-la posicionada no topo.
 
 #### Scenario: Troca de português para inglês
 - **WHEN** o visitante está em `/pt` e aciona o seletor de idioma escolhendo inglês
 - **THEN** a URL passa a ser `/en`
 - **AND** todo o texto da página é exibido em inglês
 
-#### Scenario: Troca preservando a seção
-- **WHEN** o visitante está em `/pt#projects` e troca para inglês
-- **THEN** a URL passa a ser `/en#projects`
-- **AND** a seção de projetos continua visível
+#### Scenario: Troca mantendo a página
+- **WHEN** o visitante está em `/pt/projects` e troca para inglês
+- **THEN** a URL passa a ser `/en/projects`
+- **AND** a página continua sendo a de projetos, posicionada no topo
 
 #### Scenario: Uso por teclado
 - **WHEN** o visitante navega até o seletor com Tab e o aciona com Enter ou Espaço
