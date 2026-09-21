@@ -2,7 +2,7 @@
 // same data, so when the menu opens over the home the shapes do not move: it looks like the same
 // scene, not one replacing another. Change positions, sizes or opacity here, never in one layer only.
 
-// Rounded 3D forms (a ring, a knot, spheres) grouped beside the text. `anchor` is the shape's center in
+// Soft 3D forms (two fused masses and two loose spheres, see shapeGeometry.ts) grouped beside the text. `anchor` is the shape's center in
 // normalized viewport coordinates (-1..1, y up), so values near ±1 push it partly off screen; `radius`
 // scales the shape in blob units (one unit is UNIT_SHARE of the viewport). Kept abstract on purpose:
 // elongated tubes next to spheres read as anatomy.
@@ -10,7 +10,7 @@ export type Blob = {
   anchor: [number, number];
   z: number;
   radius: number;
-  shape: "sphere" | "torus" | "knot";
+  shape: "massLong" | "massPair" | "sphere";
   tilt: [number, number];
   drift: number;
   tone: 0 | 1;
@@ -22,10 +22,10 @@ export const blobs: Blob[] = [
   // One cluster in the free space to the right of the text: a ring, a knot and two spheres,
   // overlapping in depth. On a portrait screen they keep the same order down the right side (ring, wine
   // sphere, small sphere, knot), and fitPlacements() pushes each one out just far enough to clear the text.
-  { anchor: [0.5, 0.42], z: 0, radius: 1.05, shape: "torus", tilt: [0.9, 0.4], drift: 0.1, tone: 0, portrait: { anchor: [-0.5, 0.8], radius: 0.95 } },
-  { anchor: [0.52, -0.5], z: 0.4, radius: 0.85, shape: "knot", tilt: [0.3, 0.8], drift: -0.08, tone: 1, portrait: { anchor: [0.5, -0.72], radius: 0.75 } },
-  { anchor: [0.86, 0.08], z: -1, radius: 0.62, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1, portrait: { anchor: [0.8, 0.1], radius: 0.7 } },
-  { anchor: [0.36, -0.02], z: 0.8, radius: 0.3, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0, portrait: { anchor: [0.3, -0.05], radius: 0.32 } },
+  { anchor: [0.56, 0.3], z: 0, radius: 1.7, shape: "massLong", tilt: [0.1, -0.2], drift: 0.05, tone: 0, portrait: { anchor: [-0.5, 0.8], radius: 1.1 } },
+  { anchor: [0.5, -0.3], z: 0.4, radius: 1.35, shape: "massPair", tilt: [-0.15, 0.3], drift: -0.05, tone: 1, portrait: { anchor: [0.5, -0.72], radius: 0.85 } },
+  { anchor: [0.86, 0.14], z: -1, radius: 0.75, shape: "sphere", tilt: [0, 0], drift: 0, tone: 1, portrait: { anchor: [0.8, 0.1], radius: 0.7 } },
+  { anchor: [0.3, -0.14], z: 0.8, radius: 0.34, shape: "sphere", tilt: [0, 0], drift: 0, tone: 0, portrait: { anchor: [0.3, -0.05], radius: 0.32 } },
 ];
 
 // Below this width-to-height ratio the screen is treated as portrait (a phone, or a tablet held upright).
@@ -35,8 +35,8 @@ export const PORTRAIT_ASPECT = 0.85;
 export const UNIT_SHARE = 0.3;
 export const POINTER_SHIFT = 0.3;
 
-// How solid the shapes are; below 1 the page's background shows through them a little.
-export const SHAPE_OPACITY = 0.92;
+// How solid the shapes are; below 1 the page's glow and grain show through them.
+export const SHAPE_OPACITY = 0.55;
 
 // The pointer offset, eased, as the hero last had it. The menu starts from it instead of from zero, so
 // the shapes do not jump when it opens.
@@ -53,7 +53,7 @@ export type Placement = { x: number; y: number; radius: number };
 export const heroPlacements: { current: Placement[] | null } = { current: null };
 
 // Rough outer radius of each shape, per unit of `radius` (the ring and the knot are wider than their radius).
-const OUTER_RADIUS: Record<Blob["shape"], number> = { sphere: 1, torus: 1.42, knot: 1.6 };
+const OUTER_RADIUS: Record<Blob["shape"], number> = { massLong: 1, massPair: 1, sphere: 1 };
 const TEXT_GAP = 14;
 // How far past the right edge a shape may bleed, as a share of its own radius.
 const EDGE_BLEED = 0.25;

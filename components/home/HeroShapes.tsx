@@ -10,13 +10,11 @@ import {
   Mesh,
   PerspectiveCamera,
   Scene,
-  SphereGeometry,
-  TorusGeometry,
-  TorusKnotGeometry,
   WebGLRenderer,
 } from "three";
 import { createHoverSpin } from "@/components/shapes/hoverSpin";
-import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapes/shapeStyle";
+import { createShapeGeometry } from "@/components/shapes/shapeGeometry";
+import { applyShapeColors, copyShapeColors, createShapeMaterials, setShapeOpacity } from "@/components/shapes/shapeStyle";
 import { subscribeTheme } from "@/components/theme/theme";
 import {
   HERO_ENTRANCE_MS,
@@ -75,21 +73,16 @@ export function HeroShapes() {
     const camera = new PerspectiveCamera(CAMERA_FOV, 1, 0.1, 50);
     camera.position.z = CAMERA_Z;
 
-    const lights = createShapeLights(scene);
     const materials = createShapeMaterials(SHAPE_OPACITY);
 
-    const unitSphere = new SphereGeometry(1, 48, 48);
-    const geometries: BufferGeometry[] = [unitSphere];
+    const geometries: BufferGeometry[] = [];
     const meshes: Mesh[] = [];
     // Each shape has its own copy of its tone's material, so it can fade on its own.
     const shapeMaterials = blobs.map((blob) => materials[blob.tone].clone());
-    shapeMaterials.forEach((material) => (material.transparent = true));
     const groups = blobs.map((blob) => {
       const group = new Group();
-      let geometry: BufferGeometry = unitSphere;
-      if (blob.shape === "torus") geometry = new TorusGeometry(1, 0.42, 48, 96);
-      if (blob.shape === "knot") geometry = new TorusKnotGeometry(1, 0.38, 200, 32, 2, 3);
-      if (geometry !== unitSphere) geometries.push(geometry);
+      const geometry = createShapeGeometry(blob.shape);
+      geometries.push(geometry);
       const mesh = new Mesh(geometry, shapeMaterials[blobs.indexOf(blob)]);
       mesh.scale.setScalar(blob.radius);
       group.add(mesh);
@@ -99,12 +92,8 @@ export function HeroShapes() {
     });
 
     const applyColors = () => {
-      applyShapeColors(materials, lights);
-      shapeMaterials.forEach((material, index) => {
-        const base = materials[blobs[index].tone];
-        material.color.copy(base.color);
-        material.sheenColor.copy(base.sheenColor);
-      });
+      applyShapeColors(materials);
+      shapeMaterials.forEach((material, index) => copyShapeColors(material, materials[blobs[index].tone]));
     };
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
@@ -152,13 +141,12 @@ export function HeroShapes() {
         group.rotation.y = blob.tilt[1] + Math.sin(time * 0.2 + 1) * blob.drift * 2;
         const place = displayed[index];
         meshes[index].scale.setScalar(place.radius * spin.scales[index]);
-        spin.apply(index);
         group.position.set(
           place.x * halfWidth - current.x * POINTER_SHIFT * depth,
           place.y * halfHeight - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
           blob.z,
         );
-        shapeMaterials[index].opacity = SHAPE_OPACITY * faded[index].value;
+        setShapeOpacity(shapeMaterials[index], SHAPE_OPACITY * faded[index].value);
         shapeMaterials[index].visible = faded[index].value > 0.001;
       });
       renderer.render(scene, camera);
