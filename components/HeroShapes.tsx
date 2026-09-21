@@ -17,6 +17,7 @@ import {
 } from "three";
 import { createHoverSpin } from "@/components/hoverSpin";
 import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
+import { subscribeTheme } from "@/components/theme";
 import {
   HERO_ENTRANCE_MS,
   PLACEMENT_MS,
@@ -243,12 +244,12 @@ export function HeroShapes() {
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(canvas);
-    // The theme class is applied by next-themes after this effect, and again on every toggle.
-    const themeObserver = new MutationObserver(() => {
+    // The saved theme is applied after this effect, and the theme changes again on every toggle or
+    // when the browser preference changes.
+    const unsubscribeTheme = subscribeTheme(() => {
       applyColors();
       if (!frame) draw(0);
     });
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("scroll", fade, { passive: true });
@@ -261,7 +262,7 @@ export function HeroShapes() {
       for (const glide of glides) glide.cancel();
       for (const fade of fades) fade.cancel();
       resizeObserver.disconnect();
-      themeObserver.disconnect();
+      unsubscribeTheme();
       window.removeEventListener("pointermove", onPointerMove);
       spin.dispose();
       window.removeEventListener("scroll", fade);

@@ -8,7 +8,7 @@ export function HeaderShell({ children }: { children: ReactNode }) {
   const isHome = usePathname() === "/";
 
   // useLayoutEffect (not useEffect) so a locale switch's remount corrects `scrolled`
-  // before paint, matching ThemeClassSync's fix for the same class of flicker.
+  // before paint, matching ThemeSync's fix for the same class of flicker.
   useLayoutEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();

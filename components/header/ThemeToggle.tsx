@@ -1,27 +1,20 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { flushSync } from "react-dom";
 import { useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
-
-const subscribe = () => () => {};
+import { getTheme, setTheme, subscribeTheme } from "@/components/theme";
 
 export function ThemeToggle() {
   const t = useTranslations("Header.theme");
-  const { resolvedTheme, setTheme } = useTheme();
-  // The theme is unknown on the server, so the button renders only after hydration.
-  const mounted = useSyncExternalStore(
-    subscribe,
-    () => true,
-    () => false,
-  );
+  // The theme depends on the visitor's browser, so it is unknown on the server: the button renders
+  // only after hydration, with a placeholder of the same size before that.
+  const theme = useSyncExternalStore(subscribeTheme, getTheme, () => null);
 
-  if (!mounted) {
+  if (!theme) {
     return <span className="size-9" aria-hidden="true" />;
   }
 
-  const isDark = resolvedTheme === "dark";
+  const isDark = theme === "dark";
 
   function toggleTheme() {
     const nextTheme = isDark ? "light" : "dark";
@@ -32,10 +25,8 @@ export function ThemeToggle() {
       return;
     }
 
-    // next-themes swaps the class in an effect; flushSync applies it before the browser takes the new snapshot.
-    document.startViewTransition(() => {
-      flushSync(() => setTheme(nextTheme));
-    });
+    // The view transition cross-fades the whole page instead of flashing between the two themes.
+    document.startViewTransition(() => setTheme(nextTheme));
   }
 
   return (

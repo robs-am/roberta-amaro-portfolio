@@ -5,6 +5,7 @@ import {
   MeshPhysicalMaterial,
   type Scene,
 } from "three";
+import { getTheme } from "@/components/theme";
 
 // The look shared by the 3D shapes behind the hero and behind the menu: two soft, glossy materials
 // (tone 0 and tone 1), three lights, and the colours they take from the theme.
@@ -42,7 +43,7 @@ export function createShapeLights(scene: Scene): ShapeLights {
 export function applyShapeColors(materials: MeshPhysicalMaterial[], { ambient, key, rim }: ShapeLights) {
   const styles = getComputedStyle(document.documentElement);
   const token = (name: string) => new Color(styles.getPropertyValue(name).trim());
-  const dark = document.documentElement.classList.contains("dark");
+  const dark = getTheme() === "dark";
   // On the dark page the surface tokens are nearly the background, so the shapes would vanish:
   // one tone is a neutral stone grey and the other a deeper wine red, so the two read apart (and the
   // pink stays with the text's accent).

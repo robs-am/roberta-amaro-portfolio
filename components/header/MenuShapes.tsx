@@ -16,6 +16,7 @@ import {
 } from "three";
 import { createHoverSpin } from "@/components/hoverSpin";
 import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
+import { subscribeTheme } from "@/components/theme";
 import {
   PLACEMENT_MS,
   PORTRAIT_ASPECT,
@@ -187,11 +188,10 @@ export function MenuShapes({ open }: Readonly<{ open: boolean }>) {
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(canvas);
-    const themeObserver = new MutationObserver(() => {
+    const unsubscribeTheme = subscribeTheme(() => {
       applyColors();
       if (!frame) draw(0);
     });
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
     window.addEventListener("pointermove", onPointerMove);
     document.addEventListener("visibilitychange", sync);
@@ -203,7 +203,7 @@ export function MenuShapes({ open }: Readonly<{ open: boolean }>) {
       for (const glide of glides) glide.cancel();
       retargetRef.current = undefined;
       resizeObserver.disconnect();
-      themeObserver.disconnect();
+      unsubscribeTheme();
       window.removeEventListener("pointermove", onPointerMove);
       spin.dispose();
       document.removeEventListener("visibilitychange", sync);

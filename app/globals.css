@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 /* Dark follows the browser (prefers-color-scheme) until the visitor picks a theme with the toggle.
-   The pick is an override on <html>: `.dark`/`[data-theme="dark"]` forces dark, `.light`/`[data-theme="light"]` forces light. */
+   The pick is an override on <html> (see components/theme.ts): `data-theme="dark"` forces dark and
+   `data-theme="light"` forces light. */
 @custom-variant dark {
-  &:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *) {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
     @slot;
   }
 
   @media (prefers-color-scheme: dark) {
-    &:where(:not(.light, .light *, [data-theme="light"], [data-theme="light"] *)) {
+    &:where(:not([data-theme="light"], [data-theme="light"] *)) {
       @slot;
     }
   }
@@ -39,7 +40,7 @@
    and once for a dark pick. CSS cannot share one block between a media query and a selector; keep the
    two identical. */
 @media (prefers-color-scheme: dark) {
-  :root:not(.light, [data-theme="light"]) {
+  :root:not([data-theme="light"]) {
     --background: #171416;
     --card: #201c1e;
     --elevated: #292427;
@@ -57,7 +58,6 @@
   }
 }
 
-:root.dark,
 :root[data-theme="dark"] {
   --background: #171416;
   --card: #201c1e;
@@ -136,24 +136,22 @@
    wash reads as a generic aurora. A tighter mask keeps it as a pool of light behind the content,
    with plain background around it. Declared after the rules above so it wins at equal specificity. */
 @media (prefers-color-scheme: dark) {
-  :root:not(.light, [data-theme="light"]) .glow {
+  :root:not([data-theme="light"]) .glow {
     mask-image: radial-gradient(80% 65% at 55% 0%, #000 30%, transparent 100%);
   }
 }
 
-:root.dark .glow,
 :root[data-theme="dark"] .glow {
   mask-image: radial-gradient(80% 65% at 55% 0%, #000 30%, transparent 100%);
 }
 
 @media (min-width: 1024px) and (prefers-color-scheme: dark) {
-  :root:not(.light, [data-theme="light"]) .glow-home {
+  :root:not([data-theme="light"]) .glow-home {
     mask-image: radial-gradient(52% 58% at 50% 42%, #000 25%, transparent 100%);
   }
 }
 
 @media (min-width: 1024px) {
-  :root.dark .glow-home,
   :root[data-theme="dark"] .glow-home {
     mask-image: radial-gradient(52% 58% at 50% 42%, #000 25%, transparent 100%);
   }

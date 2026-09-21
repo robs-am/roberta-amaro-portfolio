@@ -3,13 +3,13 @@ import { IBM_Plex_Sans, Jost } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { ThemeProvider } from "next-themes";
 import { BackgroundGlow } from "@/components/BackgroundGlow";
 import { Footer } from "@/components/Footer";
 import { Grain } from "@/components/Grain";
 import { Header } from "@/components/header/Header";
 import { ScrollReset } from "@/components/ScrollReset";
-import { ThemeClassSync } from "@/components/ThemeClassSync";
+import { ThemeSync } from "@/components/ThemeSync";
+import { themeInitScript } from "@/components/theme";
 import { profile } from "@/data/profile";
 import { siteUrl } from "@/data/site";
 import { alternatesFor, htmlLang, ogLocale } from "@/i18n/alternates";
@@ -77,6 +77,9 @@ export default async function LocaleLayout({
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="flex min-h-dvh flex-col overflow-x-hidden bg-background font-sans text-foreground">
         <a
           href="#main-content"
@@ -85,20 +88,13 @@ export default async function LocaleLayout({
           {t("skipToContent")}
         </a>
         <ScrollReset />
-        <ThemeClassSync />
+        <ThemeSync />
         <BackgroundGlow />
         <NextIntlClientProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Header />
-            {children}
-            <Footer />
-            <Grain layerClassName="-z-6" />
-          </ThemeProvider>
+          <Header />
+          {children}
+          <Footer />
+          <Grain layerClassName="-z-6" />
         </NextIntlClientProvider>
       </body>
     </html>
