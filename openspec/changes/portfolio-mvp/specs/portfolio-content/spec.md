@@ -66,8 +66,49 @@ Os períodos das experiências MUST ser exibidos como mês e ano no formato do i
 - **WHEN** a mesma experiência é exibida em `/en`
 - **THEN** a data de início é exibida no formato de mês e ano em inglês (ex: "Mar 2024")
 
+### Requirement: Página de trajetória
+As experiências, a formação e os prêmios MUST ser exibidos em uma única página, `/experience`, com o mesmo conteúdo e a mesma ordem nos dois idiomas.
+
+#### Scenario: Conteúdo reunido
+- **WHEN** a página `/pt/experience` é carregada
+- **THEN** ela exibe as experiências, a formação e os prêmios
+
+### Requirement: Formação
+A página de trajetória MUST exibir cada formação com curso, instituição e período, da mais recente para a mais antiga pela data de término. Uma data informada só com o ano MUST ser exibida sem mês. Uma formação sem data de término MUST exibir o término como "Em andamento" em português e "In progress" em inglês.
+
+#### Scenario: Data só com ano
+- **WHEN** uma formação começa em 2012 e termina em 2018
+- **THEN** o período é exibido como ano de início e ano de término, sem mês
+
+#### Scenario: Data com mês
+- **WHEN** uma formação começa em março de 2024 e a página está em `/pt`
+- **THEN** a data de início é exibida no formato de mês e ano em português
+
+#### Scenario: Formação em andamento
+- **WHEN** uma formação não tem data de término e a página está em `/en`
+- **THEN** o período é exibido terminando em "In progress"
+
+### Requirement: Prêmios
+Um prêmio ligado a uma experiência MUST aparecer dentro dessa experiência. Um prêmio sem experiência MUST aparecer em um painel de destaque separado: em uma coluna lateral fixa a partir de 1024px de largura e, abaixo disso, entre as experiências e a formação. Os links de projeto e de certificado MUST aparecer apenas quando existirem e MUST abrir em nova aba sem dar à página aberta acesso à página de origem. Acessar `/awards` MUST redirecionar em caráter permanente para `/experience` no mesmo idioma.
+
+#### Scenario: Prêmio de uma empresa
+- **WHEN** um prêmio está ligado a uma experiência
+- **THEN** ele aparece dentro dessa experiência e não no painel separado
+
+#### Scenario: Prêmio independente
+- **WHEN** um prêmio não está ligado a nenhuma experiência
+- **THEN** ele aparece no painel de destaque, com evento, colocação, emissor, data e descrição
+
+#### Scenario: Prêmio sem certificado
+- **WHEN** um prêmio não tem link de certificado
+- **THEN** o painel não exibe link de certificado nem espaço vazio no lugar dele
+
+#### Scenario: Endereço antigo de prêmios
+- **WHEN** o visitante acessa `/en/awards`
+- **THEN** é redirecionado permanentemente para `/en/experience`
+
 ### Requirement: Tradução obrigatória
-Todo item de experiência ou projeto MUST ter todos os seus campos de texto preenchidos em português e em inglês. Um item com tradução faltando MUST impedir o build do site, em vez de ser publicado com texto vazio.
+Todo item de experiência, formação, prêmio ou projeto MUST ter todos os seus campos de texto preenchidos em português e em inglês. Um item com tradução faltando MUST impedir o build do site, em vez de ser publicado com texto vazio.
 
 #### Scenario: Descrição sem versão em inglês
 - **WHEN** um projeto é cadastrado com descrição apenas em português

@@ -66,3 +66,14 @@
 - [ ] 7.3 Verificar contraste AA nos temas claro e escuro com Lighthouse ou axe DevTools, incluindo o hero sobre o brilho e os links do menu mobile, e ajustar tokens até não haver falhas de contraste — ⏸️ Use Lighthouse (F12) ou axe DevTools
 - [ ] 7.4 Verificar navegação completa só por teclado (Tab até nav ou botão de menu, links do menu aberto, seletor de idioma e alternador de tema, acionando cada um) em `/pt` e `/en` — ⏸️ Use Tab/Shift+Tab no navegador
 - [x] 7.5 Verificar com `curl` que o HTML de `/en` já contém os textos em inglês (sem depender de JavaScript) e que o cookie de idioma faz `/` redirecionar para o idioma escolhido manualmente
+
+## 8. Formação e prêmios
+
+- [x] 8.1 Criar o tipo `Education` e `data/education.ts` (PUC Minas e Universidade Veiga de Almeida, com datas `YYYY-MM` ou só `YYYY`) e as chaves `Experience.educationTitle` e `Experience.inProgress` nos dois idiomas; verificar com `pnpm exec tsc --noEmit`
+- [x] 8.2 Criar `components/EducationTimeline.tsx` no padrão da timeline de experiências (ano do término em destaque, datas sem mês quando só há ano, "Em andamento"/"In progress") e renderizá-lo em `/experience`; verificar em `/pt/experience` e `/en/experience`
+- [x] 8.3 Adicionar `experienceId?` ao tipo `Award` e mostrar dentro do cargo, em `ExperienceTimeline`, os prêmios ligados a ele (hackathon interno ligado ao Grupo OLX); verificar que o prêmio aparece só dentro do cargo
+- [x] 8.4 Criar `components/AwardHighlight.tsx` e reorganizar `/experience` em grade de duas colunas a partir de `lg`, com o painel do Claude Impact Lab em coluna lateral fixa (nome do evento como título, colocação como subtítulo) e, abaixo de `lg`, coluna única na ordem experiências, painel, formação; verificar em 360px, 1024px e 1440px
+- [x] 8.5 Adicionar `certificateUrl?` ao tipo `Award` e o link "Ver certificado" no painel, exibido só quando existir; verificar que o painel não muda sem o campo
+- [x] 8.6 Remover `app/[locale]/awards/page.tsx`, `components/AwardList.tsx`, o item de nav, a rota do sitemap e as chaves `Header.nav.awards` e `AwardsPage`, e redirecionar `/pt/awards` e `/en/awards` para `/experience` em `next.config.ts`; verificar que os dois endereços respondem 301 para `/experience` no mesmo idioma
+- [ ] 8.7 (pendência) Anexar o certificado do Claude Impact Lab: definir `certificateUrl` em `data/awards.ts` com o PDF em `public/certificates/` ou um link de verificação, depois de conferir que o arquivo não expõe dados pessoais; aguardando o arquivo da Roberta
+- [ ] 8.8 (adiado) Avaliar renomear o item de nav "Experiências"/"Experience" para "Trajetória"/"Background", já que a página reúne experiências, formação e prêmios

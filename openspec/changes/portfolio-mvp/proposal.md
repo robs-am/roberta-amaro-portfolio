@@ -10,6 +10,7 @@ Ainda não existe um portfólio pessoal público para apresentar experiências p
 - Internacionalização com rotas por idioma (`/pt`, `/en`), detecção automática do idioma do navegador e fallback para português
 - Dark/light mode com persistência da escolha e sem flash de tema incorreto no carregamento
 - Seção de experiências e cards de projetos alimentados por arquivos de dados tipados, com textos em PT e EN no mesmo item
+- Página de trajetória (`/experience`) reunindo experiências, formação e prêmios: prêmios de empresa dentro do cargo, prêmios independentes em painel lateral de destaque, e `/awards` redirecionando para essa página
 - Conteúdo de exemplo (placeholder), a ser substituído pelo conteúdo real depois
 - Identidade visual inspirada em https://www.alignerr.com/en/process: destaque teal sobre fundo quase preto (com versão clara em tons quentes), fontes Jost e IBM Plex Sans, cards de projeto verticais e timeline de experiências, tudo centralizado em tokens
 - Brilho de fundo em gradiente que acompanha suavemente o mouse, parado em dispositivos de toque e para quem prefere movimento reduzido
@@ -33,5 +34,5 @@ Fora do escopo: blog, seção de contato/formulário, CMS, conteúdo real, deplo
 
 - Repositório: criação de toda a estrutura da aplicação (hoje só contém o scaffolding do OpenSpec)
 - Dependências novas: `next`, `react`, `react-dom`, `typescript`, `tailwindcss`, `next-intl`, `next-themes`
-- Arquivos principais: `proxy.ts` (ou `middleware.ts`, conforme a versão do Next.js), `app/[locale]/`, `messages/pt.json`, `messages/en.json`, `data/experiences.ts`, `data/projects.ts`
+- Arquivos principais: `proxy.ts` (ou `middleware.ts`, conforme a versão do Next.js), `app/[locale]/`, `messages/pt.json`, `messages/en.json`, `data/experiences.ts`, `data/education.ts`, `data/awards.ts`, `data/projects.ts`
 - Estrutura de rotas `app/[locale]/` já comporta futuras rotas como `app/[locale]/blog/`

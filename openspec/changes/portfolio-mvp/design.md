@@ -40,6 +40,9 @@ components/
   RevealObserver.tsx    (client) marca [data-reveal] ao entrar na tela
   Hero.tsx
   ExperienceSection.tsx timeline vertical
+  ExperienceTimeline.tsx  timeline de /experience; mostra dentro do cargo os prêmios com `experienceId`
+  EducationTimeline.tsx   timeline de formação, mesmo padrão visual (ano grande em `--accent`)
+  AwardHighlight.tsx      painel de destaque dos prêmios sem experiência
   header/
     Header.tsx            server; monta BackToTopLink + DesktopNav + LocaleSwitcher + ThemeToggle + MobileMenu dentro do HeaderShell
     HeaderShell.tsx        (client) fundo/borda conforme o scroll, mede a própria altura
@@ -60,6 +63,8 @@ data/
   types.ts
   profile.ts            nome, título, bio (hero)
   experiences.ts
+  education.ts
+  awards.ts
   projects.ts
 i18n/
   routing.ts            locales, defaultLocale
@@ -214,6 +219,26 @@ type Project = {
   demoUrl?: string;
   image?: { src: string; width: number; height: number; alt: Localized };
 };
+
+type Education = {
+  id: string;
+  course: Localized;      // grau e área
+  institution: string;
+  start: string;          // 'YYYY' ou 'YYYY-MM'
+  end?: string;           // ausente = em andamento
+};
+
+type Award = {
+  id: string;
+  title: Localized;       // colocação
+  event: Localized;
+  issuer: string;
+  experienceId?: string;  // ligado a um cargo: aparece dentro dele
+  date: string;           // 'YYYY-MM'
+  description: Localized;
+  url?: string;           // projeto
+  certificateUrl?: string;
+};
 ```
 - `Record<Locale, string>` faz o compilador exigir as duas chaves, o que cumpre a spec de "tradução obrigatória" no `next build` (que roda type-check). Arrays exportados com `satisfies` para o erro apontar o item.
 - Datas como `'YYYY-MM'`: ordenação por comparação de string e formatação com `getFormatter().dateTime(..., { month: 'short', year: 'numeric' })`, com `timeZone: 'UTC'` na configuração do next-intl.
@@ -221,6 +246,13 @@ type Project = {
 - O helper `localize(value, locale)` evita repetir `field[locale]` nos componentes.
 
 Alternativa: arquivos separados por idioma (descartado por duplicar datas, links e tags); MDX por item (desnecessário para textos curtos, fica reservado ao blog).
+
+### Página de trajetória: formação e prêmios
+Experiências, formação e prêmios ficam em `/experience`, em vez de páginas separadas: um sexto item no nav e uma página de prêmios quase vazia foram descartados.
+- **Prêmio dentro do cargo:** com `experienceId`, aparece abaixo da descrição do cargo, em linhas compactas (colocação, evento, data e links). Sem `experienceId`, vai para o painel de destaque. Ligar por campo explícito, e não pela data, evita atribuir à empresa um prêmio conquistado por conta própria no mesmo período.
+- **Painel de destaque:** a partir de `lg` a página vira uma grade de duas colunas (`minmax(0,48rem)` e o restante), com o painel em `sticky` na coluna direita, ao lado das experiências e da formação. Abaixo de `lg` é uma coluna só, na ordem experiências, painel, formação. O nome do evento é o texto grande (Jost, `--accent`) e a colocação vem como subtítulo, para o painel não parecer mais um item da timeline.
+- **Formação:** mesmo padrão da timeline de experiências. O ano grande é o do término e datas só com ano não mostram mês.
+- **Redirect:** `/awards` responde 301 para `/experience` no mesmo idioma, via `redirects()` em `next.config.ts`; a rota, o item do nav e a entrada no sitemap foram removidos.
 
 ### Server vs Client Components
 Tudo é Server Component, exceto `LocaleSwitcher`, `ThemeToggle`, `ThemeClassSync`, `MobileMenu`, `BackToTopLink`, `RevealObserver` e `BackgroundGlow`. Os links `<a href="#...">` (nav desktop, menu mobile e o ícone de voltar ao topo) usam `onClick={onSmoothAnchorClick}` (`components/header/smoothScroll.ts`): calcula o alvo a partir de `scroll-margin-top` (lido via `getComputedStyle`, cobrindo tanto o hero, com margem por CSS var, quanto as demais seções, com `scroll-mt` fixo), anima com `requestAnimationFrame` e uma curva cúbica de easing (650ms) em vez de `scroll-behavior: smooth`, atualiza a URL com `history.pushState` ao final, ignora cliques modificados (Cmd/Ctrl/Shift/Alt, botão do meio) para preservar o comportamento nativo, e pula direto para o alvo com `window.scrollTo` quando `prefers-reduced-motion: reduce`. O `scroll-behavior: smooth` em CSS foi removido: ele concorria com o `scrollTo` chamado a cada frame pela animação (o navegador tentava suavizar cada chamada intermediária), o que causava uma trava seguida de um salto rápido.
