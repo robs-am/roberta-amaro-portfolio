@@ -80,12 +80,12 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     <section
       ref={sectionRef}
       id="hero"
-      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden max-sm:pt-14 scroll-mt-(--header-height,0px)"
+      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
     >
       <HeroShapes />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
         <div className="max-w-2xl">
-          <h1 className="text-[clamp(3rem,14.5vw,3.5rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(8rem,17vh)]">
+          <h1 className="text-foreground/85 text-[clamp(3rem,17.5vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(6.5rem,14vh)]">
             {profile.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="block">
                 <span
@@ -99,19 +99,9 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             ))}
           </h1>
           <div data-hero-item style={{ "--hero-index": 2 } as React.CSSProperties} aria-hidden="true" className="mt-6 short:mt-4 h-1 w-10 rounded-full bg-accent" />
-          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[1.375rem] font-semibold tracking-wide text-foreground lg:text-3xl">
-            {/* One part per line on a phone (split at the commas), a single line from `sm` up. */}
-            {localize(profile.role, locale)
-              .split(", ")
-              .map((part, index, parts) => (
-                <span key={part}>
-                  {index > 0 && " "}
-                  <span className="block sm:inline">
-                    {part}
-                    {index < parts.length - 1 && ","}
-                  </span>
-                </span>
-              ))}
+          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[clamp(1.125rem,5vw,1.375rem)] font-semibold tracking-wide text-balance text-foreground lg:text-3xl">
+            {/* The size follows the width: the English role fits one line on a phone, the longer pt one wraps in two. */}
+            {localize(profile.role, locale)}
           </p>
           <div data-hero-item style={{ "--hero-index": 4 } as React.CSSProperties} className="mt-6 flex flex-col items-start gap-y-1 sm:mt-8 short:mt-5 sm:flex-row sm:flex-wrap sm:gap-x-8">
             <Link href="/experience" onClick={leaveToPage} className={`${textLinkHeroClass} order-2 sm:order-1`}>
@@ -143,8 +133,9 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
               ))}
             </ul>
           )}
-          {/* Phones only: the footer is hidden on the home there, and the credits sit under the icons. */}
-          <p data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="mt-10 font-sans text-sm text-muted sm:hidden">
+          {/* The footer is not rendered on the home (see Footer): the credits sit right under the icons, so they
+              do not float at the bottom of a tall screen far from the block they belong to. */}
+          <p data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="mt-4 font-sans text-sm text-muted">
             {tFooter("credits")} {tFooter("copyright")}
           </p>
         </div>

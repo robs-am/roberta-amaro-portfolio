@@ -95,3 +95,8 @@ Substitui a implementação com `next-themes` das tarefas 3.3 e 3.4, que ficam c
 - [x] 10.1 Reorganizar `components/` por assunto (`header`, `theme`, `home`, `shapes`, `experience`, `projects`, `background`, `layout`, `ui`), deixando a raiz vazia, e reescrever os imports; verificar com `pnpm exec tsc --noEmit`, `pnpm build` e `grep` sem nenhum import com o caminho antigo
 - [x] 10.2 Atualizar a árvore de pastas do `design.md`, que estava defasada, e os caminhos citados em `docs/design-system.md` e nos comentários do CSS
 - [ ] 10.3 (pendência) Reconciliar o resto do change com o site multipágina (`specs/portfolio-page`, âncoras e `#hero` no `design.md` e no `proposal.md`, tabela de tokens teal do `design.md`), depois de conferir a home, `/about` e `/projects` no código
+
+## 11. Prioridade: diagramação no celular
+
+- [ ] 11.1 (prioridade, pendência) Redefinir a diagramação da home no celular (`components/home/Hero.tsx`, `HeroShapes`, `Footer`); aguardando a Roberta descrever o que quer mudar
+- [ ] 11.2 (prioridade, pendência) Redefinir a diagramação do menu (`components/header/Menu.tsx`, `MenuShapes`, `navItems`); aguardando a Roberta descrever o que quer mudar
