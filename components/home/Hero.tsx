@@ -85,7 +85,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       <HeroShapes />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
         <div className="max-w-2xl">
-          <h1 className="text-foreground/85 dark:text-foreground text-[clamp(3rem,17.5vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(8rem,17vh)]">
+          <h1 className="text-foreground/85 text-[clamp(3rem,17.5vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(6.5rem,14vh)]">
             {profile.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="block">
                 <span
@@ -133,8 +133,9 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
               ))}
             </ul>
           )}
-          {/* Phones only: the footer is hidden on the home there, and the credits sit under the icons. */}
-          <p data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="mt-10 font-sans text-sm text-muted sm:hidden">
+          {/* The footer is not rendered on the home (see Footer): the credits sit right under the icons, so they
+              do not float at the bottom of a tall screen far from the block they belong to. */}
+          <p data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="mt-4 font-sans text-sm text-muted">
             {tFooter("credits")} {tFooter("copyright")}
           </p>
         </div>
