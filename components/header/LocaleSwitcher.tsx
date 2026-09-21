@@ -21,7 +21,7 @@ export function LocaleSwitcher() {
     <div
       role="group"
       aria-label={t("label")}
-      className="flex rounded-md border border-border p-0.5 text-xs font-semibold"
+      className="flex gap-0.5 text-xs font-semibold"
     >
       {routing.locales.map((option) => {
         const active = option === locale;
@@ -38,7 +38,7 @@ export function LocaleSwitcher() {
               window.scrollTo(0, 0);
               router.replace(pathname, { locale: option, scroll: false });
             }}
-            className={`cursor-pointer rounded px-2 py-1.5 uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+            className={`h-9 cursor-pointer rounded-full px-3 uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
               active ? "bg-foreground text-background" : "text-muted hover:text-foreground"
             }`}
           >

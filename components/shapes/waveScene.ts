@@ -29,6 +29,8 @@ const MAX_PIXEL_RATIO = 1.5;
 // Below this width-to-height ratio the screen is portrait (a phone): the text fills the width there, so the
 // waves stay faint everywhere instead of only behind the text column.
 const PORTRAIT_ASPECT = 0.85;
+// How far past the end of the text (in `u`) the layers take to reach full strength.
+const SAFE_FEATHER = 0.45;
 // How opaque each layer is, back to front. The layers behind are the ones that pass behind the text, so they
 // are faint, and the opacity rises step by step toward the front layer, which stays solid and reads as the
 // nearest. The shadows follow it (see `applyColors`).
@@ -98,13 +100,15 @@ const fillFragment = /* glsl */ `
   uniform vec3 uRim;
   uniform float uOpacity;
   uniform float uSafe;
+  uniform float uFadeFrom;
+  uniform float uFadeTo;
   uniform float uPortrait;
   varying float vDepth;
   varying float vU;
   void main() {
     vec3 color = mix(uEdge, uDeep, smoothstep(0.0, 0.7, vDepth));
     color = mix(color, uRim, (1.0 - smoothstep(0.0, 0.05, vDepth)) * 0.65);
-    float side = mix(uSafe, 1.0, smoothstep(-0.75, 0.15, vU));
+    float side = mix(uSafe, 1.0, smoothstep(uFadeFrom, uFadeTo, vU));
     gl_FragColor = vec4(color, uOpacity * mix(side, 0.6, uPortrait));
     #include <colorspace_fragment>
   }
@@ -126,11 +130,13 @@ const shadowFragment = /* glsl */ `
   uniform float uStrength;
   uniform float uFade;
   uniform float uSafe;
+  uniform float uFadeFrom;
+  uniform float uFadeTo;
   uniform float uPortrait;
   varying float vAlpha;
   varying float vU;
   void main() {
-    float side = mix(uSafe, 1.0, smoothstep(-0.75, 0.15, vU));
+    float side = mix(uSafe, 1.0, smoothstep(uFadeFrom, uFadeTo, vU));
     gl_FragColor = vec4(uColor, pow(vAlpha, 1.6) * uStrength * uFade * mix(side, 0.6, uPortrait));
     #include <colorspace_fragment>
   }
@@ -180,6 +186,8 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
         uRim: { value: new Color() },
         uOpacity: { value: LAYER_OPACITIES[index] },
         uSafe: { value: 0.18 },
+        uFadeFrom: { value: -0.75 },
+        uFadeTo: { value: 0.15 },
         uPortrait: { value: 0 },
       },
       vertexShader: fillVertex,
@@ -201,6 +209,8 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
         uStrength: { value: 0.3 },
         uFade: { value: 1 },
         uSafe: { value: 0.18 },
+        uFadeFrom: { value: -0.75 },
+        uFadeTo: { value: 0.15 },
         uPortrait: { value: 0 },
       },
       vertexShader: shadowVertex,
@@ -224,6 +234,18 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
 
   const setHorizon = (y: number) => {
     horizon = y;
+  };
+
+  // Where the text on the left ends, as `u` (-1 the left edge of the screen, 1 the right). The layers are
+  // faint (`uSafe`) up to there and grow to full strength over the next stretch, so the waves stay out of the
+  // way of the text however wide it is.
+  const setSafeZone = (textRightU: number) => {
+    for (const { fillMaterial, shadowMaterial } of layers) {
+      for (const material of [fillMaterial, shadowMaterial]) {
+        material.uniforms.uFadeFrom.value = textRightU;
+        material.uniforms.uFadeTo.value = textRightU + SAFE_FEATHER;
+      }
+    }
   };
 
   const applyColors = () => {
@@ -313,5 +335,5 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     renderer.dispose();
   };
 
-  return { applyColors, resize, setHorizon, draw, dispose };
+  return { applyColors, resize, setHorizon, setSafeZone, draw, dispose };
 }

@@ -6,7 +6,14 @@ import { createPortal } from "react-dom";
 import { MathUtils } from "three";
 import { LAYER_COUNT, createWaveScene } from "@/components/shapes/waveScene";
 import { subscribeTheme } from "@/components/theme/theme";
-import { HERO_ENTRANCE_MS, heroEntrance, pointerCurrent, pointerTarget, waveHorizon } from "@/components/shapes/shapesScene";
+import {
+  HERO_ENTRANCE_MS,
+  heroEntrance,
+  pointerCurrent,
+  pointerTarget,
+  waveHorizon,
+  waveSafe,
+} from "@/components/shapes/shapesScene";
 
 const POINTER_EASING = 0.06;
 // Pixels between the bottom of the name and the horizon, and how far the horizon is then raised (in screen
@@ -14,6 +21,8 @@ const POINTER_EASING = 0.06;
 // the horizon; the lift makes the crests reach up close to the name without touching it.
 const NAME_GAP = 10;
 const HORIZON_LIFT = 0.06;
+// Pixels of clear space kept to the right of the text before the waves start to come in.
+const SAFE_MARGIN = 24;
 
 const SCENE_OPACITY = 1;
 
@@ -106,11 +115,40 @@ export function HeroShapes() {
       waves.setHorizon(waveHorizon.y);
     };
 
+    // The right edge of the text on the home, in viewport pixels. The name's words slide in sideways, so they
+    // are measured from the layout (offsetLeft), which the slide does not move; the other lines only rise, so
+    // their boxes can be read as they are. Lines and icons hidden at this width (the phone's credits) have
+    // no boxes and do not count.
+    const textRight = () => {
+      const hero = document.getElementById("hero");
+      if (!hero) return 0;
+      let right = 0;
+      for (const word of hero.querySelectorAll<HTMLElement>("[data-hero-word]")) {
+        let edge = word.offsetWidth;
+        for (let node: HTMLElement | null = word; node; node = node.offsetParent as HTMLElement | null) edge += node.offsetLeft;
+        right = Math.max(right, edge);
+      }
+      const range = document.createRange();
+      for (const item of hero.querySelectorAll("[data-hero-item]")) {
+        range.selectNodeContents(item);
+        for (const rect of range.getClientRects()) right = Math.max(right, rect.right);
+      }
+      return right;
+    };
+
+    const placeSafeZone = (width: number) => {
+      const right = textRight();
+      if (!right) return;
+      waveSafe.u = MathUtils.clamp((2 * (right + SAFE_MARGIN)) / width - 1, -0.9, 0.9);
+      waves.setSafeZone(waveSafe.u);
+    };
+
     const resize = () => {
       const { clientWidth: width, clientHeight: height } = canvas;
       if (!width || !height) return;
       waves.resize(width, height);
       placeHorizon(height);
+      placeSafeZone(width);
       sync();
     };
 

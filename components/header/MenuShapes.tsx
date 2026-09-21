@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { LAYER_COUNT, createWaveScene } from "@/components/shapes/waveScene";
 import { subscribeTheme } from "@/components/theme/theme";
-import { pointerCurrent, pointerTarget, waveHorizon } from "@/components/shapes/shapesScene";
+import { pointerCurrent, pointerTarget, waveHorizon, waveSafe } from "@/components/shapes/shapesScene";
 
 const POINTER_EASING = 0.05;
 const FULL = Array.from({ length: LAYER_COUNT }, () => 1);
@@ -60,6 +60,7 @@ export function MenuShapes() {
 
     waves.applyColors();
     waves.setHorizon(waveHorizon.y);
+    waves.setSafeZone(waveSafe.u);
     resize();
 
     const resizeObserver = new ResizeObserver(resize);
