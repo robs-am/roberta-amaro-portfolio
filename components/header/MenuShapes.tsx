@@ -14,6 +14,7 @@ import {
   TorusKnotGeometry,
   WebGLRenderer,
 } from "three";
+import { createHoverSpin } from "@/components/hoverSpin";
 import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
 import {
   PLACEMENT_MS,
@@ -89,6 +90,7 @@ export function MenuShapes({ open }: Readonly<{ open: boolean }>) {
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
     const pointerQuery = window.matchMedia("(pointer: fine)");
+    const spin = createHoverSpin(meshes, camera);
     // Start from where the hero's pointer state was, so nothing jumps.
     const target = { ...pointerTarget };
     const current = { ...pointerCurrent };
@@ -128,6 +130,7 @@ export function MenuShapes({ open }: Readonly<{ open: boolean }>) {
         group.rotation.y = blob.tilt[1] + Math.sin(time * 0.2 + 1) * blob.drift * 2;
         const place = displayed[index];
         meshes[index].scale.setScalar(place.radius);
+        meshes[index].rotation.z = spin.angles[index];
         group.position.set(
           place.x * halfWidth - current.x * POINTER_SHIFT * depth,
           place.y * halfHeight - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
@@ -174,6 +177,7 @@ export function MenuShapes({ open }: Readonly<{ open: boolean }>) {
       if (!pointerQuery.matches || !motionQuery.matches) return;
       target.x = (event.clientX / window.innerWidth) * 2 - 1;
       target.y = (event.clientY / window.innerHeight) * 2 - 1;
+      spin.hover(event.clientX, event.clientY);
     };
 
     applyColors();
@@ -201,6 +205,7 @@ export function MenuShapes({ open }: Readonly<{ open: boolean }>) {
       resizeObserver.disconnect();
       themeObserver.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
+      spin.dispose();
       document.removeEventListener("visibilitychange", sync);
       motionQuery.removeEventListener("change", sync);
       geometries.forEach((geometry) => geometry.dispose());

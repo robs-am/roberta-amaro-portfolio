@@ -15,6 +15,7 @@ import {
   TorusKnotGeometry,
   WebGLRenderer,
 } from "three";
+import { createHoverSpin } from "@/components/hoverSpin";
 import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
 import {
   HERO_ENTRANCE_MS,
@@ -107,6 +108,7 @@ export function HeroShapes() {
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
     const pointerQuery = window.matchMedia("(pointer: fine)");
+    const spin = createHoverSpin(meshes, camera);
     const target = { x: 0, y: 0 };
     const current = { x: 0, y: 0 };
     let frame = 0;
@@ -149,6 +151,7 @@ export function HeroShapes() {
         group.rotation.y = blob.tilt[1] + Math.sin(time * 0.2 + 1) * blob.drift * 2;
         const place = displayed[index];
         meshes[index].scale.setScalar(place.radius);
+        meshes[index].rotation.z = spin.angles[index];
         group.position.set(
           place.x * halfWidth - current.x * POINTER_SHIFT * depth,
           place.y * halfHeight - current.y * POINTER_SHIFT * depth + Math.sin(time * 0.5 + index * 1.7) * 0.06,
@@ -228,6 +231,7 @@ export function HeroShapes() {
       target.y = (event.clientY / window.innerHeight) * 2 - 1;
       pointerTarget.x = target.x;
       pointerTarget.y = target.y;
+      if (visible) spin.hover(event.clientX, event.clientY);
     };
 
     applyColors();
@@ -259,6 +263,7 @@ export function HeroShapes() {
       resizeObserver.disconnect();
       themeObserver.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
+      spin.dispose();
       window.removeEventListener("scroll", fade);
       document.removeEventListener("visibilitychange", sync);
       motionQuery.removeEventListener("change", sync);
