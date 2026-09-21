@@ -109,7 +109,7 @@ const fillFragment = /* glsl */ `
     vec3 color = mix(uEdge, uDeep, smoothstep(0.0, 0.7, vDepth));
     color = mix(color, uRim, (1.0 - smoothstep(0.0, 0.05, vDepth)) * 0.65);
     float side = mix(uSafe, 1.0, smoothstep(uFadeFrom, uFadeTo, vU));
-    gl_FragColor = vec4(color, uOpacity * mix(side, 0.6, uPortrait));
+    gl_FragColor = vec4(color, uOpacity * mix(side, 0.5, uPortrait));
     #include <colorspace_fragment>
   }
 `;
@@ -137,7 +137,7 @@ const shadowFragment = /* glsl */ `
   varying float vU;
   void main() {
     float side = mix(uSafe, 1.0, smoothstep(uFadeFrom, uFadeTo, vU));
-    gl_FragColor = vec4(uColor, pow(vAlpha, 1.6) * uStrength * uFade * mix(side, 0.6, uPortrait));
+    gl_FragColor = vec4(uColor, pow(vAlpha, 1.6) * uStrength * uFade * mix(side, 0.5, uPortrait));
     #include <colorspace_fragment>
   }
 `;

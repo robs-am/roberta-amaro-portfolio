@@ -199,7 +199,9 @@ export function HeroShapes() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 -z-5 opacity-0"
     >
-      <canvas ref={canvasRef} className="size-full" />
+      {/* A slight blur puts the waves out of focus, so the sharp text reads as being in front of them. The
+          scale hides the edges, where the blur would otherwise fade into the page. */}
+      <canvas ref={canvasRef} className="size-full scale-[1.03] blur-[1.5px]" />
     </div>,
     document.body,
   );

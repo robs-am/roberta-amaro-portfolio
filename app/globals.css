@@ -309,6 +309,27 @@
   }
 }
 
+/* Lifts the hero text off the waves: a tight shadow for the edge and a wide one for the distance. It is a
+   filter on the wrapper, not text-shadow, because the name's clip-path would cut a text-shadow off. */
+.hero-lift {
+  --lift-near: rgb(42 36 39 / 0.1);
+  --lift-far: rgb(42 36 39 / 0.14);
+  filter: drop-shadow(0 1px 1px var(--lift-near)) drop-shadow(0 10px 22px var(--lift-far));
+}
+
+/* On the dark background a black shadow only shows over the waves, so it can be stronger. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero-lift {
+    --lift-near: rgb(0 0 0 / 0.4);
+    --lift-far: rgb(0 0 0 / 0.55);
+  }
+}
+
+:root[data-theme="dark"] .hero-lift {
+  --lift-near: rgb(0 0 0 / 0.4);
+  --lift-far: rgb(0 0 0 / 0.55);
+}
+
 .glow-blob {
   position: absolute;
   border-radius: 9999px;
