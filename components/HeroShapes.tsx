@@ -128,7 +128,7 @@ export function HeroShapes({ settled = false, settleWait = 0 }: Readonly<{ settl
     if (motionQuery.matches && settled) {
       // Back on the home from another page: the shapes fade in one after another, in step with the text (see hero-settle-in).
       faded.forEach((shape, index) =>
-        fades.push(animate(shape, { value: 1, duration: 700, delay: settleWait + 250 + index * 80, ease: "inOutQuad" })),
+        fades.push(animate(shape, { value: 1, duration: 600, delay: settleWait + index * 70, ease: "inOutQuad" })),
       );
     } else if (motionQuery.matches) {
       const elapsed = heroEntrance.startedAt ? performance.now() - heroEntrance.startedAt : 0;

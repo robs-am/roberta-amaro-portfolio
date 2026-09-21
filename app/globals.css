@@ -262,7 +262,8 @@
 }
 
 /* Coming back to the home from another page there is no full entrance: the name and the items rise and fade
-   in one after another, the way the menu's rows do (Menu.tsx: 250 ms + 80 ms per row, 700 ms each). */
+   in one after another like the menu's rows, but starting at once (no base delay) and quicker: the overlay
+   leaving is already mostly done in its first 300 ms, so any wait only shows an empty page. */
 @keyframes hero-settle-in {
   from {
     opacity: 0;
@@ -276,7 +277,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .hero-reveal[data-settled] :is([data-hero-word], [data-hero-item]) {
-    animation: hero-settle-in 700ms var(--ease-expressive) calc(var(--hero-wait, 0ms) + 250ms + var(--hero-index, 0) * 80ms) both;
+    animation: hero-settle-in 600ms var(--ease-expressive) calc(var(--hero-wait, 0ms) + var(--hero-index, 0) * 70ms) both;
   }
 }
 
