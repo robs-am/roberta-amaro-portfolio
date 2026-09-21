@@ -35,7 +35,7 @@ export default async function AwardsPage({ params }: PageProps<"/[locale]/awards
   const sorted = [...awards].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
-    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 sm:px-8">
+    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 short:py-6 sm:px-8">
       <BackButton />
       <h1 className="text-3xl font-semibold">{t("title")}</h1>
       <AwardList awards={sorted} locale={locale} />

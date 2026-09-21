@@ -94,7 +94,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       <HeroShapes settled={settled} settleWait={settleWait} />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
         <div className="max-w-2xl">
-          <h1 className="text-5xl leading-[1.05] font-bold uppercase sm:text-6xl lg:text-8xl xl:text-9xl">
+          <h1 className="text-5xl leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(8rem,17vh)]">
             {profile.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="block">
                 <span
@@ -107,7 +107,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
               </span>
             ))}
           </h1>
-          <div data-hero-item style={{ "--hero-index": 2 } as React.CSSProperties} aria-hidden="true" className="mt-6 h-1 w-10 rounded-full bg-accent" />
+          <div data-hero-item style={{ "--hero-index": 2 } as React.CSSProperties} aria-hidden="true" className="mt-6 short:mt-4 h-1 w-10 rounded-full bg-accent" />
           <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-xl font-semibold tracking-wide text-foreground sm:text-2xl lg:text-3xl">
             {/* One part per line on a phone (split at the commas), a single line from `sm` up. */}
             {localize(profile.role, locale)
@@ -122,7 +122,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
                 </span>
               ))}
           </p>
-          <div data-hero-item style={{ "--hero-index": 4 } as React.CSSProperties} className="mt-6 flex flex-col items-start gap-y-1 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-x-8">
+          <div data-hero-item style={{ "--hero-index": 4 } as React.CSSProperties} className="mt-6 flex flex-col items-start gap-y-1 sm:mt-8 short:mt-5 sm:flex-row sm:flex-wrap sm:gap-x-8">
             <Link href="/experience" onClick={leaveToPage} className={`${textLinkHeroClass} order-2 sm:order-1`}>
               <ArrowIcon className={textLinkArrowHeroClass} />
               <span className={textLinkLabelClass}>{t("experienceCta")}</span>
@@ -133,7 +133,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             </Link>
           </div>
           {links.length > 0 && (
-            <ul data-hero-item style={{ "--hero-index": 5 } as React.CSSProperties} className="-ml-3 mt-8 flex gap-3">
+            <ul data-hero-item style={{ "--hero-index": 5 } as React.CSSProperties} className="-ml-3 mt-8 short:mt-4 flex gap-3">
               {links.map((link) => (
                 <li key={link.href} className="relative">
                   <a

@@ -21,7 +21,7 @@ export async function ExperienceTimeline({
     format.dateTime(toDate(yearMonth), { month: "short", year: "numeric" });
 
   return (
-    <ExperienceEntrance className="mt-10 max-w-3xl space-y-14">
+    <ExperienceEntrance className="mt-10 max-w-3xl space-y-14 short:mt-4 short:space-y-6">
       {experiences.map((item) => (
         <li key={item.id} className="grid gap-3 sm:grid-cols-[9rem_1fr] sm:gap-8">
           <div>

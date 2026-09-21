@@ -28,7 +28,7 @@ export async function AwardList({
 
   // Reuses the experience entrance: the year wipes in, then the text fades up.
   return (
-    <ExperienceEntrance className="mt-10 max-w-3xl space-y-14">
+    <ExperienceEntrance className="mt-10 max-w-3xl space-y-14 short:mt-4 short:space-y-6">
       {awards.map((item) => (
         <li key={item.id} className="grid gap-3 sm:grid-cols-[9rem_1fr] sm:gap-8">
           <div>

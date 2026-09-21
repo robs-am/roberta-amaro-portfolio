@@ -33,31 +33,31 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
   const t = await getTranslations("About");
 
   return (
-    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 sm:px-8">
+    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 short:py-6 sm:px-8">
       <BackButton />
       <h1 className="text-3xl font-semibold">{t("title")}</h1>
-      <div className="mt-10 max-w-3xl space-y-6 text-lg leading-8">
+      <div className="mt-10 max-w-3xl space-y-6 text-lg leading-8 short:mt-4 short:max-w-4xl short:space-y-3 short:text-base short:leading-7">
         <p>{t("intro")}</p>
         <p>{t("curiosity")}</p>
       </div>
 
-      <section aria-labelledby="stack-heading" className="mt-16">
+      <section aria-labelledby="stack-heading" className="mt-16 short:mt-6">
         <h2
           id="stack-heading"
           className="border-b border-border pb-3 text-sm font-medium tracking-wide text-muted uppercase"
         >
           {t("stack")}
         </h2>
-        <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-1 font-display text-2xl leading-[1.1] font-bold tracking-wide uppercase sm:text-3xl">
+        <ul className="mt-6 short:mt-4 flex flex-wrap gap-x-6 gap-y-1 font-display text-2xl leading-[1.1] font-bold tracking-wide uppercase sm:text-3xl">
           {mainStack.map((tech) => (
             <li key={tech}>{tech}</li>
           ))}
         </ul>
 
-        <h3 className="mt-8 text-sm font-medium tracking-wide text-muted uppercase">
+        <h3 className="mt-8 short:mt-5 text-sm font-medium tracking-wide text-muted uppercase">
           {t("alsoWorking")}
         </h3>
-        <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-base font-semibold text-accent sm:text-lg">
+        <ul className="mt-4 short:mt-3 flex flex-wrap gap-x-6 gap-y-1 text-base font-semibold text-accent sm:text-lg">
           {alsoWorkingWith.map((tech) => (
             <li key={tech}>{tech}</li>
           ))}

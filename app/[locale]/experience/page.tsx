@@ -35,7 +35,7 @@ export default async function ExperiencePage({ params }: PageProps<"/[locale]/ex
   const sorted = [...experiences].sort((a, b) => b.start.localeCompare(a.start));
 
   return (
-    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 sm:px-8">
+    <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 py-16 short:py-6 sm:px-8">
       <BackButton />
       <h1 className="text-3xl font-semibold">{t("title")}</h1>
       <ExperienceTimeline experiences={sorted} locale={locale} />
