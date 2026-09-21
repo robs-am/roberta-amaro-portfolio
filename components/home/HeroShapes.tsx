@@ -6,9 +6,14 @@ import { createPortal } from "react-dom";
 import { MathUtils } from "three";
 import { LAYER_COUNT, createWaveScene } from "@/components/shapes/waveScene";
 import { subscribeTheme } from "@/components/theme/theme";
-import { HERO_ENTRANCE_MS, heroEntrance, pointerCurrent, pointerTarget } from "@/components/shapes/shapesScene";
+import { HERO_ENTRANCE_MS, heroEntrance, pointerCurrent, pointerTarget, waveHorizon } from "@/components/shapes/shapesScene";
 
 const POINTER_EASING = 0.06;
+// Pixels between the bottom of the name and the horizon, and how far the horizon is then raised (in screen
+// height units). The two waves of a layer rarely peak together, so its real highest crest sits well below
+// the horizon; the lift makes the crests reach up close to the name without touching it.
+const NAME_GAP = 10;
+const HORIZON_LIFT = 0.06;
 
 const SCENE_OPACITY = 1;
 
@@ -90,10 +95,22 @@ export function HeroShapes() {
       if (visible !== wasVisible) sync();
     };
 
+    // The waves start just under the name, so it stands clear above them. The name's place comes from the
+    // layout (offsetTop), which its entrance animation does not move, so this can run at any time.
+    const placeHorizon = (height: number) => {
+      const name = document.querySelector<HTMLElement>("#hero h1");
+      if (!name) return;
+      let bottom = name.offsetHeight;
+      for (let node: HTMLElement | null = name; node; node = node.offsetParent as HTMLElement | null) bottom += node.offsetTop;
+      waveHorizon.y = MathUtils.clamp(1 - (2 * (bottom + NAME_GAP)) / height + HORIZON_LIFT, -0.6, 0.4);
+      waves.setHorizon(waveHorizon.y);
+    };
+
     const resize = () => {
       const { clientWidth: width, clientHeight: height } = canvas;
       if (!width || !height) return;
       waves.resize(width, height);
+      placeHorizon(height);
       sync();
     };
 
@@ -108,6 +125,8 @@ export function HeroShapes() {
     waves.applyColors();
     resize();
     fade();
+    // The name's size changes once the fonts load, so place the horizon again.
+    void document.fonts?.ready.then(resize);
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(canvas);

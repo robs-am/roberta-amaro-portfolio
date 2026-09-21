@@ -7,6 +7,10 @@
 export const pointerCurrent = { x: 0, y: 0 };
 export const pointerTarget = { x: 0, y: 0 };
 
+// Where the waves start (see `setHorizon` in waveScene.ts), as the hero last measured it from the bottom of
+// the name, so the menu draws the waves at the same height and they do not jump when it opens.
+export const waveHorizon = { y: -0.05 };
+
 // The home's entrance runs the text and the waves together: they start at the same moment and finish at
 // the same moment. HERO_ENTRANCE_MS is when the text is done (see the timings in Hero.tsx, where the last
 // item starts at 1000 + 4 x 140 ms and lasts 1100 ms); Hero stamps when it started, and the waves, which
