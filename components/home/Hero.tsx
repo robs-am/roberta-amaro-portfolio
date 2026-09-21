@@ -85,7 +85,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       <HeroShapes />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
         <div className="max-w-2xl">
-          <h1 className="text-[clamp(3rem,17.5vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(8rem,17vh)]">
+          <h1 className="text-foreground/85 dark:text-foreground text-[clamp(3rem,17.5vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(8rem,17vh)]">
             {profile.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="block">
                 <span
