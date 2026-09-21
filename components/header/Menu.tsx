@@ -132,7 +132,7 @@ export function Menu() {
           >
             {/* Before the shapes in the DOM, so the grain stays behind them. */}
             <Grain layerClassName="z-0" />
-            {shapesMounted && <MenuShapes open={open} />}
+            {shapesMounted && <MenuShapes />}
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}
             <div className="relative mx-auto flex min-h-11 max-w-7xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
