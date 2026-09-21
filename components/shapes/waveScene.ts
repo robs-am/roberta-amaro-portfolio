@@ -34,7 +34,11 @@ const SAFE_FEATHER = 0.45;
 // How opaque each layer is, back to front. The layers behind are the ones that pass behind the text, so they
 // are faint, and the opacity rises step by step toward the front layer, which stays solid and reads as the
 // nearest. The shadows follow it (see `applyColors`).
-const LAYER_OPACITIES = [0.08, 0.17, 0.32, 0.52];
+const DARK_OPACITIES = [0.08, 0.17, 0.32, 0.52];
+// The light page has no glow to carry the waves, so all of its layers hold a visible tint of rose (not only the
+// front one) and rise from a light wash at the back to the solid front layer.
+const LIGHT_OPACITIES = [0.17, 0.27, 0.38, 0.5];
+let layerOpacities = DARK_OPACITIES;
 
 // Each edge is three sines added up: a main wave, a finer ripple on it, and a long slow swell that carries the
 // whole hump along, so the shape does not repeat. Their speeds differ (and run in opposite directions), so it
@@ -184,7 +188,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
         uEdge: { value: new Color() },
         uDeep: { value: new Color() },
         uRim: { value: new Color() },
-        uOpacity: { value: LAYER_OPACITIES[index] },
+        uOpacity: { value: layerOpacities[index] },
         uSafe: { value: 0.18 },
         uFadeFrom: { value: -0.75 },
         uFadeTo: { value: 0.15 },
@@ -257,12 +261,13 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     // sink into the page. Each layer is a clear step from the last.
     // The dark page's colours are brighter than before to make up for the lower opacity: less of the layer
     // shows, so what shows has to glow more.
-    const back = dark ? token("--accent").lerp(new Color(0xffffff), 0.1) : new Color(0xf5d2df);
-    const front = dark ? new Color(0xb85a80) : new Color(0xb46b8c);
+    const back = dark ? token("--accent").lerp(new Color(0xffffff), 0.1) : new Color(0xc79aad);
+    const front = dark ? new Color(0xb85a80) : new Color(0x8c566f);
     const deepen = dark ? new Color(0x2a1621) : token("--accent");
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black.
-    const safe = dark ? 0.42 : 0.18;
+    const safe = dark ? 0.42 : 0.8;
+    layerOpacities = dark ? DARK_OPACITIES : LIGHT_OPACITIES;
     layers.forEach(({ fillMaterial, shadowMaterial }, index) => {
       const edge = back.clone().lerp(front, index / (LAYER_COUNT - 1));
       fillMaterial.uniforms.uSafe.value = shadowMaterial.uniforms.uSafe.value = safe;
@@ -270,11 +275,11 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       fillMaterial.uniforms.uDeep.value.copy(edge).lerp(deepen, dark ? 0.3 : 0.38);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
       fillMaterial.uniforms.uRim.value.copy(edge).lerp(new Color(dark ? 0xf7b8cb : 0xffffff), dark ? 0.55 : 0.5);
-      shadowMaterial.uniforms.uColor.value.set(dark ? 0x14080f : 0x3a1029);
+      shadowMaterial.uniforms.uColor.value.set(dark ? 0x14080f : 0x9a4a72);
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
-      const solidity = LAYER_OPACITIES[index] / LAYER_OPACITIES[LAYER_COUNT - 1];
-      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.42) * (0.35 + 0.65 * solidity);
+      const solidity = layerOpacities[index] / layerOpacities[LAYER_COUNT - 1];
+      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.28) * (0.35 + 0.65 * solidity);
     });
   };
 
@@ -314,7 +319,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
 
       const fade = fades[index] ?? 1;
       fillMesh.visible = shadowMesh.visible = fade > 0.001;
-      fillMaterial.uniforms.uOpacity.value = LAYER_OPACITIES[index] * fade;
+      fillMaterial.uniforms.uOpacity.value = layerOpacities[index] * fade;
       // The shadow fades with its layer.
       shadowMaterial.uniforms.uFade.value = fade;
       const dx = -pointerX * spec.parallax * aspect;
