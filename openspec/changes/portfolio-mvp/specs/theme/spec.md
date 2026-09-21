@@ -38,6 +38,14 @@ Na primeira visita, sem escolha salva, o site MUST usar o tema correspondente à
 - **WHEN** um visitante sem escolha salva acessa o site com o sistema em modo claro
 - **THEN** a página é exibida no tema claro
 
+#### Scenario: Preferência muda com o site aberto
+- **WHEN** um visitante sem escolha salva altera o modo do sistema com o site aberto
+- **THEN** a página passa ao tema correspondente, sem recarregar
+
+#### Scenario: Sem JavaScript
+- **WHEN** um visitante sem escolha salva carrega o site com JavaScript desativado
+- **THEN** a página é exibida no tema correspondente à preferência do sistema
+
 ### Requirement: Persistência da escolha
 Uma escolha manual de tema MUST ser mantida em recarregamentos, em visitas futuras no mesmo navegador e ao trocar de idioma, e MUST ter precedência sobre a preferência do sistema.
 

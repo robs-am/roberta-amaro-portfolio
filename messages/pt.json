@@ -9,11 +9,15 @@
   "Header": {
     "navLabel": "Navegação principal",
     "home": "Início",
+    "backToMenu": "Voltar ao menu",
     "nav": {
+      "home": "Início",
+      "about": "Sobre",
       "experience": "Experiências",
       "projects": "Projetos"
     },
     "menu": {
+      "label": "Menu",
       "open": "Abrir menu",
       "close": "Fechar menu"
     },
@@ -32,13 +36,14 @@
     "linkedin": "LinkedIn",
     "github": "GitHub",
     "newTab": "(abre em nova aba)",
-    "and": "e",
     "experienceCta": "Ver experiências",
     "projectsCta": "Ver projetos"
   },
   "Experience": {
     "title": "Experiências",
-    "present": "Atual"
+    "present": "Atual",
+    "educationTitle": "Formação",
+    "inProgress": "Em andamento"
   },
   "Projects": {
     "title": "Projetos",
@@ -47,7 +52,29 @@
     "demo": "Ver site",
     "newTab": "(abre em nova aba)",
     "whatIDid": "Minha atuação",
-    "viewAll": "Ver todos os projetos"
+    "close": "Fechar"
+  },
+  "About": {
+    "title": "Sobre",
+    "intro": "Sou Engenheira de Software Front-End e, quando o projeto pede, também entro no Back-End. Comecei a carreira como Designer 3D, e essa bagagem ainda influencia o meu jeito de construir: me importo tanto com a sensação de usar uma interface quanto com o funcionamento dela.",
+    "curiosity": "Tenho muita curiosidade por novas tecnologias e creative coding, e adoro transformar experimentos em produtos de verdade.",
+    "stack": "Tecnologias",
+    "alsoWorking": "Também atuo com"
+  },
+  "AboutPage": {
+    "title": "Sobre | Roberta Amaro",
+    "description": "Sobre Roberta Amaro, Engenheira de Software especializada em Front-End."
+  },
+  "Awards": {
+    "title": "Prêmios",
+    "issuedBy": "Emitido por",
+    "visit": "Ver projeto",
+    "certificate": "Ver certificado",
+    "newTab": "(abre em nova aba)"
+  },
+  "ExperiencePage": {
+    "title": "Experiências | Roberta Amaro",
+    "description": "Experiências profissionais de Roberta Amaro."
   },
   "ProjectsPage": {
     "title": "Todos os projetos | Roberta Amaro",

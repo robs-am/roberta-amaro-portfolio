@@ -1,37 +1,77 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* Dark follows the browser (prefers-color-scheme) until the visitor picks a theme with the toggle.
+   The pick is an override on <html> (see components/theme/theme.ts): `data-theme="dark"` forces dark and
+   `data-theme="light"` forces light. */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme="light"], [data-theme="light"] *)) {
+      @slot;
+    }
+  }
+}
+/* A laptop-sized screen (about 1366x768): pages tighten their spacing so they fit without scrolling. */
+@custom-variant short (@media (min-width: 640px) and (max-height: 800px));
 
 :root {
-  --background: #faf6f6;
-  --card: #ffffff;
-  --elevated: #f5eded;
-  --foreground: #2b1f27;
-  --muted: #6b5560;
+  /* Neutrals (background, text, muted, borders) are near-grey with only a trace of warmth, so the
+     plum accent and the glow are the only pink on the page instead of tinting everything. */
+  --background: #ebe6e4;
+  --card: #f5f2f0;
+  --elevated: #e4dfdd;
+  --foreground: #2a2427;
+  --muted: #675d63;
   --accent: #7f2f5f;
   --accent-foreground: #ffffff;
-  --border: rgba(127, 47, 95, 0.18);
+  --border: rgba(42, 36, 39, 0.13);
   --glow-1: #f5d5e5;
   --glow-2: #f9e4da;
-  --glow-opacity: 0.5;
+  --glow-opacity: 0.32;
   /* Darker plum for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
   --highlight: #66264c;
+  color-scheme: light;
 }
 
-.dark {
-  --background: #14181c;
-  --card: #1c2227;
-  --elevated: #232a30;
-  --foreground: #f5f5f4;
-  --muted: #bcbcbc;
-  --accent: #7eb3c1;
-  --accent-foreground: #0f2a31;
-  --border: rgba(126, 179, 193, 0.18);
-  --glow-1: #0f7482;
-  --glow-2: #2f8fe0;
-  /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
-  --glow-opacity: 0.5;
-  --highlight: #c9ecf5;
+/* Dark tokens, declared twice on purpose: once for the browser preference (unless light was picked)
+   and once for a dark pick. CSS cannot share one block between a media query and a selector; keep the
+   two identical. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #171416;
+    --card: #201c1e;
+    --elevated: #292427;
+    --foreground: #f5f1f3;
+    --muted: #c5babf;
+    --accent: #e08a9f;
+    --accent-foreground: #3a1029;
+    --border: rgba(255, 255, 255, 0.12);
+    --glow-1: #532a42;
+    --glow-2: #74424f;
+    /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
+    --glow-opacity: 0.32;
+    --highlight: #f8d8e8;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --background: #171416;
+  --card: #201c1e;
+  --elevated: #292427;
+  --foreground: #f5f1f3;
+  --muted: #c5babf;
+  --accent: #e08a9f;
+  --accent-foreground: #3a1029;
+  --border: rgba(255, 255, 255, 0.12);
+  --glow-1: #532a42;
+  --glow-2: #74424f;
+  --glow-opacity: 0.32;
+  --highlight: #f8d8e8;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -95,13 +135,68 @@
 /* Dark theme: the glow is far more saturated against the near-black background, so a full-width
    wash reads as a generic aurora. A tighter mask keeps it as a pool of light behind the content,
    with plain background around it. Declared after the rules above so it wins at equal specificity. */
-.dark .glow {
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .glow {
+    mask-image: radial-gradient(80% 65% at 55% 0%, #000 30%, transparent 100%);
+  }
+}
+
+:root[data-theme="dark"] .glow {
   mask-image: radial-gradient(80% 65% at 55% 0%, #000 30%, transparent 100%);
 }
 
-@media (min-width: 1024px) {
-  .dark .glow-home {
+@media (min-width: 1024px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .glow-home {
     mask-image: radial-gradient(52% 58% at 50% 42%, #000 25%, transparent 100%);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root[data-theme="dark"] .glow-home {
+    mask-image: radial-gradient(52% 58% at 50% 42%, #000 25%, transparent 100%);
+  }
+}
+
+/* The home has no glow: like the menu it is a flat background, and the 3D shapes carry the colour. */
+.glow-home {
+  display: none;
+}
+
+/* Menu on a laptop (about 650px tall): the five items would be taller than the screen at their full
+   size, so from tablet up they scale with the height and stop growing at the usual size. */
+@media (min-width: 640px) {
+  .menu-body {
+    padding-bottom: min(4rem, 6vh);
+  }
+
+  .menu-nav-link {
+    font-size: min(4.5rem, 11vh);
+  }
+}
+
+@media (min-width: 1024px) {
+  .menu-nav-link {
+    font-size: min(6rem, 11vh);
+  }
+}
+
+/* Menu on a short screen (a phone held sideways): the items scale with the height so the whole menu,
+   contacts included, fits without scrolling, and the contacts sit in one row. Not in a layer, so these
+   win over the utility classes on the same elements. */
+@media (max-height: 600px) {
+  .menu-body {
+    gap: 1.25rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .menu-nav-link {
+    font-size: min(3rem, 8.5vh);
+  }
+
+  .menu-contacts {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 2rem;
   }
 }
 
@@ -127,10 +222,32 @@
   clip-path: polygon(var(--slant) 0, 100% 0, 100% 100%, 0 100%);
 }
 
+/* Projects lightbox: the backdrop fades in on open and out when the close animation starts. */
+.showcase-dialog::backdrop {
+  background: color-mix(in oklab, var(--background) 55%, transparent);
+  backdrop-filter: blur(8px);
+  opacity: 1;
+  transition: opacity 500ms var(--ease-soft);
+}
+
+.showcase-dialog[data-closing]::backdrop {
+  opacity: 0;
+}
+
+@starting-style {
+  .showcase-dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-dialog::backdrop {
+    transition: none;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  /* Animates the native scroll-snap correction on wheel/trackpad/touch scroll. Click-triggered
-     navigation (smoothScroll.ts) temporarily switches this to "auto" so its own easing isn't
-     double-applied by the browser, then restores it once the animation finishes. */
+  /* Smooth in-page jumps (e.g. the footer's back-to-top link). */
   html {
     scroll-behavior: smooth;
   }
@@ -142,13 +259,53 @@
   }
 }
 
-/* Hidden only until the anime.js entrance takes over (Hero and ExperienceEntrance set data-ready on
-   their root on mount), shown anyway after 3s otherwise. */
+/* Hidden only until the anime.js entrance takes over (Hero, ExperienceEntrance and ProjectShowcase
+   set data-ready on their root on mount), shown anyway after 3s otherwise. */
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  .hero-reveal:not([data-ready]) :is([data-hero-word], [data-hero-item]),
-  [data-experience-list]:not([data-ready]) :is([data-experience-year], [data-experience-body]) {
+  .hero-reveal:not([data-ready]) [data-hero-item],
+  [data-experience-list]:not([data-ready]) :is([data-experience-year], [data-experience-body]),
+  [data-showcase]:not([data-ready]) :is([data-showcase-title], [data-showcase-meta]) {
     opacity: 0;
     animation: show-fallback 0s 3s forwards;
+  }
+}
+
+/* The name's entrance is CSS, not anime.js, so it starts at the first paint instead of waiting for React to
+   hydrate (in dev that took about a second of blank page). The first word is wiped in from the left, the
+   following ones from the top, one after another; the items below take over from Hero.tsx and are timed
+   from where this animation is. Keep the durations in sync with HERO_ENTRANCE_MS in shapesScene.ts. */
+@keyframes hero-word-left {
+  from {
+    opacity: 0;
+    clip-path: inset(0% 100% 0% 0%);
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0% 0% 0% 0%);
+    transform: none;
+  }
+}
+
+@keyframes hero-word-top {
+  from {
+    opacity: 0;
+    clip-path: inset(0% 0% 100% 0%);
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0% 0% 0% 0%);
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-reveal [data-hero-word] {
+    animation: hero-word-top 1300ms cubic-bezier(0.16, 1, 0.3, 1) calc(400ms + var(--hero-index, 1) * 200ms) both;
+  }
+  .hero-reveal [data-hero-word="0"] {
+    animation: hero-word-left 1300ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 }
 

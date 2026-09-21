@@ -12,11 +12,12 @@ Inspiração visual: [alignerr.com/en/process](https://www.alignerr.com/en/proce
 
 ## Temas
 
-O tema é controlado pela classe `dark` no `<html>`, aplicada pelo `next-themes` (padrão: preferência do sistema; a escolha manual fica salva no `localStorage`).
+O tema segue a preferência do navegador (`prefers-color-scheme`) até a visitante escolher um com o botão. A escolha fica salva no `localStorage` (chave `theme`, valores `light` ou `dark`) e é aplicada como `data-theme` no `<html>`, que tem prioridade sobre a media query. Sem escolha salva não há atributo nenhum, então a página segue o navegador até sem JavaScript. A lógica fica em `components/theme/theme.ts`.
 
 - Tema claro: valores em `:root`.
-- Tema escuro: valores sobrescritos em `.dark`.
-- Para variações pontuais por tema em um componente, use o variant `dark:` do Tailwind, mas prefira sempre resolver com tokens.
+- Tema escuro: valores em `@media (prefers-color-scheme: dark)` (exceto com `data-theme="light"`) **e** em `:root[data-theme="dark"]`. Os dois blocos precisam ficar idênticos: o CSS não deixa compartilhar um bloco entre media query e seletor.
+- Para variações pontuais por tema em um componente, use o variant `dark:` do Tailwind, que segue a mesma regra, mas prefira sempre resolver com tokens.
+- Código JavaScript que precisa saber o tema (as formas 3D) usa `getTheme()` e `subscribeTheme()` de `components/theme/theme.ts`, nunca a classe do `<html>`.
 
 ### Troca de tema
 
@@ -24,30 +25,33 @@ O tema é controlado pela classe `dark` no `<html>`, aplicada pelo `next-themes`
 - Sem suporte do navegador ou com `prefers-reduced-motion: reduce`, a troca é instantânea.
 - Durante a transição, `::view-transition { pointer-events: none; }` mantém a página clicável.
 
-### Classe do tema ao trocar de idioma
+### Sem flash e ao trocar de idioma
 
-Trocar de `/pt` para `/en` remonta o `<html>`, e o React apaga a classe `dark` que o `next-themes` aplicou. O componente `ThemeClassSync` reaplica a classe antes da pintura para evitar um quadro no tema errado.
-
-Ele repete a regra do `next-themes` (chave `theme` no `localStorage`, `system` resolvido pela preferência do sistema). **Se mudar `storageKey`, `attribute` ou os nomes dos temas no `ThemeProvider`, atualize também o `ThemeClassSync`.**
+- **Carregamento:** um script inline no `<head>` (`themeInitScript`) aplica o `data-theme` salvo antes da primeira pintura, então uma escolha diferente do navegador nunca pisca o outro tema.
+- **Troca de idioma:** ir de `/pt` para `/en` remonta o `<html>`, e o React apaga o `data-theme`. O componente `ThemeSync` o reaplica antes da pintura.
+- Durante a troca de tema, `setTheme` desliga as transições de cor por dois quadros, para não competirem com o cross-fade.
+- Chave do `localStorage` e nome do atributo aparecem no script e em `components/theme/theme.ts`, que ficam no mesmo arquivo. Se mudar um, confira o CSS em `app/globals.css`.
 
 ## Cores
 
 | Token | Classe Tailwind | Claro | Escuro | Uso |
 |---|---|---|---|---|
-| `--background` | `bg-background` | `#f1ede6` | `#14181c` | fundo da página |
-| `--card` | `bg-card` | `#fffdf8` | `#1c2227` | cards e blocos de conteúdo |
-| `--elevated` | `bg-elevated` | `#faf8f5` | `#232a30` | superfícies internas e hover |
-| `--foreground` | `text-foreground` | `#2a2622` | `#f5f5f4` | texto principal |
-| `--muted` | `text-muted` | `#5f574d` | `#bcbcbc` | texto secundário (datas, empresa, descrições) |
-| `--accent` | `text-accent`, `bg-accent` | `#2a5c68` | `#7eb3c1` | destaque: links, traço decorativo do hero, pills, botão principal |
-| `--accent-foreground` | `text-accent-foreground` | `#fffdf8` | `#0f2a31` | texto sobre fundo `bg-accent` |
-| `--border` | `border-border` | `rgba(67,126,142,0.22)` | `rgba(126,179,193,0.18)` | bordas e divisórias (decorativo, nunca texto) |
-| `--highlight` | `text-highlight` | `#1c4750` | `#c9ecf5` | teal de texto ajustado para passar AA sobre o brilho (o `--accent` não passa lá); usado no botão principal do hero |
-| `--glow-1` | `bg-glow-1` | `#8ccfc9` | `#0f7482` | brilho de fundo, tom teal (decorativo) |
-| `--glow-2` | `bg-glow-2` | `#9dd6e2` | `#2f8fe0` | brilho de fundo, tom azul (decorativo) |
-| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.6` | `0.5` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
+| `--background` | `bg-background` | `#ebe6e4` | `#171416` | fundo da página |
+| `--card` | `bg-card` | `#f5f2f0` | `#201c1e` | cards e blocos de conteúdo |
+| `--elevated` | `bg-elevated` | `#e4dfdd` | `#292427` | superfícies internas e hover |
+| `--foreground` | `text-foreground` | `#2a2427` | `#f5f1f3` | texto principal |
+| `--muted` | `text-muted` | `#675d63` | `#c5babf` | texto secundário (datas, empresa, descrições) |
+| `--accent` | `text-accent`, `bg-accent` | `#7f2f5f` | `#e08a9f` | destaque: links, traço decorativo do hero, pills, botão principal |
+| `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1029` | texto sobre fundo `bg-accent` |
+| `--border` | `border-border` | `rgba(42,36,39,0.13)` | `rgba(255,255,255,0.12)` | bordas e divisórias (decorativo, nunca texto) |
+| `--highlight` | `text-highlight` | `#66264c` | `#f8d8e8` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
+| `--glow-1` | `bg-glow-1` | `#f5d5e5` | `#532a42` | brilho de fundo, primeira mancha (decorativo; ameixa no escuro, rosa no claro) |
+| `--glow-2` | `bg-glow-2` | `#f9e4da` | `#74424f` | brilho de fundo, segunda mancha (decorativo; rosa-terra no escuro, pêssego no claro) |
+| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.32` | `0.32` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
 
 Opacidades sobre tokens funcionam normalmente (`bg-background/85`, `bg-accent/10`).
+
+**Botões do hero.** No claro usam o accent (o principal em `bg-accent/25` com `text-highlight`, o secundário em `bg-accent/15` com `text-accent`). No escuro são **neutros**: o principal é sólido em `--foreground` com texto `--background` (contraste 16.36), e o secundário é só um contorno `--foreground`/40% com texto `--foreground`. O rosa vivo sobre a névoa ameixa apagada ficava doce demais, então no escuro a cor fica só no brilho e nos detalhes (links, anos, traço do hero).
 
 ### Contraste verificado
 
@@ -55,16 +59,16 @@ Razão de contraste WCAG dos pares de texto usados hoje:
 
 | Par (texto / fundo) | Claro | Escuro |
 |---|---|---|
-| `foreground` / `background` | 12.87 | 16.35 |
-| `foreground` / `card` | 14.77 | 14.72 |
-| `muted` / `background` | 6.09 | 9.39 |
-| `muted` / `card` | 6.99 | 8.46 |
-| `accent` / `background` | 4.76 | 7.73 |
-| `accent` / `card` | 5.46 | 6.96 |
-| `accent` / pill (`bg-accent/10` sobre `card`) | 4.78 | 5.81 |
-| `accent-foreground` / `accent` | 5.46 | 6.52 |
+| `foreground` / `background` | 12.30 | 16.34 |
+| `foreground` / `card` | 13.65 | 15.05 |
+| `muted` / `background` | 5.11 | 9.71 |
+| `muted` / `card` | 5.67 | 8.95 |
+| `accent` / `background` | 6.86 | 7.23 |
+| `accent` / `card` | 7.62 | 6.66 |
+| `accent` / pill (`bg-accent/10` sobre `card`) | 6.51 | 5.66 |
+| `accent-foreground` / `accent` | 8.49 | 6.46 |
 
-Os pares mais apertados são os de `accent` no tema claro. Não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
+Todos os pares passam AA com folga. Ainda assim, não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
 
 ### Texto sobre o brilho
 
@@ -76,12 +80,13 @@ Com isso, o único par que precisa passar no pior caso é `foreground`:
 
 | Tema | `--glow-opacity` | `foreground` no pior caso (2 blobs sobrepostos) |
 |---|---|---|
-| Escuro | 0.65 | 4.26 (falha) |
-| Escuro | 0.55 | 4.93 |
-| Escuro | **0.5 (valor em uso)** | **5.36** |
-| Claro | **0.6 (valor em uso, com as cores atuais)** | **9.65** |
+| Escuro | 0.8 | 7.76 |
+| Escuro | 0.65 | 8.60 |
+| Escuro | 0.5 | 9.79 |
+| Escuro | **0.32 (valor em uso, com as cores atuais)** | **11.93** |
+| Claro | **0.32 (valor em uso, com as cores atuais)** | **13.02** |
 
-A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **4.67 no escuro** e **7.61 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
+A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **9.96 no escuro** e **9.80 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
 
 Se `--glow-1`, `--glow-2` ou `--glow-opacity` de qualquer tema mudarem, recalcule esse pior caso antes de assumir que o texto continua legível — cores mais claras de `--glow-2` custam mais opacidade no escuro. Se `muted`/`accent` voltarem a aparecer sobre o brilho em algum ponto, a opacidade segura cai bem mais (no claro, `muted` só passa com `--glow-opacity` em torno de 0.3 ou menos com as cores atuais).
 
@@ -135,19 +140,28 @@ O CSS só oculta os elementos dentro de `@media (scripting: enabled) and (prefer
 
 - Com movimento reduzido nada é ocultado e a animação nem roda.
 - Se o JavaScript não rodar, o fallback `show-fallback` mostra tudo após 3s. Esse fallback só existe **enquanto** `data-ready` não estiver marcado: uma versão anterior deixava o fallback ativo sempre, e ele mostrava o conteúdo fora da tela após 3s, antes de o usuário rolar até ele.
-- Como a entrada depende de hidratação, ela começa quando o JS carrega, não no primeiro paint.
+- Como a entrada dos itens depende de hidratação, ela começa quando o JS carrega. O nome do hero é a exceção: é CSS puro e começa no primeiro paint (ver Hero).
 
 ### Hero
 
-Animada num `useEffect` do `Hero` (client), em três etapas, todas com a curva `outExpo`:
+O nome é CSS (`@keyframes hero-word-left` / `hero-word-top` em `globals.css`), para começar no primeiro paint e não depender da hidratação (no dev isso deixava ~1s de página em branco). O resto é anime.js num `useEffect` do `Hero`, que mede quanto da animação do nome já passou e desconta esse tempo. Os shapes 3D (`HeroShapes.tsx`) entram com fade de opacidade, na mesma duração do texto, um depois do outro, de cima pra baixo.
 
 | Etapa | Alvo | Efeito | Início | Duração |
 |---|---|---|---|---|
-| 1 | primeira palavra do nome (`data-hero-word`) | revelada da esquerda pra direita (`clipPath` + `translateX` de −32px) | 0ms | 1400ms |
-| 2 | demais palavras do nome | reveladas de cima pra baixo (`clipPath` + `translateY` de −40px), 250ms entre elas | 900ms | 1400ms |
-| 3 | barra, cargo, textos, CTAs e ícones (`data-hero-item`, na ordem do DOM) | fade + subida de 28px, 180ms entre itens | 1900ms | 1300ms |
+| 1 | primeira palavra do nome (`data-hero-word="0"`) | revelada da esquerda pra direita (`clipPath` + `translateX` de −32px), `cubic-bezier(0.16, 1, 0.3, 1)` (= outExpo) | 0ms | 1300ms |
+| 2 | demais palavras do nome | reveladas de cima pra baixo (`clipPath` + `translateY` de −40px), 200ms entre elas | 400ms | 1300ms |
+| 3 | barra, cargo, CTAs, ícones e créditos (`data-hero-item`, ordem do DOM) | fade + subida de 28px (`outExpo`), 140ms entre itens | 1000ms | 1100ms |
+| shapes | anel, nó, esfera vinho, esfera pequena | fade de opacidade (`inOutQuad`), o último termina junto com o texto | 0 / 500 / 950 / 1400ms | 1300ms |
 
-O hero completo leva cerca de 4s. Ele ocupa 100dvh, então a seção seguinte só aparece ao rolar e não disputa atenção com a entrada.
+O hero completo leva cerca de 2,7s (`HERO_ENTRANCE_MS` em `shapesScene.ts`; mudou um tempo, mude o outro).
+
+**A entrada completa só toca na primeira visita e no reload.** `heroEntrance.played` (módulo, em `shapesScene.ts`) marca que ela já rodou; ao voltar pra home por navegação interna, o `Hero` monta com `data-settled` e usa a entrada curta: nome e itens sobem e aparecem em cascata (`hero-settle-in`, 700ms, 250ms + 80ms por item, os mesmos números do menu), e os shapes fazem fade no mesmo passo.
+
+**A seta de voltar** (`BackButton`) leva à home quando a página foi aberta por um link do hero (`backTarget.toHome` em `header/menuEvents.ts`) e abre o menu nos demais casos.
+
+#### Pendência: volta à home pelo menu
+
+Ao clicar em "Início" no menu, a entrada curta ainda parece truncada (relato dela, testado duas vezes, ainda não resolvido). A hipótese é que o menu leva 700ms fechando por cima (`clip-path`), e a home monta por baixo, então a cascata acontece escondida. A tentativa foi atrasar a cascata em `MENU_CLOSE_WAIT_MS` (500ms, `menuEvents.ts`) quando a navegação vem de um link do menu (`cameFromMenu`); não resolveu. Ainda não verificado: se os shapes (importados dinamicamente) montam depois do texto; se a transição de página do Next (`::view-transition` em `globals.css`, 250ms) interfere; e o ritmo real, já que os screenshots do Chrome são lentos demais para capturar a transição. Próximo passo: gravar a transição (tela ou performance) em vez de amostrar, ou fazer o menu revelar a home em vez de cobri-la (por exemplo, fechar o menu antes de navegar).
 
 ### Experiências
 
@@ -175,13 +189,16 @@ O menu fecha ao: acionar um link, pressionar Esc (o foco volta pro botão), clic
 
 ## Brilho de fundo
 
-`components/BackgroundGlow.tsx` (client, `aria-hidden`, `pointer-events-none`), renderizado no layout antes do `Header`. Inspirado em [alignerr.com](https://www.alignerr.com), aprovado com a autora após algumas rodadas de calibração.
+`components/background/BackgroundGlow.tsx` (client, `aria-hidden`, `pointer-events-none`), renderizado no layout antes do `Header`. Inspirado em [alignerr.com](https://www.alignerr.com), aprovado com a autora após algumas rodadas de calibração.
 
-- Camada `absolute` de `95vh` de altura no topo da página, com `mask-image: radial-gradient(120% 85% at 55% 0%, #000 45%, transparent 92%)` — suaviza as quatro bordas (não só embaixo), pra o `overflow-hidden` do container nunca cortar o blur numa linha reta.
-- 3 manchas (`div`, `border-radius: 9999px`, `filter: blur(170px)`, cor sólida em `--glow-1`/`--glow-2`, opacidade em `--glow-opacity`). As duas cores ficam separadas horizontalmente (teal mais à esquerda, azul mais à direita, com uma faixa de transição no meio) — com muito overlap entre elas o brilho lê como uma cor só em vez de gradiente.
+- Camada `absolute` de `100dvh` de altura no topo da página, com máscara radial (`.glow`, em `globals.css`) que suaviza as quatro bordas (não só embaixo), pra o `overflow-hidden` do container nunca cortar o blur numa linha reta. Na home, a partir de 1024px, o hero é centralizado na vertical e não ancorado no topo, então a máscara centra mais baixo (`.glow-home`, `55% 42%`) para iluminar o conteúdo e não o espaço vazio acima dele.
+- **Tema escuro, máscara mais fechada.** O brilho é muito mais saturado contra o fundo quase preto, e uma mancha cobrindo a largura toda lê como o "aurora gradient" genérico. Por isso `.glow` e `.glow-home` no tema escuro usam uma elipse menor (`80% 65%` no topo; `52% 58%` centrada no conteúdo na home em desktop): o brilho fica como uma poça de luz atrás do nome e dos botões, com fundo liso ao redor. O tema claro mantém a máscara ampla. Como só as bordas enfraquecem e o centro continua igual, o contraste do pior caso (tabela em "Texto sobre o brilho") não piora.
+- 3 manchas (`div`, `border-radius: 9999px`, `filter: blur(170px)`, cor sólida em `--glow-1`/`--glow-2`, opacidade em `--glow-opacity`). As duas cores ficam separadas horizontalmente (`--glow-1` mais à esquerda, `--glow-2` mais à direita, com uma faixa de transição no meio) — com muito overlap entre elas o brilho lê como uma cor só em vez de gradiente.
 - `pointermove` na `window` define um alvo normalizado (-1 a 1); um loop `requestAnimationFrame` interpola a posição atual até o alvo (fator `0.18`) e grava `--glow-x`/`--glow-y` no container. Cada mancha tem uma profundidade (`--glow-depth`) diferente — `150`, `240`, `340`px de deslocamento máximo — criando parallax entre elas. O loop para quando a distância até o alvo fica abaixo de 0.1px e só recomeça no próximo `pointermove`.
 - Ativo só com `(pointer: fine) and (prefers-reduced-motion: no-preference)`; com toque ou movimento reduzido as manchas ficam paradas na posição base.
-- `--glow-opacity` é um pouco mais alto no claro (`0.6`) que no escuro (`0.5`) — nos dois temas o texto que fica sobre o brilho (hero e nav do header antes de rolar) usa `--foreground`, não `--muted`/`--accent`; os números de contraste que sustentam esses valores estão em "Texto sobre o brilho" acima.
+- `--glow-opacity` é `0.5` no claro (cores bem pálidas, então já dá um brilho suave) e `0.4` no escuro (as cores do escuro são ameixa e rosa-terra apagados de propósito: uma versão magenta mais saturada lia forte demais sobre o fundo quase preto) — nos dois temas o texto que fica sobre o brilho (hero e nav do header antes de rolar) usa `--foreground`, não `--muted`/`--accent`; os números de contraste que sustentam esses valores estão em "Texto sobre o brilho" acima.
+
+O brilho existe só no topo da página (o hero). A seção de Projetos não tem brilho próprio: ela chegou a ter duas manchas e uma camada de fade, mas destoavam do resto e foram removidas. Os painéis decorativos dos cards sem imagem (`.project-panel`) ainda usam `--glow-1` num gradiente radial pequeno.
 
 ## Padrões de componentes
 

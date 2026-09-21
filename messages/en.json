@@ -9,11 +9,15 @@
   "Header": {
     "navLabel": "Main navigation",
     "home": "Home",
+    "backToMenu": "Back to menu",
     "nav": {
+      "home": "Home",
+      "about": "About",
       "experience": "Experience",
       "projects": "Projects"
     },
     "menu": {
+      "label": "Menu",
       "open": "Open menu",
       "close": "Close menu"
     },
@@ -32,13 +36,14 @@
     "linkedin": "LinkedIn",
     "github": "GitHub",
     "newTab": "(opens in a new tab)",
-    "and": "and",
     "experienceCta": "View experience",
     "projectsCta": "View projects"
   },
   "Experience": {
     "title": "Experience",
-    "present": "Present"
+    "present": "Present",
+    "educationTitle": "Education",
+    "inProgress": "In progress"
   },
   "Projects": {
     "title": "Projects",
@@ -47,7 +52,29 @@
     "demo": "Visit site",
     "newTab": "(opens in a new tab)",
     "whatIDid": "My contribution",
-    "viewAll": "View all projects"
+    "close": "Close"
+  },
+  "About": {
+    "title": "About",
+    "intro": "I'm a Front-End Software Engineer who steps into the Back-End when a project needs it. I started my career as a 3D Designer, and that background still shapes how I build: I care as much about how an interface feels as how it works.",
+    "curiosity": "I'm endlessly curious about new technologies and creative coding, and I love turning experiments into real products.",
+    "stack": "Technologies",
+    "alsoWorking": "Also working with"
+  },
+  "AboutPage": {
+    "title": "About | Roberta Amaro",
+    "description": "About Roberta Amaro, a Software Engineer specialized in Front-End."
+  },
+  "Awards": {
+    "title": "Awards",
+    "issuedBy": "Issued by",
+    "visit": "View project",
+    "certificate": "View certificate",
+    "newTab": "(opens in a new tab)"
+  },
+  "ExperiencePage": {
+    "title": "Experience | Roberta Amaro",
+    "description": "Roberta Amaro's professional experience."
   },
   "ProjectsPage": {
     "title": "All projects | Roberta Amaro",

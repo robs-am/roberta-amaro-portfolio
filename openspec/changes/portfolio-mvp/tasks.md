@@ -66,3 +66,32 @@
 - [ ] 7.3 Verificar contraste AA nos temas claro e escuro com Lighthouse ou axe DevTools, incluindo o hero sobre o brilho e os links do menu mobile, e ajustar tokens até não haver falhas de contraste — ⏸️ Use Lighthouse (F12) ou axe DevTools
 - [ ] 7.4 Verificar navegação completa só por teclado (Tab até nav ou botão de menu, links do menu aberto, seletor de idioma e alternador de tema, acionando cada um) em `/pt` e `/en` — ⏸️ Use Tab/Shift+Tab no navegador
 - [x] 7.5 Verificar com `curl` que o HTML de `/en` já contém os textos em inglês (sem depender de JavaScript) e que o cookie de idioma faz `/` redirecionar para o idioma escolhido manualmente
+
+## 8. Formação e prêmios
+
+- [x] 8.1 Criar o tipo `Education` e `data/education.ts` (PUC Minas e Universidade Veiga de Almeida, com datas `YYYY-MM` ou só `YYYY`) e as chaves `Experience.educationTitle` e `Experience.inProgress` nos dois idiomas; verificar com `pnpm exec tsc --noEmit`
+- [x] 8.2 Criar `components/EducationTimeline.tsx` no padrão da timeline de experiências (ano do término em destaque, datas sem mês quando só há ano, "Em andamento"/"In progress") e renderizá-lo em `/experience`; verificar em `/pt/experience` e `/en/experience`
+- [x] 8.3 Adicionar `experienceId?` ao tipo `Award` e mostrar dentro do cargo, em `ExperienceTimeline`, os prêmios ligados a ele (hackathon interno ligado ao Grupo OLX); verificar que o prêmio aparece só dentro do cargo
+- [x] 8.4 Criar `components/AwardHighlight.tsx` e reorganizar `/experience` em grade de duas colunas a partir de `lg`, com o painel do Claude Impact Lab em coluna lateral fixa (nome do evento como título, colocação como subtítulo) e, abaixo de `lg`, coluna única na ordem experiências, painel, formação; verificar em 360px, 1024px e 1440px
+- [x] 8.5 Adicionar `certificateUrl?` ao tipo `Award` e o link "Ver certificado" no painel, exibido só quando existir; verificar que o painel não muda sem o campo
+- [x] 8.6 Remover `app/[locale]/awards/page.tsx`, `components/AwardList.tsx`, o item de nav, a rota do sitemap e as chaves `Header.nav.awards` e `AwardsPage`, e redirecionar `/pt/awards` e `/en/awards` para `/experience` em `next.config.ts`; verificar que os dois endereços respondem 301 para `/experience` no mesmo idioma
+- [ ] 8.7 (pendência) Anexar o certificado do Claude Impact Lab: definir `certificateUrl` em `data/awards.ts` com o PDF em `public/certificates/` ou um link de verificação, depois de conferir que o arquivo não expõe dados pessoais; aguardando o arquivo da Roberta
+- [ ] 8.8 (adiado) Avaliar renomear o item de nav "Experiências"/"Experience" para "Trajetória"/"Background", já que a página reúne experiências, formação e prêmios
+
+## 9. Tema pela preferência do navegador
+
+Substitui a implementação com `next-themes` das tarefas 3.3 e 3.4, que ficam como registro do que foi feito na época.
+
+- [x] 9.1 Reescrever os tokens em `app/globals.css`: tema claro em `:root`, escuro em `@media (prefers-color-scheme: dark)` (exceto com `data-theme="light"`) e em `:root[data-theme="dark"]`, e a variante `dark` do Tailwind com a mesma regra; ajustar as máscaras de `.glow` e `.glow-home` do tema escuro; verificar no CSS gerado que a variante `dark` sai nas duas formas
+- [x] 9.2 Criar `components/theme/theme.ts` (`getTheme`, `setTheme`, `subscribeTheme`, `applyStoredTheme` e o `themeInitScript`) e `components/theme/ThemeSync.tsx`, que reaplica o `data-theme` antes da pintura quando o `<html>` remonta na troca de idioma
+- [x] 9.3 Reescrever `ThemeToggle` com `useSyncExternalStore`, mantendo o cross-fade por View Transitions, e colocar o script de tema no `<head>` do layout no lugar do `ThemeProvider`
+- [x] 9.4 Fazer `HeroShapes`, `MenuShapes` e `shapeStyle` usarem `getTheme()` e `subscribeTheme()` em vez da classe `dark` do `<html>`; verificar que `grep` não encontra mais `classList.contains("dark")`
+- [x] 9.5 Remover `next-themes` com `pnpm remove` e atualizar a seção de temas de `docs/design-system.md`; verificar que `pnpm build` passa
+- [x] 9.6 Suavizar o fundo do tema claro (`--background` `#ebe6e4`, `--card` `#f5f2f0`, `--elevated` `#e4dfdd`) e recalcular a tabela de contraste em `docs/design-system.md`; todos os pares continuam acima de 4.5:1
+- [ ] 9.7 (pendência) Testar nos dois temas e nos dois idiomas: sem escolha salva (mudar o modo do sistema), com escolha pelo botão (recarregar sem piscar), trocar de idioma no tema escolhido e as formas 3D acompanhando; passar Lighthouse ou axe no hero sobre o brilho, já que o fundo claro mudou
+
+## 10. Organização de pastas
+
+- [x] 10.1 Reorganizar `components/` por assunto (`header`, `theme`, `home`, `shapes`, `experience`, `projects`, `background`, `layout`, `ui`), deixando a raiz vazia, e reescrever os imports; verificar com `pnpm exec tsc --noEmit`, `pnpm build` e `grep` sem nenhum import com o caminho antigo
+- [x] 10.2 Atualizar a árvore de pastas do `design.md`, que estava defasada, e os caminhos citados em `docs/design-system.md` e nos comentários do CSS
+- [ ] 10.3 (pendência) Reconciliar o resto do change com o site multipágina (`specs/portfolio-page`, âncoras e `#hero` no `design.md` e no `proposal.md`, tabela de tokens teal do `design.md`), depois de conferir a home, `/about` e `/projects` no código

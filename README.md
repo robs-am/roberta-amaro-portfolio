@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Roberta Amaro | Portfólio
 
-## Getting Started
+Portfólio pessoal bilíngue (português e inglês) com tema claro e escuro, feito com Next.js (App Router), TypeScript e Tailwind v4.
 
-First, run the development server:
+## Rodando
+
+Este projeto usa **pnpm**.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev        # http://localhost:3000
+pnpm build      # build de produção (também confere tipos)
+pnpm lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Em produção, defina `NEXT_PUBLIC_SITE_URL` (URL canônica, sitemap e pré-visualização ao compartilhar). Sem ela, o site é tratado como não publicado (veja `app/robots.ts`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Páginas
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Todas existem em `/pt` e `/en`.
 
-## Learn More
+| Rota | Conteúdo |
+|---|---|
+| `/` | home com o hero e as formas 3D |
+| `/about` | sobre e stack |
+| `/experience` | trajetória: experiências (com os prêmios de empresa dentro do cargo), formação e prêmios independentes |
+| `/projects` | todos os projetos |
 
-To learn more about Next.js, take a look at the following resources:
+`/awards` redireciona (301) para `/experience`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estrutura
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+  [locale]/     rotas por idioma; o segmento [locale] recebe "pt" ou "en"
+  globals.css   tokens de tema e movimento
+components/     organizado por assunto
+  header/  theme/  home/  shapes/  experience/
+  projects/  background/  layout/  ui/
+data/           conteúdo: experiências, formação, prêmios, projetos, perfil
+i18n/           idiomas, navegação e hreflang
+messages/       textos da interface (pt.json e en.json)
+```
 
-## Deploy on Vercel
+## Onde mexer
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Conteúdo** (experiências, formação, prêmios, projetos): arquivos em `data/`. Todo texto precisa das duas versões, `pt` e `en`; o build falha se faltar uma.
+- **Textos da interface**: `messages/pt.json` e `messages/en.json`, sempre com as mesmas chaves.
+- **Cores, fontes e movimento**: tokens em `app/globals.css`. Veja `docs/design-system.md` antes de mudar uma cor (há uma tabela de contraste a manter).
+- **Tema**: segue a preferência do navegador até a visitante escolher pelo botão. A lógica fica em `components/theme/theme.ts`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Documentação
+
+- [`docs/design-system.md`](docs/design-system.md): tokens, tipografia, movimento, tema e padrões de componentes.
+- `openspec/changes/portfolio-mvp/`: proposta, design, specs e tarefas do MVP.
