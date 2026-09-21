@@ -14,8 +14,7 @@
       "home": "Início",
       "about": "Sobre",
       "experience": "Experiências",
-      "projects": "Projetos",
-      "awards": "Prêmios"
+      "projects": "Projetos"
     },
     "menu": {
       "label": "Menu",
@@ -42,7 +41,9 @@
   },
   "Experience": {
     "title": "Experiências",
-    "present": "Atual"
+    "present": "Atual",
+    "educationTitle": "Formação",
+    "inProgress": "Em andamento"
   },
   "Projects": {
     "title": "Projetos",
@@ -68,11 +69,8 @@
     "title": "Prêmios",
     "issuedBy": "Emitido por",
     "visit": "Ver projeto",
+    "certificate": "Ver certificado",
     "newTab": "(abre em nova aba)"
-  },
-  "AwardsPage": {
-    "title": "Prêmios | Roberta Amaro",
-    "description": "Prêmios e reconhecimentos de Roberta Amaro."
   },
   "ExperiencePage": {
     "title": "Experiências | Roberta Amaro",

@@ -1,6 +1,12 @@
 import { getFormatter, getTranslations } from "next-intl/server";
+import { ArrowIcon } from "@/components/ArrowIcon";
 import { ExperienceEntrance } from "@/components/ExperienceEntrance";
-import { localize, type Experience, type Locale } from "@/data/types";
+import {
+  textLinkArrowClass,
+  textLinkClass,
+  textLinkLabelClass,
+} from "@/components/textLinkStyles";
+import { localize, type Award, type Experience, type Locale } from "@/data/types";
 
 function toDate(yearMonth: string) {
   const [year, month] = yearMonth.split("-").map(Number);
@@ -9,12 +15,16 @@ function toDate(yearMonth: string) {
 
 export async function ExperienceTimeline({
   experiences,
+  awards = [],
   locale,
 }: Readonly<{
   experiences: Experience[];
+  /** Awards with an `experienceId` are shown inside the matching job. */
+  awards?: Award[];
   locale: Locale;
 }>) {
   const t = await getTranslations("Experience");
+  const tAwards = await getTranslations("Awards");
   const format = await getFormatter();
 
   const formatMonth = (yearMonth: string) =>
@@ -41,6 +51,36 @@ export async function ExperienceTimeline({
             <h2 className="text-lg font-semibold">{localize(item.role, locale)}</h2>
             <p className="text-sm font-medium text-accent">{item.company}</p>
             <p className="mt-3 leading-7">{localize(item.description, locale)}</p>
+            {awards.some((award) => award.experienceId === item.id) && (
+              <div className="mt-5">
+                <h3 className="text-sm font-medium tracking-wide text-muted uppercase">
+                  {tAwards("title")}
+                </h3>
+                <ul className="mt-2 space-y-2">
+                  {awards
+                    .filter((award) => award.experienceId === item.id)
+                    .map((award) => (
+                      <li key={award.id} className="text-sm leading-6">
+                        <span className="font-semibold">{localize(award.title, locale)}</span>
+                        {", "}
+                        {localize(award.event, locale)} ({formatMonth(award.date)})
+                        {award.url && (
+                          <a
+                            href={award.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${tAwards("visit")} ${tAwards("newTab")}`}
+                            className={`ml-3 ${textLinkClass}`}
+                          >
+                            <span className={textLinkLabelClass}>{tAwards("visit")}</span>
+                            <ArrowIcon className={textLinkArrowClass} />
+                          </a>
+                        )}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
           </div>
         </li>
       ))}

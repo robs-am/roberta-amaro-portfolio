@@ -8,4 +8,4 @@ export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:300
 export const isSitePublished = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
 
 /** Routes that have their own page, without the locale prefix. "" is the home. */
-export const routes = ["", "/about", "/experience", "/projects", "/awards"] as const;
+export const routes = ["", "/about", "/experience", "/projects"] as const;

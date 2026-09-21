@@ -24,16 +24,31 @@ export type Experience = {
   description: Localized;
 };
 
+export type Education = {
+  id: string;
+  /** Degree and field, e.g. "Postgraduate specialization, Software Engineering". */
+  course: Localized;
+  institution: string;
+  /** YYYY or YYYY-MM; a bare year is shown without a month. */
+  start: string;
+  /** YYYY or YYYY-MM; omitted while in progress. */
+  end?: string;
+};
+
 export type Award = {
   id: string;
   /** Placement, e.g. "3rd Place". */
   title: Localized;
   event: Localized;
   issuer: string;
+  /** Experience this award belongs to; shown inside that job. Without it, it is listed on its own. */
+  experienceId?: Experience["id"];
   /** YYYY-MM */
   date: string;
   description: Localized;
   url?: string;
+  /** Link to the certificate (a PDF in /public/certificates or a verification page). */
+  certificateUrl?: string;
 };
 
 export type ProjectImage = {

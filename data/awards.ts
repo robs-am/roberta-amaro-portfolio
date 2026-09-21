@@ -18,6 +18,7 @@ export const awards = [
     title: { pt: "1º Lugar", en: "1st Place" },
     event: { pt: "Hackathon Interno OLX", en: "OLX Internal Hackathon" },
     issuer: "Grupo OLX",
+    experienceId: "grupo-olx",
     date: "2025-08",
     description: {
       pt: "Desenvolvi uma solução com IA para Trust & Safety, conquistando o 1º lugar entre as equipes participantes.",

@@ -14,8 +14,7 @@
       "home": "Home",
       "about": "About",
       "experience": "Experience",
-      "projects": "Projects",
-      "awards": "Awards"
+      "projects": "Projects"
     },
     "menu": {
       "label": "Menu",
@@ -42,7 +41,9 @@
   },
   "Experience": {
     "title": "Experience",
-    "present": "Present"
+    "present": "Present",
+    "educationTitle": "Education",
+    "inProgress": "In progress"
   },
   "Projects": {
     "title": "Projects",
@@ -68,11 +69,8 @@
     "title": "Awards",
     "issuedBy": "Issued by",
     "visit": "View project",
+    "certificate": "View certificate",
     "newTab": "(opens in a new tab)"
-  },
-  "AwardsPage": {
-    "title": "Awards | Roberta Amaro",
-    "description": "Awards and recognition for Roberta Amaro."
   },
   "ExperiencePage": {
     "title": "Experience | Roberta Amaro",
