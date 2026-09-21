@@ -1,15 +1,27 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* Dark follows the browser (prefers-color-scheme) until the visitor picks a theme with the toggle.
+   The pick is an override on <html>: `.dark`/`[data-theme="dark"]` forces dark, `.light`/`[data-theme="light"]` forces light. */
+@custom-variant dark {
+  &:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where(:not(.light, .light *, [data-theme="light"], [data-theme="light"] *)) {
+      @slot;
+    }
+  }
+}
 /* A laptop-sized screen (about 1366x768): pages tighten their spacing so they fit without scrolling. */
 @custom-variant short (@media (min-width: 640px) and (max-height: 800px));
 
 :root {
   /* Neutrals (background, text, muted, borders) are near-grey with only a trace of warmth, so the
      plum accent and the glow are the only pink on the page instead of tinting everything. */
-  --background: #faf8f7;
-  --card: #ffffff;
-  --elevated: #f4f0ef;
+  --background: #ebe6e4;
+  --card: #f5f2f0;
+  --elevated: #e4dfdd;
   --foreground: #2a2427;
   --muted: #675d63;
   --accent: #7f2f5f;
@@ -20,9 +32,33 @@
   --glow-opacity: 0.32;
   /* Darker plum for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
   --highlight: #66264c;
+  color-scheme: light;
 }
 
-.dark {
+/* Dark tokens, declared twice on purpose: once for the browser preference (unless light was picked)
+   and once for a dark pick. CSS cannot share one block between a media query and a selector; keep the
+   two identical. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light, [data-theme="light"]) {
+    --background: #171416;
+    --card: #201c1e;
+    --elevated: #292427;
+    --foreground: #f5f1f3;
+    --muted: #c5babf;
+    --accent: #e08a9f;
+    --accent-foreground: #3a1029;
+    --border: rgba(255, 255, 255, 0.12);
+    --glow-1: #532a42;
+    --glow-2: #74424f;
+    /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
+    --glow-opacity: 0.32;
+    --highlight: #f8d8e8;
+    color-scheme: dark;
+  }
+}
+
+:root.dark,
+:root[data-theme="dark"] {
   --background: #171416;
   --card: #201c1e;
   --elevated: #292427;
@@ -33,9 +69,9 @@
   --border: rgba(255, 255, 255, 0.12);
   --glow-1: #532a42;
   --glow-2: #74424f;
-  /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
   --glow-opacity: 0.32;
   --highlight: #f8d8e8;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -99,12 +135,26 @@
 /* Dark theme: the glow is far more saturated against the near-black background, so a full-width
    wash reads as a generic aurora. A tighter mask keeps it as a pool of light behind the content,
    with plain background around it. Declared after the rules above so it wins at equal specificity. */
-.dark .glow {
+@media (prefers-color-scheme: dark) {
+  :root:not(.light, [data-theme="light"]) .glow {
+    mask-image: radial-gradient(80% 65% at 55% 0%, #000 30%, transparent 100%);
+  }
+}
+
+:root.dark .glow,
+:root[data-theme="dark"] .glow {
   mask-image: radial-gradient(80% 65% at 55% 0%, #000 30%, transparent 100%);
 }
 
+@media (min-width: 1024px) and (prefers-color-scheme: dark) {
+  :root:not(.light, [data-theme="light"]) .glow-home {
+    mask-image: radial-gradient(52% 58% at 50% 42%, #000 25%, transparent 100%);
+  }
+}
+
 @media (min-width: 1024px) {
-  .dark .glow-home {
+  :root.dark .glow-home,
+  :root[data-theme="dark"] .glow-home {
     mask-image: radial-gradient(52% 58% at 50% 42%, #000 25%, transparent 100%);
   }
 }
