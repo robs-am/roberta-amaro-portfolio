@@ -1,15 +1,11 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
-import { cameFromMenu } from "./menuEvents";
 
 export function HomeLink({ label }: { label: string }) {
   return (
     <Link
       href="/"
-      onClick={() => {
-        cameFromMenu.current = false;
-      }}
       aria-label={label}
       className="flex size-11 shrink-0 items-center justify-center rounded-sm text-foreground transition-colors hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >

@@ -4,7 +4,7 @@
 import { animate, stagger } from "animejs";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { ArrowIcon } from "@/components/ArrowIcon";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
 import {
@@ -14,13 +14,7 @@ import {
   textLinkLabelClass,
 } from "@/components/textLinkStyles";
 import { profile } from "@/data/profile";
-import {
-  MENU_CLOSE_WAIT_MS,
-  MENU_REVEAL_MS,
-  MENU_STATE_EVENT,
-  backTarget,
-  cameFromMenu,
-} from "@/components/header/menuEvents";
+import { backTarget } from "@/components/header/menuEvents";
 import { heroEntrance } from "@/components/shapesScene";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
@@ -40,35 +34,25 @@ const tooltipClass =
 // Pages opened from the hero go back to the home, not to the menu (see BackButton).
 const leaveToPage = () => {
   backTarget.toHome = true;
-  cameFromMenu.current = false;
 };
 
 export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const t = useTranslations("Hero");
   const tFooter = useTranslations("Footer");
   const sectionRef = useRef<HTMLElement>(null);
-  // Coming back through the menu, the fade-in waits for the overlay to finish closing.
-  const [settleWait] = useState(() => (cameFromMenu.current ? MENU_CLOSE_WAIT_MS : 0));
-  // Fixed at the first render: true when the home is reached again from another page (client-side), so
-  // there is no entrance. A page load or reload starts with a fresh module, so it is false there. Coming
-  // from the menu it is always true: the entrance (name wiped in) would play behind the closing overlay
-  // and be seen cut off, so the home rises in the way the menu's rows do instead.
-  const [settled] = useState(() => heroEntrance.played || cameFromMenu.current);
 
   // Enters each `[data-hero-item]` in DOM order (bar → role → CTAs → links); the name words are CSS (globals.css).
   // CSS hides them only until this runs (see `[data-hero-item]` in globals.css), with a fallback
   // that shows them anyway. Reduced motion never hides them, so there is nothing to do.
   useEffect(() => {
     const section = sectionRef.current;
-    if (settled) heroEntrance.played = true;
-    if (!section || settled) return;
+    if (!section) return;
     if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
 
     // The name is a CSS animation that started at the first paint, before this ran: time everything else from it.
     const nameAnimation = section.querySelector<HTMLElement>("[data-hero-word]")?.getAnimations()[0];
     const elapsed = Number(nameAnimation?.currentTime ?? 0);
     heroEntrance.startedAt = performance.now() - elapsed;
-    heroEntrance.played = true;
     const items = section.querySelectorAll<HTMLElement>("[data-hero-item]");
     for (const target of items) target.style.opacity = "0";
     section.dataset.ready = "";
@@ -84,35 +68,6 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     return () => {
       animation.cancel();
     };
-  }, [settled]);
-
-  // While the menu covers the home, the content is left out (data-covered) once the overlay's wipe has
-  // finished; when the menu closes it rises in one row after another, like the menu's own rows.
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-
-    const onMenuState = (event: Event) => {
-      const { open } = (event as CustomEvent<{ open: boolean }>).detail;
-      clearTimeout(timer);
-      if (open) {
-        timer = setTimeout(() => {
-          section.dataset.covered = "";
-        }, MENU_REVEAL_MS);
-      } else if ("covered" in section.dataset) {
-        // The rise-in is the settled one even if the full entrance had not finished (see globals.css).
-        section.dataset.settled = "";
-        section.style.setProperty("--hero-wait", "0ms");
-        delete section.dataset.covered;
-      }
-    };
-
-    window.addEventListener(MENU_STATE_EVENT, onMenuState);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener(MENU_STATE_EVENT, onMenuState);
-    };
   }, []);
 
   const links = [
@@ -125,11 +80,9 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     <section
       ref={sectionRef}
       id="hero"
-      data-settled={settled ? "" : undefined}
-      style={{ "--hero-wait": `${settleWait}ms` } as React.CSSProperties}
       className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden max-sm:pt-14 scroll-mt-(--header-height,0px)"
     >
-      <HeroShapes settled={settled} settleWait={settleWait} />
+      <HeroShapes />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
         <div className="max-w-2xl">
           <h1 className="text-[clamp(3rem,14.5vw,3.5rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(8rem,17vh)]">

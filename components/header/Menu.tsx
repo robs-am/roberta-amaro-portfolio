@@ -10,7 +10,7 @@ import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
 import { CapsuleSvg, menuButtonClass } from "./capsuleIcon";
 import { LocaleSwitcher } from "./LocaleSwitcher";
-import { MENU_REVEAL_MS, MENU_STATE_EVENT, OPEN_MENU_EVENT, backTarget, cameFromMenu } from "./menuEvents";
+import { OPEN_MENU_EVENT, backTarget } from "./menuEvents";
 import { MenuShapes } from "./MenuShapes";
 import { navItems } from "./navItems";
 import { ThemeToggle } from "./ThemeToggle";
@@ -18,7 +18,7 @@ import { ThemeToggle } from "./ThemeToggle";
 const subscribe = () => () => {};
 
 // Matches the overlay's `duration-700` reveal transition.
-const CLOSE_DURATION_MS = MENU_REVEAL_MS;
+const CLOSE_DURATION_MS = 700;
 
 // Full-screen menu. The overlay is portaled to <body>: the header may carry a `backdrop-filter`,
 // which would otherwise become the containing block of a `fixed` child and clip it to the header.
@@ -74,10 +74,6 @@ export function Menu() {
       for (const element of siblings) element.inert = false;
       opener?.focus();
     };
-  }, [open]);
-
-  useEffect(() => {
-    window.dispatchEvent(new CustomEvent(MENU_STATE_EVENT, { detail: { open } }));
   }, [open]);
 
   // The 3D layer exists only while the menu is visible: it starts on open and is torn down once the
@@ -167,7 +163,6 @@ export function Menu() {
                           aria-current={active ? "page" : undefined}
                           onClick={() => {
                             backTarget.toHome = false;
-                            cameFromMenu.current = true;
                             setOpen(false);
                           }}
                           className={`menu-nav-link inline-flex items-baseline gap-3 rounded-sm font-display text-[clamp(2rem,10.5vw,3rem)] leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${

@@ -57,7 +57,7 @@ const FADE_DISTANCE = 0.45;
 // to <body> and fixed to the viewport: the hero clips its own overflow (and is translated, which would
 // also re-anchor a fixed child), and this way the scene runs under the sticky header too. It sits
 // just above the glow and the hero's bottom fade (both -z-10), so neither washes the shapes out.
-export function HeroShapes({ settled = false, settleWait = 0 }: Readonly<{ settled?: boolean; settleWait?: number }>) {
+export function HeroShapes() {
   const layerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -125,12 +125,7 @@ export function HeroShapes({ settled = false, settleWait = 0 }: Readonly<{ settl
     // started, and the shapes mount later (Three.js loads separately), so what has already passed is cut off.
     const faded = blobs.map(() => ({ value: 0 }));
     const fades: JSAnimation[] = [];
-    if (motionQuery.matches && settled) {
-      // Back on the home from another page: the shapes fade in one after another, in step with the text (see hero-settle-in).
-      faded.forEach((shape, index) =>
-        fades.push(animate(shape, { value: 1, duration: 600, delay: settleWait + index * 70, ease: "inOutQuad" })),
-      );
-    } else if (motionQuery.matches) {
+    if (motionQuery.matches) {
       const elapsed = heroEntrance.startedAt ? performance.now() - heroEntrance.startedAt : 0;
       faded.forEach((shape, index) => {
         const start = Math.max(FADE_STARTS[index] - elapsed, 0);
@@ -272,7 +267,7 @@ export function HeroShapes({ settled = false, settleWait = 0 }: Readonly<{ settl
       shapeMaterials.forEach((material) => material.dispose());
       renderer.dispose();
     };
-  }, [settled, settleWait]);
+  }, []);
 
   return createPortal(
     <div

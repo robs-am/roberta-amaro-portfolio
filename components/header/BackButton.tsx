@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { CapsuleSvg, menuButtonClass } from "./capsuleIcon";
-import { OPEN_MENU_EVENT, backTarget, cameFromMenu } from "./menuEvents";
+import { OPEN_MENU_EVENT, backTarget } from "./menuEvents";
 
 // Back arrow in the header, next to the home icon, drawn like the menu's buttons. The menu is how every page
 // is reached, so it reopens the menu. When the page was opened from a link on the home (the hero's) the
@@ -28,7 +28,6 @@ export function BackButton() {
       type="button"
       aria-label={t("backToMenu")}
       onClick={() => {
-        cameFromMenu.current = false;
         window.dispatchEvent(new Event(OPEN_MENU_EVENT));
       }}
       className={menuButtonClass}
