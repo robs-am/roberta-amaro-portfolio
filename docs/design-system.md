@@ -12,12 +12,12 @@ Inspiração visual: [alignerr.com/en/process](https://www.alignerr.com/en/proce
 
 ## Temas
 
-O tema segue a preferência do navegador (`prefers-color-scheme`) até a visitante escolher um com o botão. A escolha fica salva no `localStorage` (chave `theme`, valores `light` ou `dark`) e é aplicada como `data-theme` no `<html>`, que tem prioridade sobre a media query. Sem escolha salva não há atributo nenhum, então a página segue o navegador até sem JavaScript. A lógica fica em `components/theme.ts`.
+O tema segue a preferência do navegador (`prefers-color-scheme`) até a visitante escolher um com o botão. A escolha fica salva no `localStorage` (chave `theme`, valores `light` ou `dark`) e é aplicada como `data-theme` no `<html>`, que tem prioridade sobre a media query. Sem escolha salva não há atributo nenhum, então a página segue o navegador até sem JavaScript. A lógica fica em `components/theme/theme.ts`.
 
 - Tema claro: valores em `:root`.
 - Tema escuro: valores em `@media (prefers-color-scheme: dark)` (exceto com `data-theme="light"`) **e** em `:root[data-theme="dark"]`. Os dois blocos precisam ficar idênticos: o CSS não deixa compartilhar um bloco entre media query e seletor.
 - Para variações pontuais por tema em um componente, use o variant `dark:` do Tailwind, que segue a mesma regra, mas prefira sempre resolver com tokens.
-- Código JavaScript que precisa saber o tema (as formas 3D) usa `getTheme()` e `subscribeTheme()` de `components/theme.ts`, nunca a classe do `<html>`.
+- Código JavaScript que precisa saber o tema (as formas 3D) usa `getTheme()` e `subscribeTheme()` de `components/theme/theme.ts`, nunca a classe do `<html>`.
 
 ### Troca de tema
 
@@ -30,7 +30,7 @@ O tema segue a preferência do navegador (`prefers-color-scheme`) até a visitan
 - **Carregamento:** um script inline no `<head>` (`themeInitScript`) aplica o `data-theme` salvo antes da primeira pintura, então uma escolha diferente do navegador nunca pisca o outro tema.
 - **Troca de idioma:** ir de `/pt` para `/en` remonta o `<html>`, e o React apaga o `data-theme`. O componente `ThemeSync` o reaplica antes da pintura.
 - Durante a troca de tema, `setTheme` desliga as transições de cor por dois quadros, para não competirem com o cross-fade.
-- Chave do `localStorage` e nome do atributo aparecem no script e em `components/theme.ts`, que ficam no mesmo arquivo. Se mudar um, confira o CSS em `app/globals.css`.
+- Chave do `localStorage` e nome do atributo aparecem no script e em `components/theme/theme.ts`, que ficam no mesmo arquivo. Se mudar um, confira o CSS em `app/globals.css`.
 
 ## Cores
 
@@ -189,7 +189,7 @@ O menu fecha ao: acionar um link, pressionar Esc (o foco volta pro botão), clic
 
 ## Brilho de fundo
 
-`components/BackgroundGlow.tsx` (client, `aria-hidden`, `pointer-events-none`), renderizado no layout antes do `Header`. Inspirado em [alignerr.com](https://www.alignerr.com), aprovado com a autora após algumas rodadas de calibração.
+`components/background/BackgroundGlow.tsx` (client, `aria-hidden`, `pointer-events-none`), renderizado no layout antes do `Header`. Inspirado em [alignerr.com](https://www.alignerr.com), aprovado com a autora após algumas rodadas de calibração.
 
 - Camada `absolute` de `100dvh` de altura no topo da página, com máscara radial (`.glow`, em `globals.css`) que suaviza as quatro bordas (não só embaixo), pra o `overflow-hidden` do container nunca cortar o blur numa linha reta. Na home, a partir de 1024px, o hero é centralizado na vertical e não ancorado no topo, então a máscara centra mais baixo (`.glow-home`, `55% 42%`) para iluminar o conteúdo e não o espaço vazio acima dele.
 - **Tema escuro, máscara mais fechada.** O brilho é muito mais saturado contra o fundo quase preto, e uma mancha cobrindo a largura toda lê como o "aurora gradient" genérico. Por isso `.glow` e `.glow-home` no tema escuro usam uma elipse menor (`80% 65%` no topo; `52% 58%` centrada no conteúdo na home em desktop): o brilho fica como uma poça de luz atrás do nome e dos botões, com fundo liso ao redor. O tema claro mantém a máscara ampla. Como só as bordas enfraquecem e o centro continua igual, o contraste do pior caso (tabela em "Texto sobre o brilho") não piora.

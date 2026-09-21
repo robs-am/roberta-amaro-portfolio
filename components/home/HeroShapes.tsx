@@ -15,9 +15,9 @@ import {
   TorusKnotGeometry,
   WebGLRenderer,
 } from "three";
-import { createHoverSpin } from "@/components/hoverSpin";
-import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapeStyle";
-import { subscribeTheme } from "@/components/theme";
+import { createHoverSpin } from "@/components/shapes/hoverSpin";
+import { applyShapeColors, createShapeLights, createShapeMaterials } from "@/components/shapes/shapeStyle";
+import { subscribeTheme } from "@/components/theme/theme";
 import {
   HERO_ENTRANCE_MS,
   PLACEMENT_MS,
@@ -33,7 +33,7 @@ import {
   pointerCurrent,
   pointerTarget,
   type Placement,
-} from "@/components/shapesScene";
+} from "@/components/shapes/shapesScene";
 
 const POINTER_EASING = 0.06;
 const MAX_PIXEL_RATIO = 1.5;

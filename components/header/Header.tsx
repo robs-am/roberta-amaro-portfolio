@@ -5,7 +5,7 @@ import { HideOnHome } from "./HideOnHome";
 import { HomeLink } from "./HomeLink";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { Menu } from "./Menu";
-import { ThemeToggle } from "./ThemeToggle";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export async function Header() {
   const t = await getTranslations("Header");

@@ -77,3 +77,21 @@
 - [x] 8.6 Remover `app/[locale]/awards/page.tsx`, `components/AwardList.tsx`, o item de nav, a rota do sitemap e as chaves `Header.nav.awards` e `AwardsPage`, e redirecionar `/pt/awards` e `/en/awards` para `/experience` em `next.config.ts`; verificar que os dois endereços respondem 301 para `/experience` no mesmo idioma
 - [ ] 8.7 (pendência) Anexar o certificado do Claude Impact Lab: definir `certificateUrl` em `data/awards.ts` com o PDF em `public/certificates/` ou um link de verificação, depois de conferir que o arquivo não expõe dados pessoais; aguardando o arquivo da Roberta
 - [ ] 8.8 (adiado) Avaliar renomear o item de nav "Experiências"/"Experience" para "Trajetória"/"Background", já que a página reúne experiências, formação e prêmios
+
+## 9. Tema pela preferência do navegador
+
+Substitui a implementação com `next-themes` das tarefas 3.3 e 3.4, que ficam como registro do que foi feito na época.
+
+- [x] 9.1 Reescrever os tokens em `app/globals.css`: tema claro em `:root`, escuro em `@media (prefers-color-scheme: dark)` (exceto com `data-theme="light"`) e em `:root[data-theme="dark"]`, e a variante `dark` do Tailwind com a mesma regra; ajustar as máscaras de `.glow` e `.glow-home` do tema escuro; verificar no CSS gerado que a variante `dark` sai nas duas formas
+- [x] 9.2 Criar `components/theme/theme.ts` (`getTheme`, `setTheme`, `subscribeTheme`, `applyStoredTheme` e o `themeInitScript`) e `components/theme/ThemeSync.tsx`, que reaplica o `data-theme` antes da pintura quando o `<html>` remonta na troca de idioma
+- [x] 9.3 Reescrever `ThemeToggle` com `useSyncExternalStore`, mantendo o cross-fade por View Transitions, e colocar o script de tema no `<head>` do layout no lugar do `ThemeProvider`
+- [x] 9.4 Fazer `HeroShapes`, `MenuShapes` e `shapeStyle` usarem `getTheme()` e `subscribeTheme()` em vez da classe `dark` do `<html>`; verificar que `grep` não encontra mais `classList.contains("dark")`
+- [x] 9.5 Remover `next-themes` com `pnpm remove` e atualizar a seção de temas de `docs/design-system.md`; verificar que `pnpm build` passa
+- [x] 9.6 Suavizar o fundo do tema claro (`--background` `#ebe6e4`, `--card` `#f5f2f0`, `--elevated` `#e4dfdd`) e recalcular a tabela de contraste em `docs/design-system.md`; todos os pares continuam acima de 4.5:1
+- [ ] 9.7 (pendência) Testar nos dois temas e nos dois idiomas: sem escolha salva (mudar o modo do sistema), com escolha pelo botão (recarregar sem piscar), trocar de idioma no tema escolhido e as formas 3D acompanhando; passar Lighthouse ou axe no hero sobre o brilho, já que o fundo claro mudou
+
+## 10. Organização de pastas
+
+- [x] 10.1 Reorganizar `components/` por assunto (`header`, `theme`, `home`, `shapes`, `experience`, `projects`, `background`, `layout`, `ui`), deixando a raiz vazia, e reescrever os imports; verificar com `pnpm exec tsc --noEmit`, `pnpm build` e `grep` sem nenhum import com o caminho antigo
+- [x] 10.2 Atualizar a árvore de pastas do `design.md`, que estava defasada, e os caminhos citados em `docs/design-system.md` e nos comentários do CSS
+- [ ] 10.3 (pendência) Reconciliar o resto do change com o site multipágina (`specs/portfolio-page`, âncoras e `#hero` no `design.md` e no `proposal.md`, tabela de tokens teal do `design.md`), depois de conferir a home, `/about` e `/projects` no código

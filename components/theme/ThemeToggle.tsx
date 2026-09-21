@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
-import { getTheme, setTheme, subscribeTheme } from "@/components/theme";
+import { getTheme, setTheme, subscribeTheme } from "@/components/theme/theme";
 
 export function ThemeToggle() {
   const t = useTranslations("Header.theme");

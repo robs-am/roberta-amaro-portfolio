@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* Dark follows the browser (prefers-color-scheme) until the visitor picks a theme with the toggle.
-   The pick is an override on <html> (see components/theme.ts): `data-theme="dark"` forces dark and
+   The pick is an override on <html> (see components/theme/theme.ts): `data-theme="dark"` forces dark and
    `data-theme="light"` forces light. */
 @custom-variant dark {
   &:where([data-theme="dark"], [data-theme="dark"] *) {

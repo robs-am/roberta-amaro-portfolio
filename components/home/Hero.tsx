@@ -5,22 +5,22 @@ import { animate, stagger } from "animejs";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
-import { ArrowIcon } from "@/components/ArrowIcon";
-import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/ContactIcons";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
+import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/home/ContactIcons";
 import {
   textLinkArrowHeroClass,
   textLinkHeroClass,
   textLinkLabelActiveClass,
   textLinkLabelClass,
-} from "@/components/textLinkStyles";
+} from "@/components/ui/textLinkStyles";
 import { profile } from "@/data/profile";
 import { backTarget } from "@/components/header/menuEvents";
-import { heroEntrance } from "@/components/shapesScene";
+import { heroEntrance } from "@/components/shapes/shapesScene";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
 
 // three.js is only loaded in the browser, after the hero text, so it never delays first paint.
-const HeroShapes = dynamic(() => import("@/components/HeroShapes").then((mod) => mod.HeroShapes), {
+const HeroShapes = dynamic(() => import("@/components/home/HeroShapes").then((mod) => mod.HeroShapes), {
   ssr: false,
 });
 

@@ -26,55 +26,52 @@ A identidade visual segue a referência escolhida pela autora: https://www.align
 
 ### Estrutura de pastas
 
+`components/` é organizado por assunto, não por tipo de arquivo: cada pasta responde "de que parte do site é isso?". A raiz de `components/` fica vazia.
+
 ```
 app/
   [locale]/
-    layout.tsx          <html lang>, fontes, providers, brilho, observer, header, metadados
-    page.tsx            Hero + #experience + #projects
+    layout.tsx            <html lang>, fontes, script de tema, brilho, header, rodapé, metadados
+    page.tsx              home (hero)
+    about/page.tsx        sobre e stack
+    experience/page.tsx   trajetória: experiências, formação e prêmios
+    projects/page.tsx     todos os projetos
     not-found.tsx
-    [...rest]/page.tsx  notFound() para caminhos inexistentes
-  globals.css           Tailwind + tokens de tema e movimento
+    [...rest]/page.tsx    notFound() para caminhos inexistentes
+    opengraph-image.tsx
+  globals.css             Tailwind + tokens de tema e movimento
+  sitemap.ts
+  robots.ts
 components/
-  BackgroundGlow.tsx    (client)
-  ThemeClassSync.tsx    (client) reaplica a classe do tema quando o layout remonta
-  RevealObserver.tsx    (client) marca [data-reveal] ao entrar na tela
-  Hero.tsx
-  ExperienceSection.tsx timeline vertical
-  ExperienceTimeline.tsx  timeline de /experience; mostra dentro do cargo os prêmios com `experienceId`
-  EducationTimeline.tsx   timeline de formação, mesmo padrão visual (ano grande em `--accent`)
-  AwardHighlight.tsx      painel de destaque dos prêmios sem experiência
-  header/
-    Header.tsx            server; monta BackToTopLink + DesktopNav + LocaleSwitcher + ThemeToggle + MobileMenu dentro do HeaderShell
-    HeaderShell.tsx        (client) fundo/borda conforme o scroll, mede a própria altura
-    HeaderScrollContext.tsx contexto com o estado "rolou/não rolou", consumido pelo DesktopNav
-    BackToTopLink.tsx      (client) ícone "chevrons-up" que rola até o hero
-    DesktopNav.tsx         (client) nav desktop com destaque da seção ativa
-    navItems.ts            lista única dos links de navegação
-    MobileMenu.tsx         (client) hambúrguer + painel abaixo do header
-    LocaleSwitcher.tsx     (client)
-    ThemeToggle.tsx        (client)
-    smoothScroll.ts        `onSmoothAnchorClick`, rolagem animada compartilhada pelos links de âncora
-  projects/
-    ProjectsSection.tsx    server; monta o ProjectsCarousel com os ProjectCard
-    ProjectCard.tsx
-    ProjectDescription.tsx (client) truncagem com "ver mais"
-    ProjectsCarousel.tsx   (client) scroll com snap + dots no mobile
+  header/                 Header, HeaderShell, HideOnHome, HomeLink, BackButton, LocaleSwitcher,
+                          Menu, MenuShapes, menuEvents, navItems, capsuleIcon
+  theme/                  theme.ts (lógica do tema), ThemeSync, ThemeToggle
+  home/                   Hero, HeroShapes, ContactIcons
+  shapes/                 shapesScene, shapeStyle, hoverSpin (3D compartilhado entre hero e menu)
+  experience/             ExperienceTimeline, EducationTimeline, ExperienceEntrance, AwardHighlight
+  projects/               ProjectShowcase
+  background/             BackgroundGlow, Grain
+  layout/                 Footer, ScrollReset
+  ui/                     ArrowIcon, textLinkStyles (usados em mais de uma parte)
 data/
   types.ts
-  profile.ts            nome, título, bio (hero)
+  profile.ts              nome, título, bio (hero)
   experiences.ts
   education.ts
   awards.ts
   projects.ts
+  skills.ts
+  site.ts                 URL do site e lista de rotas (sitemap)
 i18n/
-  routing.ts            locales, defaultLocale
-  request.ts            carrega messages por locale
-  navigation.ts         Link/useRouter cientes do locale
+  routing.ts              locales, defaultLocale
+  request.ts              carrega messages por locale
+  navigation.ts           Link/useRouter cientes do locale
+  alternates.ts           hreflang e mapa de idiomas
 messages/
   pt.json
   en.json
 proxy.ts
-global.d.ts             tipos do next-intl (Locale e Messages)
+next.config.ts            redirect permanente de /awards para /experience
 ```
 
 ### Next.js App Router + TypeScript estrito
@@ -95,20 +92,22 @@ Alternativas: Context + localStorage (descartado por não gerar URLs indexáveis
 
 **Troca de idioma sem espera:** o Next.js trata `/pt` e `/en` como o mesmo layout raiz (ignora o valor do parâmetro), então a troca é uma navegação no cliente que depende do payload da outra rota. O `LocaleSwitcher` chama `router.prefetch(pathname, { locale })` para os outros idiomas ao montar, e o clique usa dados já carregados. O prefetch só roda em produção; no dev server a troca continua mais lenta.
 
-### Tema com next-themes + Tailwind por classe
-- `ThemeProvider` com `attribute="class"`, `defaultTheme="system"`, `enableSystem`, `disableTransitionOnChange`. O next-themes injeta um script inline antes da pintura que aplica a classe, o que atende a spec de "sem flash", e persiste em `localStorage`, que é compartilhado entre `/pt` e `/en`.
-- `<html suppressHydrationWarning>`, porque a classe é aplicada antes da hidratação.
-- No `ThemeToggle`, o botão só é renderizado após hidratar (via `useSyncExternalStore`), para evitar mismatch de hidratação; antes disso ocupa o mesmo espaço com um placeholder.
-- Tailwind v4: variante `dark` redefinida para a classe com `@custom-variant dark (&:where(.dark, .dark *));`.
+### Tema pela preferência do navegador, com escolha manual
+O tema segue `prefers-color-scheme` até o visitante escolher um com o botão. Foi trocado o `next-themes` por uma implementação própria e pequena, em `components/theme/theme.ts`.
+- **CSS:** o tema claro fica em `:root`. O escuro fica em `@media (prefers-color-scheme: dark)` (exceto com `data-theme="light"`) e em `:root[data-theme="dark"]`. Os dois blocos precisam ser idênticos: o CSS não permite compartilhar um bloco entre media query e seletor. A variante `dark` do Tailwind v4 (`@custom-variant dark`) segue a mesma regra.
+- **Escolha manual:** o botão grava `light` ou `dark` no `localStorage` (chave `theme`) e aplica `data-theme` no `<html>`, que tem prioridade sobre a media query. Sem escolha salva não há atributo, então a página segue o navegador até sem JavaScript, e acompanha mudanças do sistema com o site aberto.
+- **Sem flash:** um script inline no `<head>` (`themeInitScript`) aplica a escolha salva antes da primeira pintura. `<html suppressHydrationWarning>` continua, porque o atributo é aplicado antes da hidratação.
+- **`ThemeToggle`:** lê o tema com `useSyncExternalStore` (`getTheme` e `subscribeTheme`), com servidor devolvendo `null`; antes de hidratar ocupa o mesmo espaço com um placeholder.
+- **JavaScript que precisa do tema** (as formas 3D) usa `getTheme()` e `subscribeTheme()`, que reagem ao botão e à preferência do navegador, e nunca a classe do `<html>`.
 
-Alternativa: CSS puro com `prefers-color-scheme` (sem escolha manual) ou implementação própria do script anti-flash (mesmo resultado com mais código).
+Alternativas: manter o `next-themes` (mesmo comportamento para o visitante, mas com um pacote a mais e sem tema correto antes do JavaScript); só CSS sem botão (descartada: a autora quis manter a escolha manual).
 
-**Cross-fade na troca de tema:** o next-themes troca a classe num único quadro, e a mudança de luminosidade de tela cheia é percebida como uma piscada. O `ThemeToggle` envolve a troca em `document.startViewTransition`, com o `setTheme` dentro de `flushSync` (o next-themes aplica a classe num efeito; o `flushSync` garante que ela já esteja no DOM quando o navegador captura o estado novo). A duração de 250ms fica em `::view-transition-old(root)`/`::view-transition-new(root)`, e `::view-transition { pointer-events: none; }` evita perder cliques durante a animação. Sem suporte à API ou com movimento reduzido, a troca é instantânea. Usamos a API do navegador diretamente, e não o componente `<ViewTransition>` do React, porque a troca de tema é um `setState` comum, que não aciona o componente. Alternativa descartada: transição CSS de cor, que fica irregular entre elementos (justamente o que `disableTransitionOnChange` evita).
+**Cross-fade na troca de tema:** a mudança de luminosidade de tela cheia num único quadro é percebida como uma piscada. O `ThemeToggle` envolve a troca em `document.startViewTransition`; como `setTheme` altera o DOM de forma síncrona, não precisa de `flushSync`. A duração de 250ms fica em `::view-transition-old(root)`/`::view-transition-new(root)`, e `::view-transition { pointer-events: none; }` evita perder cliques durante a animação. Sem suporte à API ou com movimento reduzido, a troca é instantânea. Durante a troca, `setTheme` desliga as transições de cor por dois quadros, para não competirem com o cross-fade (o que o `disableTransitionOnChange` fazia). Usamos a API do navegador diretamente, e não o componente `<ViewTransition>` do React, porque a troca de tema não é uma atualização de estado do React. Alternativa descartada: transição CSS de cor, que fica irregular entre elementos.
 
-**Classe do tema ao trocar de idioma:** mudar o valor de `[locale]` remonta o layout raiz, e o React remove todos os atributos do `<html>` ao liberar o elemento (`releaseSingletonInstance`), inclusive a classe `dark`. O next-themes só a devolve num efeito passivo, depois de uma pintura, o que mostrava um quadro no tema claro. O `ThemeClassSync` reaplica classe e `color-scheme` num `useLayoutEffect`, antes da pintura, lendo a mesma chave `theme` e resolvendo `system` como o next-themes. Alternativa descartada: recarregar a página na troca de idioma (`window.location`), que evita a lógica repetida mas perde a navegação no cliente e deixa a troca mais lenta.
+**Tema ao trocar de idioma:** mudar o valor de `[locale]` remonta o layout raiz, e o React remove todos os atributos do `<html>` ao liberar o elemento (`releaseSingletonInstance`), inclusive o `data-theme`. O `ThemeSync` o reaplica num `useLayoutEffect`, antes da pintura, para que a página nunca apareça um quadro no outro tema. Alternativa descartada: recarregar a página na troca de idioma (`window.location`), que perde a navegação no cliente e deixa a troca mais lenta.
 
 ### Tokens de identidade visual
-Cores definidas como variáveis CSS em `globals.css`, com valores em `:root` e sobrescritos em `.dark`, expostos ao Tailwind via `@theme`. Componentes usam só as classes dos tokens (`bg-card`, `text-muted`...), nunca cores cruas. Valores extraídos dos tokens da referência:
+Cores definidas como variáveis CSS em `globals.css`, com valores em `:root` e sobrescritos para o tema escuro (media query e `data-theme="dark"`), expostos ao Tailwind via `@theme`. Componentes usam só as classes dos tokens (`bg-card`, `text-muted`...), nunca cores cruas. Valores extraídos dos tokens da referência:
 
 | Token | Claro | Escuro | Uso |
 |---|---|---|---|
@@ -255,7 +254,7 @@ Experiências, formação e prêmios ficam em `/experience`, em vez de páginas 
 - **Redirect:** `/awards` responde 301 para `/experience` no mesmo idioma, via `redirects()` em `next.config.ts`; a rota, o item do nav e a entrada no sitemap foram removidos.
 
 ### Server vs Client Components
-Tudo é Server Component, exceto `LocaleSwitcher`, `ThemeToggle`, `ThemeClassSync`, `MobileMenu`, `BackToTopLink`, `RevealObserver` e `BackgroundGlow`. Os links `<a href="#...">` (nav desktop, menu mobile e o ícone de voltar ao topo) usam `onClick={onSmoothAnchorClick}` (`components/header/smoothScroll.ts`): calcula o alvo a partir de `scroll-margin-top` (lido via `getComputedStyle`, cobrindo tanto o hero, com margem por CSS var, quanto as demais seções, com `scroll-mt` fixo), anima com `requestAnimationFrame` e uma curva cúbica de easing (650ms) em vez de `scroll-behavior: smooth`, atualiza a URL com `history.pushState` ao final, ignora cliques modificados (Cmd/Ctrl/Shift/Alt, botão do meio) para preservar o comportamento nativo, e pula direto para o alvo com `window.scrollTo` quando `prefers-reduced-motion: reduce`. O `scroll-behavior: smooth` em CSS foi removido: ele concorria com o `scrollTo` chamado a cada frame pela animação (o navegador tentava suavizar cada chamada intermediária), o que causava uma trava seguida de um salto rápido.
+Tudo é Server Component, exceto `LocaleSwitcher`, `ThemeToggle`, `ThemeSync`, `MobileMenu`, `BackToTopLink`, `RevealObserver` e `BackgroundGlow`. Os links `<a href="#...">` (nav desktop, menu mobile e o ícone de voltar ao topo) usam `onClick={onSmoothAnchorClick}` (`components/header/smoothScroll.ts`): calcula o alvo a partir de `scroll-margin-top` (lido via `getComputedStyle`, cobrindo tanto o hero, com margem por CSS var, quanto as demais seções, com `scroll-mt` fixo), anima com `requestAnimationFrame` e uma curva cúbica de easing (650ms) em vez de `scroll-behavior: smooth`, atualiza a URL com `history.pushState` ao final, ignora cliques modificados (Cmd/Ctrl/Shift/Alt, botão do meio) para preservar o comportamento nativo, e pula direto para o alvo com `window.scrollTo` quando `prefers-reduced-motion: reduce`. O `scroll-behavior: smooth` em CSS foi removido: ele concorria com o `scrollTo` chamado a cada frame pela animação (o navegador tentava suavizar cada chamada intermediária), o que causava uma trava seguida de um salto rápido.
 
 ### Links externos e imagens
 Links com `target="_blank" rel="noopener noreferrer"`. Imagens de projeto com `next/image`, em `public/projects/`.
@@ -267,7 +266,8 @@ Links com `target="_blank" rel="noopener noreferrer"`. Imagens de projeto com `n
 - [Duas famílias de fonte aumentam o download] -> Fontes variáveis, só subset `latin` e `display: swap` (padrão do `next/font`).
 - [Jost não é idêntica à "The Future"] -> Aceito; a fonte fica isolada no token `--font-display` e pode ser trocada depois.
 - [Mismatch de hidratação no alternador de tema] -> Botão só após hidratar; placeholder com o mesmo tamanho para não causar layout shift.
-- [`ThemeClassSync` repete a regra de resolução do next-themes] -> Se `storageKey`, `attribute` ou os nomes dos temas mudarem no `ThemeProvider`, o componente precisa mudar junto; o risco está anotado no próprio componente e em `docs/design-system.md`.
+- [Os tokens do tema escuro ficam duplicados no CSS (media query e `data-theme="dark"`)] -> Aceito: o CSS não compartilha um bloco entre os dois; um comentário em `globals.css` e `docs/design-system.md` avisam que precisam ficar idênticos.
+- [Chave `theme` e atributo `data-theme` aparecem no script do `<head>` e em `components/theme/theme.ts`] -> Ficam no mesmo arquivo; ao mudar um, conferir o CSS em `globals.css`.
 - [View Transitions não existem em navegadores antigos] -> Detecção de suporte; sem a API a troca de tema é instantânea, como antes.
 - [Conteúdo com `data-reveal` ficar oculto se o JavaScript carregar mas falhar] -> Ocultação só com `scripting: enabled`, animação de segurança que revela após 3s e hero animado apenas por CSS.
 - [Animação do hero e espera das experiências passarem sensação de carregamento lento] -> O hero começa imediatamente, sem esperar hidratação, e a espera antes de revelar o conteúdo já visível é contada desde o início da animação do hero, não da hidratação (800ms e depois 350ms contados da hidratação foram percebidos como lentos). `--reveal-hold` virou `calc(var(--duration-hero) + 2 * var(--hero-stagger))` em vez de um valor fixo, pra ficar preso à duração real do hero em vez de um número solto — testado em 250ms fixo, o conteúdo abaixo revelava antes do hero terminar.

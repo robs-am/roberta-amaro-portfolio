@@ -1,5 +1,5 @@
 import { getFormatter, getTranslations } from "next-intl/server";
-import { ExperienceEntrance } from "@/components/ExperienceEntrance";
+import { ExperienceEntrance } from "@/components/experience/ExperienceEntrance";
 import { localize, type Education, type Locale } from "@/data/types";
 
 export async function EducationTimeline({

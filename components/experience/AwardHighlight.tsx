@@ -1,10 +1,10 @@
 import { getFormatter, getTranslations } from "next-intl/server";
-import { ArrowIcon } from "@/components/ArrowIcon";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import {
   textLinkArrowClass,
   textLinkClass,
   textLinkLabelClass,
-} from "@/components/textLinkStyles";
+} from "@/components/ui/textLinkStyles";
 import { localize, type Award, type Locale } from "@/data/types";
 
 // Awards that are not tied to a job. Each one is a single panel, so it reads as a highlight next

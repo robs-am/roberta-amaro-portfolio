@@ -1,11 +1,11 @@
 import { getFormatter, getTranslations } from "next-intl/server";
-import { ArrowIcon } from "@/components/ArrowIcon";
-import { ExperienceEntrance } from "@/components/ExperienceEntrance";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
+import { ExperienceEntrance } from "@/components/experience/ExperienceEntrance";
 import {
   textLinkArrowClass,
   textLinkClass,
   textLinkLabelClass,
-} from "@/components/textLinkStyles";
+} from "@/components/ui/textLinkStyles";
 import { localize, type Award, type Experience, type Locale } from "@/data/types";
 
 function toDate(yearMonth: string) {

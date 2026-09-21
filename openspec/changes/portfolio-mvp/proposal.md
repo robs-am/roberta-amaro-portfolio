@@ -33,6 +33,6 @@ Fora do escopo: blog, seção de contato/formulário, CMS, conteúdo real, deplo
 ## Impact
 
 - Repositório: criação de toda a estrutura da aplicação (hoje só contém o scaffolding do OpenSpec)
-- Dependências novas: `next`, `react`, `react-dom`, `typescript`, `tailwindcss`, `next-intl`, `next-themes`
+- Dependências novas: `next`, `react`, `react-dom`, `typescript`, `tailwindcss`, `next-intl` (o tema claro/escuro não usa biblioteca: segue `prefers-color-scheme` e guarda a escolha manual em `components/theme/theme.ts`)
 - Arquivos principais: `proxy.ts` (ou `middleware.ts`, conforme a versão do Next.js), `app/[locale]/`, `messages/pt.json`, `messages/en.json`, `data/experiences.ts`, `data/education.ts`, `data/awards.ts`, `data/projects.ts`
 - Estrutura de rotas `app/[locale]/` já comporta futuras rotas como `app/[locale]/blog/`

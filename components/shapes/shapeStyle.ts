@@ -5,7 +5,7 @@ import {
   MeshPhysicalMaterial,
   type Scene,
 } from "three";
-import { getTheme } from "@/components/theme";
+import { getTheme } from "@/components/theme/theme";
 
 // The look shared by the 3D shapes behind the hero and behind the menu: two soft, glossy materials
 // (tone 0 and tone 1), three lights, and the colours they take from the theme.

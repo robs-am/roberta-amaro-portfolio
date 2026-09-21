@@ -3,9 +3,9 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { ArrowIcon } from "@/components/ArrowIcon";
-import { Grain } from "@/components/Grain";
-import { textLinkArrowLargeClass, textLinkLabelClass, textLinkLargeClass } from "@/components/textLinkStyles";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
+import { Grain } from "@/components/background/Grain";
+import { textLinkArrowLargeClass, textLinkLabelClass, textLinkLargeClass } from "@/components/ui/textLinkStyles";
 import { profile } from "@/data/profile";
 import { Link, usePathname } from "@/i18n/navigation";
 import { CapsuleSvg, menuButtonClass } from "./capsuleIcon";
@@ -13,7 +13,7 @@ import { LocaleSwitcher } from "./LocaleSwitcher";
 import { OPEN_MENU_EVENT, backTarget } from "./menuEvents";
 import { MenuShapes } from "./MenuShapes";
 import { navItems } from "./navItems";
-import { ThemeToggle } from "./ThemeToggle";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const subscribe = () => () => {};
 

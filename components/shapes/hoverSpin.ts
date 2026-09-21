@@ -1,6 +1,6 @@
 import { animate, type JSAnimation } from "animejs";
 import { Raycaster, Vector2, type Material, type Mesh, type PerspectiveCamera } from "three";
-import { blobs } from "@/components/shapesScene";
+import { blobs } from "@/components/shapes/shapesScene";
 
 // What happens when the pointer moves onto a shape, once per visit and softly:
 // - the ring turns a full circle around its diameter (a coin flip; it passes edge-on only for an instant,

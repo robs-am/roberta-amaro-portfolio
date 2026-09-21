@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
-import { Hero } from "@/components/Hero";
+import { Hero } from "@/components/home/Hero";
 import { profile } from "@/data/profile";
 import { siteUrl } from "@/data/site";
 import { alsoWorkingWith, mainStack } from "@/data/skills";
