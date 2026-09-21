@@ -5,7 +5,7 @@ Exibe as experiências profissionais e os projetos do portfólio no idioma ativo
 ## ADDED Requirements
 
 ### Requirement: Lista de experiências
-A seção de experiências MUST exibir cada experiência com cargo, empresa, período e descrição, ordenadas da mais recente para a mais antiga. Uma experiência sem data de término MUST exibir o término como "Atual" em português e "Present" em inglês.
+A página de experiências MUST exibir cada experiência com cargo, empresa, período e descrição, ordenadas da mais recente para a mais antiga. Uma experiência sem data de término MUST exibir o término como "Atual" em português e "Present" em inglês.
 
 #### Scenario: Ordenação por data
 - **WHEN** existem experiências iniciadas em 2021 e em 2024
@@ -15,40 +15,84 @@ A seção de experiências MUST exibir cada experiência com cargo, empresa, per
 - **WHEN** uma experiência não tem data de término e a página está em `/en`
 - **THEN** o período é exibido terminando em "Present"
 
-### Requirement: Cards de projetos
-A seção de projetos MUST exibir cada projeto como um card vertical contendo, de cima para baixo: painel visual, tipo do projeto, título, descrição, tecnologias utilizadas e links. O card MUST exibir links para a demonstração e para o repositório apenas quando esses links existirem. Links externos MUST abrir em nova aba sem dar à página aberta acesso à página de origem.
+### Requirement: Lista de projetos
+A página de projetos (`/projects`) MUST listar todos os projetos que tenham um link de demonstração ou de repositório, na ordem de cadastro, cada um como uma linha com painel visual, título e tipo do projeto, sob um título de página com o número de projetos. Um projeto sem nenhum dos dois links MUST NOT ser listado. Cada linha MUST ser um botão que abre o detalhe do projeto. Ao passar o ponteiro sobre uma linha, a imagem do painel MUST se aproximar suavemente e o escurecimento que uniformiza as imagens MUST diminuir; com a preferência de movimento reduzido ativa, a imagem MUST NOT se mover.
 
-#### Scenario: Ordem dos elementos do card
-- **WHEN** um projeto com todos os campos é exibido
-- **THEN** o card mostra, nesta ordem, painel visual, tipo, título, descrição, tecnologias e links
+#### Scenario: Ordem e conteúdo da linha
+- **WHEN** a página `/pt/projects` é carregada
+- **THEN** cada projeto com link aparece como uma linha com o painel visual, o título e o tipo
+- **AND** os projetos aparecem na ordem de cadastro
 
-#### Scenario: Projeto com repositório e demonstração
-- **WHEN** um projeto tem link de repositório e link de demonstração
-- **THEN** o card exibe os dois links
+#### Scenario: Projeto sem links
+- **WHEN** um projeto não tem link de demonstração nem de repositório
+- **THEN** ele não aparece na lista
 
-#### Scenario: Projeto sem demonstração
+#### Scenario: Hover na linha
+- **WHEN** o visitante passa o ponteiro sobre a linha de um projeto
+- **THEN** a imagem do painel se aproxima suavemente
+
+#### Scenario: Movimento reduzido no hover
+- **WHEN** o visitante com preferência de movimento reduzido passa o ponteiro sobre uma linha
+- **THEN** a imagem do painel não se move
+
+### Requirement: Detalhe do projeto
+Acionar a linha de um projeto MUST abrir, sobre a página, um diálogo modal com a imagem (ou imagens), o título, o tipo, a descrição, o que a autora fez no projeto (quando cadastrado), as tecnologias e um link para o projeto. O link MUST apontar para a demonstração quando ela existir e, senão, para o repositório, MUST abrir em nova aba sem dar à página aberta acesso à página de origem e MUST avisar leitores de tela que abre em nova aba. O diálogo MUST fechar pelo botão de fechar, pela tecla Esc ou ao acionar a área fora dele, e o foco MUST voltar à linha que o abriu. Com o diálogo aberto, a rolagem da página MUST ficar bloqueada sem deslocar o conteúdo pela largura da barra de rolagem. Com a preferência de movimento reduzido ativa, o diálogo MUST abrir e fechar sem animação.
+
+#### Scenario: Abrir o detalhe
+- **WHEN** o visitante aciona a linha de um projeto em `/pt/projects`
+- **THEN** um diálogo mostra a imagem, o título, o tipo, a descrição e as tecnologias do projeto
+
+#### Scenario: Link para o projeto
+- **WHEN** um projeto tem demonstração e repositório
+- **THEN** o link do diálogo aponta para a demonstração
+
+#### Scenario: Projeto só com repositório
 - **WHEN** um projeto tem apenas link de repositório
-- **THEN** o card exibe somente o link do repositório, sem link vazio ou quebrado
+- **THEN** o link do diálogo aponta para o repositório, sem link vazio ou quebrado
 
 #### Scenario: Abrir link externo
-- **WHEN** o visitante aciona o link de repositório de um card
+- **WHEN** o visitante aciona o link do projeto no diálogo
 - **THEN** o link abre em nova aba
 - **AND** a página aberta não tem referência à janela do portfólio
 
-### Requirement: Painel visual do card
-Todo card de projeto MUST começar com um painel visual de mesma proporção. Quando o projeto tiver imagem, o painel MUST exibi-la com texto alternativo no idioma ativo. Quando não tiver, o painel MUST exibir um fundo decorativo, que MUST ser ignorado por leitores de tela.
+#### Scenario: Fechar com Esc
+- **WHEN** o diálogo está aberto e o visitante pressiona Esc
+- **THEN** o diálogo fecha
+- **AND** o foco volta para a linha do projeto
+
+#### Scenario: Fechar ao acionar fora
+- **WHEN** o diálogo está aberto e o visitante aciona a área fora dele
+- **THEN** o diálogo fecha
+
+### Requirement: Painel visual do projeto
+Toda linha de projeto MUST ter um painel visual de mesma proporção no celular. Quando o projeto tiver uma imagem, o painel MUST exibi-la com texto alternativo no idioma ativo; quando tiver várias, MUST exibi-las lado a lado, em faixas inclinadas. Quando não tiver imagem, o painel MUST exibir um fundo decorativo, que MUST ser ignorado por leitores de tela.
 
 #### Scenario: Projeto com imagem
 - **WHEN** um projeto tem imagem e a página está em `/pt`
-- **THEN** o painel do card exibe a imagem com texto alternativo em português
+- **THEN** o painel exibe a imagem com texto alternativo em português
+
+#### Scenario: Projeto com várias imagens
+- **WHEN** um projeto tem duas ou mais imagens
+- **THEN** o painel exibe as imagens lado a lado, em faixas inclinadas
 
 #### Scenario: Projeto sem imagem
 - **WHEN** um projeto não tem imagem
-- **THEN** o painel do card exibe um fundo decorativo com a mesma proporção dos painéis com imagem
+- **THEN** o painel exibe um fundo decorativo com a mesma proporção dos painéis com imagem
 - **AND** um leitor de tela não anuncia nenhum conteúdo para esse painel
 
+### Requirement: Página sobre
+A página `/about` MUST exibir um texto de apresentação (introdução e uma curiosidade), a stack principal e as tecnologias com que a autora também trabalha, com o mesmo conteúdo estrutural nos dois idiomas. Os nomes das tecnologias MUST ser iguais nos dois idiomas.
+
+#### Scenario: Conteúdo da página
+- **WHEN** a página `/pt/about` é carregada
+- **THEN** ela exibe o texto de apresentação, a stack principal e a lista de tecnologias com que a autora também trabalha
+
+#### Scenario: Tecnologias iguais nos dois idiomas
+- **WHEN** a página `/en/about` é carregada
+- **THEN** os nomes das tecnologias são idênticos aos de `/pt/about`
+
 ### Requirement: Conteúdo no idioma ativo
-Os campos de texto de experiências e projetos (cargo, descrição, tipo do projeto, título, texto alternativo) MUST ser exibidos no idioma ativo. Os campos que não dependem de idioma (empresa, datas, tecnologias, links) MUST ser os mesmos nas duas versões.
+Os campos de texto de experiências e projetos (cargo, descrição, tipo do projeto, título, o que a autora fez, texto alternativo) MUST ser exibidos no idioma ativo. Os campos que não dependem de idioma (empresa, datas, tecnologias, links) MUST ser os mesmos nas duas versões.
 
 #### Scenario: Mesmo projeto nos dois idiomas
 - **WHEN** um projeto é exibido em `/pt` e em `/en`
