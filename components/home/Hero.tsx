@@ -25,7 +25,7 @@ const HeroShapes = dynamic(() => import("@/components/home/HeroShapes").then((mo
 });
 
 const linkClass =
-  "group/link relative inline-flex size-16 items-center justify-center rounded-full text-foreground/70 transition-colors hover:text-accent dark:hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+  "group/link relative inline-flex size-16 items-center justify-center rounded-full text-foreground transition-colors hover:text-accent dark:hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 // Visual label for the icon-only links (they already have an aria-label, so it is hidden from assistive tech).
 const tooltipClass =
@@ -80,12 +80,12 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     <section
       ref={sectionRef}
       id="hero"
-      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
+      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden sm:pb-20 max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
     >
       <HeroShapes />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
-        <div className="max-w-2xl">
-          <h1 className="text-foreground/85 text-[clamp(3rem,17.5vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(6.5rem,14vh)]">
+        <div className="hero-lift max-w-2xl">
+          <h1 className="text-foreground text-[clamp(3rem,17.5vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(6.5rem,14vh)]">
             {profile.name.split(" ").map((word, index) => (
               <span key={`${word}-${index}`} className="block">
                 <span
@@ -99,11 +99,11 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             ))}
           </h1>
           <div data-hero-item style={{ "--hero-index": 2 } as React.CSSProperties} aria-hidden="true" className="mt-6 short:mt-4 h-1 w-10 rounded-full bg-accent" />
-          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[clamp(1.125rem,5vw,1.375rem)] font-semibold tracking-wide text-balance text-foreground lg:text-3xl">
+          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[clamp(1.25rem,5.5vw,1.375rem)] font-semibold tracking-wide text-balance text-foreground lg:text-3xl">
             {/* The size follows the width: the English role fits one line on a phone, the longer pt one wraps in two. */}
             {localize(profile.role, locale)}
           </p>
-          <div data-hero-item style={{ "--hero-index": 4 } as React.CSSProperties} className="mt-6 flex flex-col items-start gap-y-1 sm:mt-8 short:mt-5 sm:flex-row sm:flex-wrap sm:gap-x-8">
+          <div data-hero-item data-hero-cta style={{ "--hero-index": 4 } as React.CSSProperties} className="mt-6 flex flex-col items-start gap-y-1 sm:mt-8 short:mt-5 sm:flex-row sm:flex-wrap sm:gap-x-8">
             <Link href="/experience" onClick={leaveToPage} className={`${textLinkHeroClass} order-2 sm:order-1`}>
               <ArrowIcon className={textLinkArrowHeroClass} />
               <span className={textLinkLabelClass}>{t("experienceCta")}</span>
@@ -124,7 +124,9 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
                     aria-label={link.external ? `${link.label} ${t("newTab")}` : link.label}
                     className={linkClass}
                   >
-                    <link.Icon badge={false} className="size-10" />
+                    <span className="inline-flex size-12 items-center justify-center rounded-full border border-border transition-colors group-hover/link:border-accent dark:group-hover/link:border-foreground">
+                      <link.Icon badge={false} className="size-7" />
+                    </span>
                     <span aria-hidden="true" className={tooltipClass}>
                       {link.label}
                     </span>
