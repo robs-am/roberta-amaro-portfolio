@@ -34,10 +34,10 @@ const SAFE_FEATHER = 0.45;
 // How opaque each layer is, back to front. The layers behind are the ones that pass behind the text, so they
 // are faint, and the opacity rises step by step toward the front layer, which stays solid and reads as the
 // nearest. The shadows follow it (see `applyColors`).
-const DARK_OPACITIES = [0.08, 0.17, 0.32, 0.52];
+const DARK_OPACITIES = [0.14, 0.24, 0.4, 0.52];
 // The light page has no glow to carry the waves, so all of its layers hold a visible tint of rose (not only the
 // front one) and rise from a light wash at the back to the solid front layer.
-const LIGHT_OPACITIES = [0.17, 0.27, 0.38, 0.5];
+const LIGHT_OPACITIES = [0.22, 0.32, 0.42, 0.5];
 let layerOpacities = DARK_OPACITIES;
 
 // Each edge is three sines added up: a main wave, a finer ripple on it, and a long slow swell that carries the
