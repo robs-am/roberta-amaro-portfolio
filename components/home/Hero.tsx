@@ -99,7 +99,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             ))}
           </h1>
           <div data-hero-item style={{ "--hero-index": 2 } as React.CSSProperties} aria-hidden="true" className="mt-6 short:mt-4 h-1 w-10 rounded-full bg-accent" />
-          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[clamp(1.125rem,5vw,1.375rem)] font-semibold tracking-wide text-balance text-foreground lg:text-3xl">
+          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[clamp(1.25rem,5.5vw,1.375rem)] font-semibold tracking-wide text-balance text-foreground lg:text-3xl">
             {/* The size follows the width: the English role fits one line on a phone, the longer pt one wraps in two. */}
             {localize(profile.role, locale)}
           </p>

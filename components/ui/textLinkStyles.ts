@@ -9,15 +9,18 @@ export const textLinkLabelClass =
 export const textLinkArrowClass =
   "size-4 shrink-0 transition-transform duration-300 ease-expressive motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5";
 
-// Larger variant, for links that sit next to big type (the hero and the menu's contact links).
-export const textLinkLargeClass = textLinkClass.replace("text-base", "text-base sm:text-xl lg:text-2xl");
-export const textLinkArrowLargeClass = textLinkArrowClass.replace("size-4", "size-4 sm:size-5 lg:size-6");
+// Larger variant, for links that sit next to big type (the hero and the menu's contact links). Large from
+// the smallest screen (not just from `sm`): on the menu these sit under giant nav type, where the base
+// 16px link read as an afterthought next to it.
+export const textLinkLargeClass = textLinkClass.replace("text-base", "text-xl lg:text-2xl");
+export const textLinkArrowLargeClass = textLinkArrowClass.replace("size-4", "size-5 lg:size-6");
 
 // The hero's calls to action: large from the smallest screen, since on a phone they are stacked and
-// are the main thing to tap. On a phone the size follows the width, to fill the line like the name does.
+// are the main thing to tap. On a phone the size follows the width, to fill the line like the name does;
+// kept close to the role text's size (just above it) rather than ballooning past it.
 export const textLinkHeroClass = textLinkClass.replace(
   "text-base",
-  "text-[clamp(1.375rem,6.6vw,1.75rem)] sm:text-[1.375rem] lg:text-2xl",
+  "text-[clamp(1.25rem,5.5vw,1.5rem)] sm:text-[1.375rem] lg:text-2xl",
 );
 export const textLinkArrowHeroClass = textLinkArrowClass.replace("size-4", "size-6 sm:size-5 lg:size-6");
 
