@@ -27,8 +27,9 @@ const FLOOR = -2.5;
 const SHADOW_WIDTH = 0.2;
 const MAX_PIXEL_RATIO = 1.5;
 // Below this width-to-height ratio the screen is portrait (a phone): the text fills the width there, so the
-// waves stay faint everywhere instead of only behind the text column.
-const PORTRAIT_ASPECT = 0.85;
+// waves stay faint everywhere instead of only behind the text column. Exported so the hero can place its
+// horizon lower on the same screens (see `PORTRAIT_CLEAR` in HeroShapes.tsx).
+export const PORTRAIT_ASPECT = 0.85;
 // How far past the end of the text (in `u`) the layers take to reach full strength.
 const SAFE_FEATHER = 0.45;
 // How opaque each layer is, back to front. The layers behind are the ones that pass behind the text, so they
@@ -70,12 +71,19 @@ const LAYERS: LayerSpec[] = [
   { base: -0.85, amplitude: [0.15, 0.05, 0.06], frequency: [3.5, 7.4, 1.6], phase: [1.0, 3.6, 2.1], speed: [-0.2, 0.15, -0.08], skew: -0.6, parallax: 0.08 },
 ];
 
+// Below this aspect the screen is narrower than it is tall (a phone in portrait): the same amplitude that
+// reads as a calm, wide swell on a landscape screen gets squeezed into a much narrower width there, so every
+// hump turns into a sharp, tall spike. `freqScale` widens the humps back out on those screens by lowering
+// their frequency in proportion to how much narrower the screen is; landscape screens (>= 1) are untouched.
+const CALM_ASPECT = 1;
+const MIN_FREQ_SCALE = 0.55;
+
 // `lean` shifts the main wave with the pointer (in opposite directions on alternate layers), so the waves
 // lean toward the cursor like liquid rather than only sliding as a block.
-const edgeAt = (spec: LayerSpec, u: number, seconds: number, horizon: number, lean: number) => {
+const edgeAt = (spec: LayerSpec, u: number, seconds: number, horizon: number, lean: number, freqScale: number) => {
   let y = horizon + spec.base;
   for (let i = 0; i < 3; i++) {
-    const angle = spec.frequency[i] * u + spec.phase[i] + spec.speed[i] * seconds + (i === 0 ? lean : 0);
+    const angle = spec.frequency[i] * freqScale * u + spec.phase[i] + spec.speed[i] * seconds + (i === 0 ? lean : 0);
     // Bending the angle by its own sine skews the wave: sin(a + k sin a) is steeper on one side than the other.
     y += spec.amplitude[i] * Math.sin(i === 0 ? angle + spec.skew * Math.sin(angle) : angle);
   }
@@ -233,6 +241,8 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   });
 
   let aspect = 1;
+  // See `CALM_ASPECT`/`MIN_FREQ_SCALE`: 1 on landscape screens, lower (wider humps) on narrow portrait ones.
+  let freqScale = 1;
   // Where the waves start, in screen height units (-1 bottom, 1 top). The home sets it from the name's position.
   let horizon = 0;
 
@@ -291,6 +301,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     camera.left = -aspect;
     camera.right = aspect;
     camera.updateProjectionMatrix();
+    freqScale = aspect < CALM_ASPECT ? Math.max(aspect, MIN_FREQ_SCALE) : 1;
     const portrait = aspect < PORTRAIT_ASPECT ? 1 : 0;
     for (const layer of layers) {
       layer.fillMesh.scale.x = aspect;
@@ -308,7 +319,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     layers.forEach(({ spec, fill, fillMesh, fillMaterial, shadow, shadowMesh, shadowMaterial }, index) => {
       for (let column = 0; column < fill.columns; column++) {
         const u = -OVERSCAN + (2 * OVERSCAN * column) / SEGMENTS;
-        const edge = edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1));
+        const edge = edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale);
         fill.positions[column * 6 + 1] = edge;
         fill.positions[column * 6 + 4] = FLOOR;
         fill.edges[column * 2] = fill.edges[column * 2 + 1] = edge;

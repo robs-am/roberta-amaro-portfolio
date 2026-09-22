@@ -4,7 +4,7 @@ import { animate, type JSAnimation } from "animejs";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { MathUtils } from "three";
-import { LAYER_COUNT, createWaveScene } from "@/components/shapes/waveScene";
+import { LAYER_COUNT, PORTRAIT_ASPECT, createWaveScene } from "@/components/shapes/waveScene";
 import { subscribeTheme } from "@/components/theme/theme";
 import {
   HERO_ENTRANCE_MS,
@@ -23,6 +23,10 @@ const NAME_GAP = 10;
 const HORIZON_LIFT = 0.06;
 // Pixels of clear space kept to the right of the text before the waves start to come in.
 const SAFE_MARGIN = 24;
+// On a portrait phone there is no horizontal safe zone (the text fills the width), so the waves have to
+// clear the content vertically instead: the horizon is measured from the bottom of the CTAs, not the name,
+// with this much extra clearance so the nearest crest does not just graze them.
+const PORTRAIT_CLEAR = 28;
 
 const SCENE_OPACITY = 1;
 
@@ -104,14 +108,19 @@ export function HeroShapes() {
       if (visible !== wasVisible) sync();
     };
 
-    // The waves start just under the name, so it stands clear above them. The name's place comes from the
-    // layout (offsetTop), which its entrance animation does not move, so this can run at any time.
-    const placeHorizon = (height: number) => {
-      const name = document.querySelector<HTMLElement>("#hero h1");
-      if (!name) return;
-      let bottom = name.offsetHeight;
-      for (let node: HTMLElement | null = name; node; node = node.offsetParent as HTMLElement | null) bottom += node.offsetTop;
-      waveHorizon.y = MathUtils.clamp(1 - (2 * (bottom + NAME_GAP)) / height + HORIZON_LIFT, -0.6, 0.4);
+    // The waves start just under the name, so it stands clear above them; on a portrait phone, where the
+    // waves can't dodge sideways, they start under the CTAs instead, clearing the name, role and CTAs
+    // together. Either reference's place comes from the layout (offsetTop), which the entrance animation
+    // does not move, so this can run at any time.
+    const placeHorizon = (height: number, portrait: boolean) => {
+      const target = portrait
+        ? (document.querySelector<HTMLElement>("#hero [data-hero-cta]") ?? document.querySelector<HTMLElement>("#hero h1"))
+        : document.querySelector<HTMLElement>("#hero h1");
+      if (!target) return;
+      let bottom = target.offsetHeight;
+      for (let node: HTMLElement | null = target; node; node = node.offsetParent as HTMLElement | null) bottom += node.offsetTop;
+      const gap = NAME_GAP + (portrait ? PORTRAIT_CLEAR : 0);
+      waveHorizon.y = MathUtils.clamp(1 - (2 * (bottom + gap)) / height + HORIZON_LIFT, -0.6, 0.4);
       waves.setHorizon(waveHorizon.y);
     };
 
@@ -147,7 +156,7 @@ export function HeroShapes() {
       const { clientWidth: width, clientHeight: height } = canvas;
       if (!width || !height) return;
       waves.resize(width, height);
-      placeHorizon(height);
+      placeHorizon(height, width / height < PORTRAIT_ASPECT);
       placeSafeZone(width);
       sync();
     };

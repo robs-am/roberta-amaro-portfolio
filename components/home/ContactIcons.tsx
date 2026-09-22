@@ -8,7 +8,7 @@ function Svg({ className, children }: Readonly<{ className: string; children: Re
       className={className}
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

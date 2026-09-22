@@ -103,7 +103,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             {/* The size follows the width: the English role fits one line on a phone, the longer pt one wraps in two. */}
             {localize(profile.role, locale)}
           </p>
-          <div data-hero-item style={{ "--hero-index": 4 } as React.CSSProperties} className="mt-6 flex flex-col items-start gap-y-1 sm:mt-8 short:mt-5 sm:flex-row sm:flex-wrap sm:gap-x-8">
+          <div data-hero-item data-hero-cta style={{ "--hero-index": 4 } as React.CSSProperties} className="mt-6 flex flex-col items-start gap-y-1 sm:mt-8 short:mt-5 sm:flex-row sm:flex-wrap sm:gap-x-8">
             <Link href="/experience" onClick={leaveToPage} className={`${textLinkHeroClass} order-2 sm:order-1`}>
               <ArrowIcon className={textLinkArrowHeroClass} />
               <span className={textLinkLabelClass}>{t("experienceCta")}</span>
@@ -124,7 +124,9 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
                     aria-label={link.external ? `${link.label} ${t("newTab")}` : link.label}
                     className={linkClass}
                   >
-                    <link.Icon badge={false} className="size-10" />
+                    <span className="inline-flex size-12 items-center justify-center rounded-full border border-border transition-colors group-hover/link:border-accent dark:group-hover/link:border-foreground">
+                      <link.Icon badge={false} className="size-7" />
+                    </span>
                     <span aria-hidden="true" className={tooltipClass}>
                       {link.label}
                     </span>
