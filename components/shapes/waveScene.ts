@@ -265,8 +265,10 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = dark ? new Color(0xb85a80) : new Color(0x8c566f);
     const deepen = dark ? new Color(0x2a1621) : token("--accent");
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
-    // lower left corner is left empty and black.
-    const safe = dark ? 0.42 : 0.8;
+    // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
+    // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
+    // page, so the waves recede where they'd otherwise compete with the words.
+    const safe = dark ? 0.25 : 0.5;
     layerOpacities = dark ? DARK_OPACITIES : LIGHT_OPACITIES;
     layers.forEach(({ fillMaterial, shadowMaterial }, index) => {
       const edge = back.clone().lerp(front, index / (LAYER_COUNT - 1));

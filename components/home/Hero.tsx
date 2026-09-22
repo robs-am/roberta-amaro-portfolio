@@ -80,7 +80,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     <section
       ref={sectionRef}
       id="hero"
-      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
+      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden sm:pb-20 max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
     >
       <HeroShapes />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
