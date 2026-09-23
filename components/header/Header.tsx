@@ -5,7 +5,7 @@ import { HeaderShell } from "./HeaderShell";
 import { HideOnHome } from "./HideOnHome";
 import { HomeLink } from "./HomeLink";
 import { LocaleSwitcher } from "./LocaleSwitcher";
-import { Menu } from "./Menu";
+import { Menu } from "./menu/Menu";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export async function Header() {

@@ -14,7 +14,7 @@ import {
   textLinkLabelClass,
 } from "@/components/ui/textLinkStyles";
 import { profile } from "@/data/profile";
-import { backTarget } from "@/components/header/menuEvents";
+import { backTarget } from "@/components/header/menu/menuEvents";
 import { heroEntrance } from "@/components/shapes/shapesScene";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
