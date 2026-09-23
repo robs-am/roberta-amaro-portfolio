@@ -47,6 +47,7 @@
   },
   "Projects": {
     "title": "Projetos",
+    "intro": "Uma seleção de lojas virtuais e experiências digitais desenvolvidas em parceria com outros profissionais, para marcas de diferentes segmentos.",
     "tech": "Tecnologias",
     "repo": "Repositório",
     "demo": "Ver site",
@@ -56,10 +57,10 @@
   },
   "About": {
     "title": "Sobre",
-    "intro": "Sou Engenheira de Software Front-End e, quando o projeto pede, também entro no Back-End. Comecei a carreira como Designer 3D, e essa bagagem ainda influencia o meu jeito de construir: me importo tanto com a sensação de usar uma interface quanto com o funcionamento dela.",
-    "curiosity": "Tenho muita curiosidade por novas tecnologias e creative coding, e adoro transformar experimentos em produtos de verdade.",
+    "intro": "Sou Engenheira de Software com foco em Front-End, mas transito pelo Back-End quando necessário, trabalhando de forma próxima às diferentes camadas do produto. Comecei minha carreira como Designer 3D, e essa bagagem ainda influencia o meu jeito de construir: me importo tanto com a sensação de usar uma interface quanto com o funcionamento por trás dela.",
+    "curiosity": "Tenho interesse especial em creative coding, performance e em como a IA pode se integrar a experiências visuais construídas em código. É onde gosto de experimentar: na interseção entre código, design e produto.",
     "stack": "Tecnologias",
-    "alsoWorking": "Também atuo com"
+    "alsoWorking": "Também uso"
   },
   "AboutPage": {
     "title": "Sobre | Roberta Amaro",

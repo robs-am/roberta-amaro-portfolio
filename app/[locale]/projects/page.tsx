@@ -59,6 +59,7 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
     <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 pt-8 pb-16 sm:px-8 sm:pt-12 short:pt-6 short:pb-6">
       <ProjectShowcase
         title={t("title")}
+        intro={t("intro")}
         items={items}
         labels={{
           visit: t("demo"),

@@ -47,6 +47,7 @@
   },
   "Projects": {
     "title": "Projects",
+    "intro": "A selection of online stores and digital experiences built in partnership with other professionals, for brands across different segments.",
     "tech": "Technologies",
     "repo": "Repository",
     "demo": "Visit site",
@@ -56,10 +57,10 @@
   },
   "About": {
     "title": "About",
-    "intro": "I'm a Front-End Software Engineer who steps into the Back-End when a project needs it. I started my career as a 3D Designer, and that background still shapes how I build: I care as much about how an interface feels as how it works.",
-    "curiosity": "I'm endlessly curious about new technologies and creative coding, and I love turning experiments into real products.",
+    "intro": "I'm a Software Engineer focused on Front-End, moving into Back-End when needed and working closely across the different layers of the product. I started my career as a 3D Designer, and that background still shapes how I build: I care as much about how an interface feels as about what works behind it.",
+    "curiosity": "I have a special interest in creative coding, performance, and how AI can be woven into visual experiences built with code. This is where I like to experiment: at the intersection of code, design, and product.",
     "stack": "Technologies",
-    "alsoWorking": "Also working with"
+    "alsoWorking": "Also using"
   },
   "AboutPage": {
     "title": "About | Roberta Amaro",

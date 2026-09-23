@@ -35,9 +35,10 @@ const focusRing =
 
 export function ProjectShowcase({
   title,
+  intro,
   items,
   labels,
-}: Readonly<{ title: string; items: ShowcaseItem[]; labels: ShowcaseLabels }>) {
+}: Readonly<{ title: string; intro?: string; items: ShowcaseItem[]; labels: ShowcaseLabels }>) {
   const [openId, setOpenId] = useState<string | null>(null);
   const openItem = items.find((item) => item.id === openId);
 
@@ -207,13 +208,18 @@ export function ProjectShowcase({
         data-showcase-item
         className="flex items-baseline justify-between gap-6 border-b border-border pb-4"
       >
-        <h1 data-showcase-title className="font-display text-4xl font-semibold sm:text-5xl">
+        <h1
+          data-showcase-title
+          className="font-display text-4xl leading-tight font-semibold sm:text-5xl"
+        >
           {title}
         </h1>
         <span data-showcase-meta className="text-lg text-muted" aria-hidden="true">
           {items.length}
         </span>
       </div>
+
+      {intro && <p className="mt-4 max-w-2xl text-base leading-7 text-muted">{intro}</p>}
 
       <ul className="lg:mt-2">
         {items.map((item) => (
