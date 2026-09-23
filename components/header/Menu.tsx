@@ -28,6 +28,7 @@ export function Menu() {
   const tHero = useTranslations("Hero");
   const [open, setOpen] = useState(false);
   const [shapesMounted, setShapesMounted] = useState(false);
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
   const panelId = useId();
   const openRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -44,8 +45,11 @@ export function Menu() {
   // The in-page back arrow (see BackButton) reopens the menu from outside the header.
   useEffect(() => {
     const openMenu = () => {
-      setShapesMounted(true);
       setOpen(true);
+      // A frame after the open transition starts, not in the same tick: mounting the shapes builds a
+      // fresh WebGL context and compiles shaders, and doing that in the same tick as the clip-path
+      // transition kicks off competes with it for the main thread and makes the opening animation stutter.
+      requestAnimationFrame(() => setShapesMounted(true));
     };
     window.addEventListener(OPEN_MENU_EVENT, openMenu);
     return () => window.removeEventListener(OPEN_MENU_EVENT, openMenu);
@@ -118,6 +122,20 @@ export function Menu() {
     return () => clearTimeout(timer);
   }, [open]);
 
+  // A nav link only closes the menu once the router has actually landed on its route: closing on the
+  // click itself reveals whatever page the menu was opened on for the last stretch of navigation,
+  // which briefly shows that old page before the new one swaps in.
+  useEffect(() => {
+    if (pendingHref && pathname === pendingHref) {
+      setOpen(false);
+      setPendingHref(null);
+    }
+  }, [pathname, pendingHref]);
+
+  useEffect(() => {
+    if (!open) setPendingHref(null);
+  }, [open]);
+
   const contacts = [
     profile.email && { href: `mailto:${profile.email}`, label: tHero("email"), external: false },
     profile.linkedinUrl && { href: profile.linkedinUrl, label: tHero("linkedin"), external: true },
@@ -143,8 +161,8 @@ export function Menu() {
         aria-controls={panelId}
         aria-label={t("menu.open")}
         onClick={() => {
-          setShapesMounted(true);
           setOpen(true);
+          requestAnimationFrame(() => setShapesMounted(true));
         }}
         className={dockButtonClass}
       >
@@ -166,7 +184,7 @@ export function Menu() {
           >
             {/* Before the shapes in the DOM, so the grain stays behind them. */}
             <Grain layerClassName="z-0" />
-            {shapesMounted && <MenuShapes />}
+            {shapesMounted && <MenuShapes active={open && pendingHref === null} />}
 
             {/* Same atmosphere as the hero's (see Hero.tsx): dark mode only, softens the empty sky above the
                 waves into the page's own glow so the wave's edge doesn't read as a stain against flat black.
@@ -216,7 +234,8 @@ export function Menu() {
                           aria-current={active ? "page" : undefined}
                           onClick={() => {
                             backTarget.toHome = false;
-                            setOpen(false);
+                            if (item.href === pathname) setOpen(false);
+                            else setPendingHref(item.href);
                           }}
                           className={`menu-nav-link inline-flex items-baseline gap-3 rounded-sm font-display text-[clamp(2rem,10.5vw,3rem)] leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${
                             active ? "text-accent" : "text-foreground"

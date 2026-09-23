@@ -12,8 +12,15 @@ const FULL = Array.from({ length: LAYER_COUNT }, () => 1);
 // offset, and the waves are drawn from the page's clock, so they carry on from where the hero left them.
 // Decorative layer behind the menu items. Mount it only while the menu is visible: it owns a WebGL
 // context and an animation loop, which are torn down on unmount.
-export function MenuShapes() {
+export function MenuShapes({ active }: Readonly<{ active: boolean }>) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Read inside the loop instead of restarting the effect on every change: navigating away sets this
+  // false mid-animation, and the loop should just stop scheduling itself on its very next frame,
+  // freezing on whatever was last drawn (it's covered by the menu overlay either way).
+  const activeRef = useRef(active);
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,6 +39,10 @@ export function MenuShapes() {
     };
 
     const tick = (time: number) => {
+      if (!activeRef.current) {
+        frame = 0;
+        return;
+      }
       current.x += (target.x - current.x) * POINTER_EASING;
       current.y += (target.y - current.y) * POINTER_EASING;
       draw(time / 1000);
