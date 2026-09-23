@@ -20,9 +20,9 @@ export const projects = [
     demoUrl: "https://br.tommy.com/",
     image: {
       src: "/projects/tommy-hilfiger.webp",
-      width: 1280,
-      height: 720,
-      focus: "50% 66%",
+      width: 1447,
+      height: 826,
+      focus: "50% 57%",
       alt: {
         pt: "Página inicial do e-commerce da Tommy Hilfiger, com faixa de frete grátis, menu Feminino, Masculino e Kids e uma foto de campanha com modelos em um terraço com prédios ao fundo",
         en: "Tommy Hilfiger e-commerce home page, with a free shipping banner, Women, Men and Kids navigation and a campaign photo of models on a rooftop with city buildings behind them",
@@ -75,10 +75,10 @@ export const projects = [
     tech: ["React", "TypeScript", "Tailwind CSS", "VTEX"],
     demoUrl: "https://www.candide.com.br",
     image: {
-      src: "/projects/candide.webp",
-      width: 1440,
-      height: 900,
-      focus: "50% 55%",
+      src: "/projects/candide-banner.webp",
+      width: 1881,
+      height: 877,
+      focus: "50% 72%",
       alt: {
         pt: "Página inicial do e-commerce da Candide, com menu de categorias de brinquedos e banner da linha Bluey, com as pelúcias da família Heeler",
         en: "Candide e-commerce home page, with a toy category menu and a banner for the Bluey line, featuring plush toys of the Heeler family",

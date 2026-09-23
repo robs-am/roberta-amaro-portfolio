@@ -3,18 +3,13 @@
 import { useTranslations } from "next-intl";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { textLinkArrowLargeClass, textLinkLabelClass, textLinkLargeClass } from "@/components/ui/textLinkStyles";
-import { profile } from "@/data/profile";
+import { useContactLinks } from "@/components/layout/useContactLinks";
 import { menuRowEnter } from "./menuEnter";
 import { navItems } from "./navItems";
 
 export function MenuContacts({ open }: Readonly<{ open: boolean }>) {
   const tHero = useTranslations("Hero");
-
-  const contacts = [
-    profile.email && { href: `mailto:${profile.email}`, label: tHero("email"), external: false },
-    profile.linkedinUrl && { href: profile.linkedinUrl, label: tHero("linkedin"), external: true },
-    profile.githubUrl && { href: profile.githubUrl, label: tHero("github"), external: true },
-  ].filter((link): link is { href: string; label: string; external: boolean } => !!link);
+  const contacts = useContactLinks();
 
   if (contacts.length === 0) return null;
 

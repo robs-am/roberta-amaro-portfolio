@@ -13,7 +13,7 @@ const prefersMotion = () =>
 function rowClip(panel: HTMLElement, trigger: HTMLElement | null): string {
   // The row's visible shape is its image (the text sits straight on the page), so that's what
   // the card grows out of.
-  const row = trigger?.querySelector<HTMLElement>("[data-showcase-image]");
+  const row = trigger?.closest("li")?.querySelector<HTMLElement>("[data-showcase-image]");
   if (!row) return PANEL_CLIP;
   const box = panel.getBoundingClientRect();
   const rect = row.getBoundingClientRect();

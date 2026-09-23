@@ -36,9 +36,9 @@ export function ProjectShowcase({
 
       {intro && <p className="mt-4 max-w-2xl text-base leading-7 text-muted">{intro}</p>}
 
-      <ul className="lg:mt-2">
+      <ul className="mt-4 lg:mt-2">
         {items.map((item) => (
-          <ProjectRow key={item.id} item={item} onOpen={lightbox.open} />
+          <ProjectRow key={item.id} item={item} labels={labels} onOpen={lightbox.open} />
         ))}
       </ul>
 

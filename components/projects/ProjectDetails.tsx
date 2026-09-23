@@ -1,4 +1,10 @@
 import type { Ref } from "react";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
+import {
+  textLinkArrowClass,
+  textLinkClass,
+  textLinkLabelClass,
+} from "@/components/ui/textLinkStyles";
 import { ProjectImages } from "./ProjectImages";
 import { focusRing } from "./styles";
 import type { ShowcaseItem, ShowcaseLabels } from "./types";
@@ -59,10 +65,10 @@ export function ProjectDetails({
           href={item.href}
           target="_blank"
           rel="noopener noreferrer"
-          className={`group mt-auto flex w-fit items-center gap-3 rounded-sm text-base font-medium ${focusRing}`}
+          className={`mt-auto self-start ${textLinkClass}`}
         >
-          {labels.visit}
-          <span className="h-px w-6 bg-current transition-[width] duration-500 ease-expressive group-hover:w-12 motion-reduce:transition-none" />
+          <span className={textLinkLabelClass}>{labels.visit}</span>
+          <ArrowIcon className={textLinkArrowClass} />
           <span className="sr-only">{labels.newTab}</span>
         </a>
       </div>
