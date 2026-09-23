@@ -15,13 +15,18 @@ export type WaveMood = {
   warmth: number;
   // 0 slow drift to 1 fast. It is the pace of the clock (`moodRate`), not part of the layers: see shapesScene.ts.
   speed: number;
+  // The colour the visitor asked for, as a place on the colour wheel in degrees (0 red, 120 green, 215 blue, 330
+  // pink). Only meaningful while `tint` is above 0. Like warmth, it moves the colours and not the shape.
+  hue: number;
+  // How much of that colour the waves take: 0 none (her rose) to 1 as much as the scene allows.
+  tint: number;
 };
 
 // What `/api/wave-mood` answers (and what the mock stands in for): the dials plus a short phrase saying how the
 // prompt was read, to show the visitor.
 export type WaveMoodAnswer = WaveMood & { label: string };
 
-export const NEUTRAL_MOOD: WaveMood = { calm: 0.5, energy: 0.5, warmth: 0, speed: 0.5 };
+export const NEUTRAL_MOOD: WaveMood = { calm: 0.5, energy: 0.5, warmth: 0, speed: 0.5, hue: 0, tint: 0 };
 
 // What each end of a dial multiplies the resting value by. `low` applies at 0, `high` at 1, and 0.5 is always 1.
 const ENERGY_AMPLITUDE = { low: 0.55, high: 1.5 };
@@ -34,6 +39,11 @@ const MAX_SKEW = 0.95;
 const EASE_SECONDS = 0.9;
 // Below this distance a dial is close enough to its target to land on it.
 const SETTLED = 0.002;
+const SETTLED_DEGREES = 0.2;
+// The dials that ease in a straight line; the hue is a circle and has its own step in `easeMood`.
+const EASED = ["calm", "energy", "warmth", "speed", "tint"] as const;
+// Under this much tint the colour is not visible, so the hue can change without anyone seeing it turn.
+const HUE_HIDDEN = 0.02;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 // The answer comes from a model, so a missing or non-numeric field keeps the value it already had.
@@ -44,12 +54,18 @@ const dial = (value: unknown, min: number, max: number, fallback: number) =>
 const scale = (t: number, { low, high }: { low: number; high: number }) =>
   t < 0.5 ? low + (1 - low) * (t / 0.5) : 1 + (high - 1) * ((t - 0.5) / 0.5);
 
+// A place on the colour wheel is a circle, not a range: 370 is 10, not "too high".
+const wrapHue = (value: unknown, fallback: number) =>
+  typeof value === "number" && Number.isFinite(value) ? ((value % 360) + 360) % 360 : fallback;
+
 /** Reads a mood the AI (or anyone) sent: every dial is clamped to its range and a bad one keeps `from`'s. */
 export const cleanMood = (mood: Partial<WaveMood>, from: WaveMood = NEUTRAL_MOOD): WaveMood => ({
   calm: dial(mood.calm, 0, 1, from.calm),
   energy: dial(mood.energy, 0, 1, from.energy),
   warmth: dial(mood.warmth, -1, 1, from.warmth),
   speed: dial(mood.speed, 0, 1, from.speed),
+  hue: wrapHue(mood.hue, from.hue),
+  tint: dial(mood.tint, 0, 1, from.tint),
 });
 
 /** How fast the wave clock runs for this mood: 1 is the pace the scene always had. */
@@ -76,10 +92,23 @@ export const moodToLayers = (mood: WaveMood): LayerSpec[] => {
 export const easeMood = (current: WaveMood, target: WaveMood, dt: number) => {
   const step = 1 - Math.exp(-dt / EASE_SECONDS);
   let moved = false;
-  for (const key of Object.keys(current) as (keyof WaveMood)[]) {
+  for (const key of EASED) {
     const gap = target[key] - current[key];
     if (gap === 0) continue;
     current[key] = Math.abs(gap) < SETTLED ? target[key] : current[key] + gap * step;
+    moved = true;
+  }
+
+  // The hue turns the short way round the wheel (350 to 10 is 20 degrees, not 340), and only while there is a
+  // colour to turn: with none showing it jumps to the new one, so a fresh colour fades in as itself instead of
+  // sweeping through every colour between; when the target has none, it stays put while the colour fades out.
+  if (target.tint > 0 && current.hue !== target.hue) {
+    if (current.tint < HUE_HIDDEN) {
+      current.hue = target.hue;
+    } else {
+      const arc = ((((target.hue - current.hue) % 360) + 540) % 360) - 180;
+      current.hue = Math.abs(arc) < SETTLED_DEGREES ? target.hue : (current.hue + arc * step + 360) % 360;
+    }
     moved = true;
   }
   return moved;

@@ -23,7 +23,9 @@ export const waveSafe = { u: 0.1 };
 // speed against a fixed time would make every wave jump, while adding up small steps changes it smoothly.
 const MAX_STEP = 0.1;
 const mood = { current: { ...NEUTRAL_MOOD }, target: { ...NEUTRAL_MOOD } };
-const clock = { seconds: 0, last: 0, layers: moodToLayers(NEUTRAL_MOOD), warmth: 0 };
+// `tone` is what the colours follow (see `setTone` in waveScene.ts): the layers get the shape of the mood, the
+// colours get these three.
+const clock = { seconds: 0, last: 0, layers: moodToLayers(NEUTRAL_MOOD), tone: { warmth: 0, hue: 0, tint: 0 } };
 
 export const setWaveMood = (next: Partial<WaveMood>) => {
   mood.target = cleanMood(next, mood.target);
@@ -40,7 +42,8 @@ export const stepWaves = (now: number) => {
     clock.seconds += dt * moodRate(mood.current);
     if (easeMood(mood.current, mood.target, dt)) {
       clock.layers = moodToLayers(mood.current);
-      clock.warmth = mood.current.warmth;
+      const { warmth, hue, tint } = mood.current;
+      clock.tone = { warmth, hue, tint };
     }
   }
   return clock;

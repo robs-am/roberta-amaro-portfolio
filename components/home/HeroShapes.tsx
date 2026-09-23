@@ -82,8 +82,8 @@ export function HeroShapes() {
     // The waves move on a clock and a mood shared with the menu's scene (see `stepWaves`), fed by the page's own
     // clock (performance.now), so the menu picks them up exactly where the hero left them.
     const draw = (now: number) => {
-      const { seconds, layers, warmth } = stepWaves(now);
-      waves.setWarmth(warmth);
+      const { seconds, layers, tone } = stepWaves(now);
+      waves.setTone(tone);
       waves.draw(motionQuery.matches ? seconds : 0, current.x, current.y, faded.map((item) => item.value), layers);
     };
 

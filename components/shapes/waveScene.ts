@@ -19,6 +19,12 @@ const MAX_PIXEL_RATIO = 1.5;
 const SAFE_FEATHER = 0.45;
 // How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
 const MAX_TINT = 0.4;
+// How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
+// saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
+const HUE_STRENGTH = 0.9;
+const HUE_SATURATION = 0.4;
+
+export type Tone = { warmth: number; hue: number; tint: number };
 let layerOpacities = DARK_OPACITIES;
 
 export function createWaveScene(canvas: HTMLCanvasElement) {
@@ -100,10 +106,10 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     }
   };
 
-  // The palette as the theme gives it, kept so that a change of warmth can repaint without reading the CSS
-  // again (warmth eases over a few seconds, one repaint per frame).
+  // The palette as the theme gives it, kept so that a change of tone can repaint without reading the CSS
+  // again (the tone eases over a few seconds, one repaint per frame).
   let palette: { dark: boolean; back: Color; front: Color; deepen: Color } | null = null;
-  let warmth = 0;
+  let tone: Tone = { warmth: 0, hue: 0, tint: 0 };
 
   // Reads the theme's colours, then paints.
   const applyColors = () => {
@@ -127,10 +133,28 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const { dark, deepen } = palette;
     // Warmth leans the rose toward coral (warm) or toward a dusty violet (cool), only part of the way: it stays
     // recognisably her rose, just pushed, and the dark page's tints are kept light for the same reason as above.
+    const { warmth } = tone;
     const lean = new Color(warmth >= 0 ? (dark ? 0xe8825f : 0xd98a68) : dark ? 0x8a78d6 : 0x7f7fb8);
     const tint = Math.abs(warmth) * MAX_TINT;
-    const back = palette.back.clone().lerp(lean, tint);
-    const front = palette.front.clone().lerp(lean, tint);
+    // A colour the visitor asked for turns the hue of everything the scene paints (the layers, their deep side,
+    // the lit edge and the shadows) and leaves each one's lightness alone, so the paper-cut depth stays as
+    // designed, just in another colour. Mixing rose with blue instead would go muddy grey in between.
+    const turn = tone.tint * HUE_STRENGTH;
+    const target = tone.hue / 360;
+    const hsl = { h: 0, s: 0, l: 0 };
+    const recolor = (color: Color) => {
+      if (turn <= 0) return color;
+      color.getHSL(hsl);
+      // The short way round the wheel, in turns.
+      const arc = ((target - hsl.h + 1.5) % 1) - 0.5;
+      const saturation = hsl.s + (Math.max(hsl.s, HUE_SATURATION) - hsl.s) * turn;
+      return color.setHSL((hsl.h + arc * turn + 1) % 1, saturation, hsl.l);
+    };
+    const back = recolor(palette.back.clone().lerp(lean, tint));
+    const front = recolor(palette.front.clone().lerp(lean, tint));
+    const deep = recolor(deepen.clone());
+    const rim = recolor(new Color(dark ? 0xf7b8cb : 0xffffff));
+    const shadow = recolor(new Color(dark ? 0x14080f : 0x9a4a72));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
@@ -141,10 +165,10 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       const edge = back.clone().lerp(front, index / (LAYER_COUNT - 1));
       fillMaterial.uniforms.uSafe.value = shadowMaterial.uniforms.uSafe.value = safe;
       fillMaterial.uniforms.uEdge.value.copy(edge);
-      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(deepen, dark ? 0.3 : 0.38);
+      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(deep, dark ? 0.3 : 0.38);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
-      fillMaterial.uniforms.uRim.value.copy(edge).lerp(new Color(dark ? 0xf7b8cb : 0xffffff), dark ? 0.55 : 0.5);
-      shadowMaterial.uniforms.uColor.value.set(dark ? 0x14080f : 0x9a4a72);
+      fillMaterial.uniforms.uRim.value.copy(edge).lerp(rim, dark ? 0.55 : 0.5);
+      shadowMaterial.uniforms.uColor.value.copy(shadow);
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
       const solidity = layerOpacities[index] / layerOpacities[LAYER_COUNT - 1];
@@ -152,10 +176,15 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     });
   };
 
-  // `value` is the mood's warmth (-1 cool to 1 warm); repaints only when it has actually moved.
-  const setWarmth = (value: number) => {
-    if (Math.abs(value - warmth) < 0.002) return;
-    warmth = value;
+  // The mood's colour dials (see `WaveMood`); repaints only when one of them has actually moved.
+  const setTone = (next: Tone) => {
+    const moved =
+      Math.abs(next.warmth - tone.warmth) >= 0.002 ||
+      Math.abs(next.tint - tone.tint) >= 0.002 ||
+      // The hue only shows through the tint, and is a circle: 359.9 is next to 0.
+      (next.tint > 0 && Math.min(Math.abs(next.hue - tone.hue), 360 - Math.abs(next.hue - tone.hue)) >= 0.2);
+    if (!moved) return;
+    tone = next;
     paint();
   };
 
@@ -225,5 +254,5 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     renderer.dispose();
   };
 
-  return { applyColors, setWarmth, resize, setHorizon, setSafeZone, draw, dispose };
+  return { applyColors, setTone, resize, setHorizon, setSafeZone, draw, dispose };
 }
