@@ -17,6 +17,8 @@ const SHADOW_WIDTH = 0.2;
 const MAX_PIXEL_RATIO = 1.5;
 // How far past the end of the text (in `u`) the layers take to reach full strength.
 const SAFE_FEATHER = 0.45;
+// How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
+const MAX_TINT = 0.4;
 let layerOpacities = DARK_OPACITIES;
 
 export function createWaveScene(canvas: HTMLCanvasElement) {
@@ -98,6 +100,12 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     }
   };
 
+  // The palette as the theme gives it, kept so that a change of warmth can repaint without reading the CSS
+  // again (warmth eases over a few seconds, one repaint per frame).
+  let palette: { dark: boolean; back: Color; front: Color; deepen: Color } | null = null;
+  let warmth = 0;
+
+  // Reads the theme's colours, then paints.
   const applyColors = () => {
     const styles = getComputedStyle(document.documentElement);
     const token = (name: string) => new Color(styles.getPropertyValue(name).trim());
@@ -110,6 +118,19 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const back = dark ? token("--accent").lerp(new Color(0xffffff), 0.1) : new Color(0xc79aad);
     const front = dark ? new Color(0xb85a80) : new Color(0x8c566f);
     const deepen = dark ? new Color(0x2a1621) : token("--accent");
+    palette = { dark, back, front, deepen };
+    paint();
+  };
+
+  const paint = () => {
+    if (!palette) return;
+    const { dark, deepen } = palette;
+    // Warmth leans the rose toward coral (warm) or toward a dusty violet (cool), only part of the way: it stays
+    // recognisably her rose, just pushed, and the dark page's tints are kept light for the same reason as above.
+    const lean = new Color(warmth >= 0 ? (dark ? 0xe8825f : 0xd98a68) : dark ? 0x8a78d6 : 0x7f7fb8);
+    const tint = Math.abs(warmth) * MAX_TINT;
+    const back = palette.back.clone().lerp(lean, tint);
+    const front = palette.front.clone().lerp(lean, tint);
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
@@ -129,6 +150,13 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       const solidity = layerOpacities[index] / layerOpacities[LAYER_COUNT - 1];
       shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.28) * (0.35 + 0.65 * solidity);
     });
+  };
+
+  // `value` is the mood's warmth (-1 cool to 1 warm); repaints only when it has actually moved.
+  const setWarmth = (value: number) => {
+    if (Math.abs(value - warmth) < 0.002) return;
+    warmth = value;
+    paint();
   };
 
   const resize = (width: number, height: number) => {
@@ -197,5 +225,5 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     renderer.dispose();
   };
 
-  return { applyColors, resize, setHorizon, setSafeZone, draw, dispose };
+  return { applyColors, setWarmth, resize, setHorizon, setSafeZone, draw, dispose };
 }

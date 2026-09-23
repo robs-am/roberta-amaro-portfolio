@@ -23,14 +23,11 @@ export const waveSafe = { u: 0.1 };
 // speed against a fixed time would make every wave jump, while adding up small steps changes it smoothly.
 const MAX_STEP = 0.1;
 const mood = { current: { ...NEUTRAL_MOOD }, target: { ...NEUTRAL_MOOD } };
-const clock = { seconds: 0, last: 0, layers: moodToLayers(NEUTRAL_MOOD) };
+const clock = { seconds: 0, last: 0, layers: moodToLayers(NEUTRAL_MOOD), warmth: 0 };
 
 export const setWaveMood = (next: Partial<WaveMood>) => {
   mood.target = cleanMood(next, mood.target);
 };
-
-/** The dials as they are right now, mid-ease, for the colours to follow (see `WaveMood.warmth`). */
-export const waveMoodNow = () => mood.current;
 
 /**
  * Moves the mood and the clock up to `now` (seconds, the page's own clock) and returns what to draw. The hero and
@@ -41,7 +38,10 @@ export const stepWaves = (now: number) => {
     const dt = Math.min(now - clock.last, MAX_STEP);
     clock.last = now;
     clock.seconds += dt * moodRate(mood.current);
-    if (easeMood(mood.current, mood.target, dt)) clock.layers = moodToLayers(mood.current);
+    if (easeMood(mood.current, mood.target, dt)) {
+      clock.layers = moodToLayers(mood.current);
+      clock.warmth = mood.current.warmth;
+    }
   }
   return clock;
 };

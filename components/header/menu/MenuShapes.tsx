@@ -35,7 +35,8 @@ export function MenuShapes({ active }: Readonly<{ active: boolean }>) {
     let frame = 0;
 
     const draw = (now: number) => {
-      const { seconds, layers } = stepWaves(now);
+      const { seconds, layers, warmth } = stepWaves(now);
+      waves.setWarmth(warmth);
       waves.draw(motionQuery.matches ? seconds : 0, current.x, current.y, FULL, layers);
     };
 
