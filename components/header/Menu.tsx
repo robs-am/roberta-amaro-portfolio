@@ -32,6 +32,8 @@ export function Menu() {
   const openRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const controlRowRef = useRef<HTMLDivElement>(null);
+  const menuBodyRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const mounted = useSyncExternalStore(
     subscribe,
@@ -76,6 +78,37 @@ export function Menu() {
       opener?.focus();
     };
   }, [open]);
+
+  // On the home page (sm and up), the list's top is measured to match the hero name's top, instead of
+  // trusting two independently-centered boxes (of different content heights) to land on the same place.
+  // On any other page, or on a phone (where `max-sm:justify-start` already takes over), it is left alone.
+  useEffect(() => {
+    if (!open || pathname !== "/") return;
+    const menuBody = menuBodyRef.current;
+    const controlRow = controlRowRef.current;
+    if (!menuBody || !controlRow) return;
+
+    const sync = () => {
+      if (!window.matchMedia("(min-width: 40rem)").matches) {
+        menuBody.style.paddingTop = "";
+        menuBody.style.justifyContent = "";
+        return;
+      }
+      const heroTitle = document.querySelector<HTMLElement>("#hero h1");
+      if (!heroTitle) return;
+      const offset = heroTitle.getBoundingClientRect().top - controlRow.getBoundingClientRect().bottom;
+      menuBody.style.justifyContent = "flex-start";
+      menuBody.style.paddingTop = `${Math.max(offset, 0)}px`;
+    };
+
+    sync();
+    window.addEventListener("resize", sync);
+    return () => {
+      window.removeEventListener("resize", sync);
+      menuBody.style.paddingTop = "";
+      menuBody.style.justifyContent = "";
+    };
+  }, [open, pathname]);
 
   // The 3D layer exists only while the menu is visible: it starts on open and is torn down once the
   // close transition has finished, so it does not keep a WebGL context alive on every page.
@@ -136,7 +169,7 @@ export function Menu() {
             {shapesMounted && <MenuShapes />}
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}
-            <div className="relative mx-auto flex min-h-11 max-w-7xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
+            <div ref={controlRowRef} className="relative mx-auto flex min-h-11 max-w-7xl items-center justify-end gap-2 px-6 py-3 sm:px-8">
               <ControlDock>
                 <LocaleSwitcher />
                 <DockDivider />
@@ -155,8 +188,13 @@ export function Menu() {
             </div>
 
             {/* On a phone the list starts at the same height as the home's text (Hero: pt-36 = 9rem from the
-                top; the control row above takes 4.25rem, so 4.75rem here). From `sm` up both are centered. */}
-            <div className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 max-sm:justify-start max-sm:pt-[4.75rem] sm:px-8">
+                top; the control row above takes 4.25rem, so 4.75rem here). From `sm` up, on the home page, the
+                effect above measures and overrides this with the hero name's exact position; elsewhere (no
+                hero to match) it stays centered. */}
+            <div
+              ref={menuBodyRef}
+              className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 max-sm:justify-start max-sm:pt-[4.75rem] sm:px-8 sm:pb-20"
+            >
               <nav aria-label={t("navLabel")}>
                 <ul className="flex flex-col gap-1">
                   {navItems.map((item, index) => {

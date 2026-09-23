@@ -124,8 +124,8 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
                     aria-label={link.external ? `${link.label} ${t("newTab")}` : link.label}
                     className={linkClass}
                   >
-                    <span className="inline-flex size-12 items-center justify-center rounded-full border border-border transition-colors group-hover/link:border-accent dark:group-hover/link:border-foreground">
-                      <link.Icon badge={false} className="size-7" />
+                    <span className="inline-flex size-14 items-center justify-center rounded-full border border-border bg-foreground/14 transition-colors group-hover/link:border-accent dark:group-hover/link:border-foreground">
+                      <link.Icon badge={false} className="size-8" />
                     </span>
                     <span aria-hidden="true" className={tooltipClass}>
                       {link.label}
