@@ -1,10 +1,9 @@
 import { setWaveMood } from "@/components/shapes/shapesScene";
-import { NEUTRAL_MOOD, type WaveMood } from "@/components/shapes/waveMood";
+import { NEUTRAL_MOOD, type WaveMoodAnswer } from "@/components/shapes/waveMood";
 
-// Stands in for the AI while the real route (`app/api/wave-mood`) does not exist yet. It answers with the same
-// shape the route will (`WaveMoodAnswer`) and after a delay like a network call, so the code that asks for a
-// mood does not change when this is swapped for a `fetch`. It picks by keyword; the real one reads the prompt.
-export type WaveMoodAnswer = WaveMood & { label: string };
+// Stands in for the AI when there is no API key to spend. It answers with the same shape as the route
+// (`WaveMoodAnswer`) and after a delay like a network call, so the code that asks for a mood does not change
+// between the two. It picks by keyword; the real one reads the prompt.
 
 const MOCK_DELAY_MS = 700;
 
@@ -23,14 +22,29 @@ export const mockWaveMood = (prompt: string): Promise<WaveMoodAnswer> => {
   return new Promise((resolve) => setTimeout(() => resolve(answer), MOCK_DELAY_MS));
 };
 
+/** Asks the route what mood a phrase is. Throws if it does not answer, so the caller can decide what to show. */
+export const fetchWaveMood = async (prompt: string): Promise<WaveMoodAnswer> => {
+  const response = await fetch("/api/wave-mood", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt }),
+  });
+  if (!response.ok) throw new Error(`wave-mood ${response.status}`);
+  return response.json();
+};
+
 /**
- * Development only: `waveMood("tempestade")` in the browser console asks the mock and moves the waves, so the
- * eased change can be tried before there is any input on the page. Not installed in production.
+ * Development only: `waveMood("domingo chuvoso")` in the browser console asks the route and moves the waves, so
+ * the eased change can be tried before there is any input on the page. If the route does not answer (no API key
+ * yet, a pause between calls), it says so and uses the mock instead. Not installed in production.
  */
 export const installWaveMoodConsole = () => {
   if (process.env.NODE_ENV !== "development") return;
   (window as unknown as { waveMood: (prompt: string) => Promise<WaveMoodAnswer> }).waveMood = async (prompt) => {
-    const answer = await mockWaveMood(prompt);
+    const answer = await fetchWaveMood(prompt).catch((error: unknown) => {
+      console.warn(`waveMood: the route did not answer (${error instanceof Error ? error.message : error}); using the mock.`);
+      return mockWaveMood(prompt);
+    });
     setWaveMood(answer);
     return answer;
   };

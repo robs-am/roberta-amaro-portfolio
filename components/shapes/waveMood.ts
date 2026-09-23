@@ -17,6 +17,10 @@ export type WaveMood = {
   speed: number;
 };
 
+// What `/api/wave-mood` answers (and what the mock stands in for): the dials plus a short phrase saying how the
+// prompt was read, to show the visitor.
+export type WaveMoodAnswer = WaveMood & { label: string };
+
 export const NEUTRAL_MOOD: WaveMood = { calm: 0.5, energy: 0.5, warmth: 0, speed: 0.5 };
 
 // What each end of a dial multiplies the resting value by. `low` applies at 0, `high` at 1, and 0.5 is always 1.
