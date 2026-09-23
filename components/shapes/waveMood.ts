@@ -68,6 +68,24 @@ export const cleanMood = (mood: Partial<WaveMood>, from: WaveMood = NEUTRAL_MOOD
   tint: dial(mood.tint, 0, 1, from.tint),
 });
 
+// A mood in a link, as the six numbers in this order: `?mood=0.85,0.15,-0.3,0.1,270,0`. The label is left out on
+// purpose: it is text, and text from a link could put anyone's words on the page.
+const PARAM_KEYS = ["calm", "energy", "warmth", "speed", "hue", "tint"] as const;
+const MAX_PARAM_LENGTH = 60;
+
+export const moodToParam = (mood: WaveMood) =>
+  PARAM_KEYS.map((key) => (key === "hue" ? Math.round(mood[key]) : Math.round(mood[key] * 100) / 100)).join(",");
+
+/** Reads a `?mood=` value. Returns null when it is not exactly six numbers; the numbers are then cleaned like any answer. */
+export const moodFromParam = (param: string | null): WaveMood | null => {
+  if (!param || param.length > MAX_PARAM_LENGTH) return null;
+  const parts = param.split(",");
+  if (parts.length !== PARAM_KEYS.length || parts.some((part) => part.trim() === "")) return null;
+  const numbers = parts.map(Number);
+  if (numbers.some((value) => !Number.isFinite(value))) return null;
+  return cleanMood(Object.fromEntries(PARAM_KEYS.map((key, index) => [key, numbers[index]])));
+};
+
 /** How fast the wave clock runs for this mood: 1 is the pace the scene always had. */
 export const moodRate = (mood: WaveMood) => scale(mood.speed, SPEED_RATE);
 

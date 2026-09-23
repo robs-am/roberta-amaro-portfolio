@@ -3,21 +3,35 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { HERO_ENTRANCE_MS, resetWaveMood, setWaveMood } from "@/components/shapes/shapesScene";
-import { WaveMoodError, fetchWaveMood } from "@/components/shapes/waveMoodClient";
+import { moodFromParam, moodToParam } from "@/components/shapes/waveMood";
+import { WaveMoodError, clearSavedMood, fetchWaveMood, readSavedMood, saveMood } from "@/components/shapes/waveMoodClient";
 
 // Same limit as the route (`MAX_PROMPT_LENGTH`), so the visitor is stopped here instead of by an error.
 const MAX_LENGTH = 140;
 // A pause after each answer, matching the route's own, so a quick second tap does not just come back "too soon".
 const COOLDOWN_MS = 4000;
 
+// Three different directions, so the first tap already shows a different side of it: calm and cool, a colour,
+// and warm. Few, so they stay a hint and not a menu.
+const SUGGESTIONS = ["moodSuggestion1", "moodSuggestion2", "moodSuggestion3"] as const;
+// A mood that comes back (from a link or from earlier in the session) starts a moment after the hero's entrance
+// is done, so the change is seen and not lost in it.
+const RESTORE_DELAY_MS = HERO_ENTRANCE_MS + 300;
+const COPIED_MS = 2000;
+
 type Status =
   | { kind: "idle" }
   | { kind: "thinking" }
   | { kind: "done"; label: string }
+  // A mood that arrived by a link: there is no label for it (see `moodToParam`).
+  | { kind: "shared" }
   | { kind: "error"; message: "moodBusy" | "moodError" };
 
 const buttonClass =
   "inline-flex h-9 cursor-pointer items-center justify-center rounded-full text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:hover:text-foreground";
+
+const actionClass =
+  "shrink-0 cursor-pointer text-accent underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:text-foreground";
 
 function WaveIcon() {
   return (
@@ -57,9 +71,13 @@ export function WaveMoodInput() {
   // Only once a mood has been set is there anything to go back from.
   const [changed, setChanged] = useState(false);
   const [shown, setShown] = useState(false);
+  // The current mood as it goes in a link (`moodToParam`); empty when the waves are as designed.
+  const [param, setParam] = useState("");
+  const [copied, setCopied] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const cooldown = useRef(0);
+  const copiedTimer = useRef(0);
 
   // Comes in once the hero's own entrance is done, so it does not compete with the name and the links.
   useEffect(() => {
@@ -68,7 +86,41 @@ export function WaveMoodInput() {
     return () => window.clearTimeout(id);
   }, []);
 
-  useEffect(() => () => window.clearTimeout(cooldown.current), []);
+  useEffect(
+    () => () => {
+      window.clearTimeout(cooldown.current);
+      window.clearTimeout(copiedTimer.current);
+    },
+    [],
+  );
+
+  // A mood comes back when the home opens: from a link (`?mood=`), which wins, or from earlier in this session
+  // (a reload). Either way it eases in from the design once the entrance is done. A link's mood is then kept in the
+  // session and taken off the address, so a reload or a "back to original" is not undone by the old link.
+  useEffect(() => {
+    const fromLink = moodFromParam(new URLSearchParams(window.location.search).get("mood"));
+    const saved = fromLink ? null : readSavedMood();
+    const mood = fromLink ?? saved?.mood;
+    if (!mood) return;
+    const animated = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+    const id = window.setTimeout(
+      () => {
+        setWaveMood(mood);
+        setParam(moodToParam(mood));
+        setChanged(true);
+        if (fromLink) {
+          saveMood(mood, "");
+          window.history.replaceState(null, "", window.location.pathname);
+          setStatus({ kind: "shared" });
+        } else {
+          // A mood that came from a link was saved without a label: it comes back as a shared one.
+          setStatus(saved?.label ? { kind: "done", label: saved.label } : { kind: "shared" });
+        }
+      },
+      animated ? RESTORE_DELAY_MS : 0,
+    );
+    return () => window.clearTimeout(id);
+  }, []);
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
@@ -76,15 +128,16 @@ export function WaveMoodInput() {
 
   const thinking = status.kind === "thinking";
 
-  const submit = async (event: FormEvent) => {
-    event.preventDefault();
-    const prompt = text.trim();
+  const send = async (phrase: string) => {
+    const prompt = phrase.trim();
     if (!prompt || thinking || cooling) return;
     setStatus({ kind: "thinking" });
     try {
       const answer = await fetchWaveMood(prompt);
       setWaveMood(answer);
       setChanged(true);
+      setParam(moodToParam(answer));
+      saveMood(answer, answer.label);
       setStatus({ kind: "done", label: answer.label });
     } catch (error) {
       setStatus({ kind: "error", message: error instanceof WaveMoodError && error.status === 429 ? "moodBusy" : "moodError" });
@@ -93,11 +146,37 @@ export function WaveMoodInput() {
     cooldown.current = window.setTimeout(() => setCooling(false), COOLDOWN_MS);
   };
 
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    void send(text);
+  };
+
+  // A suggestion is one tap: it fills the field (so the visitor sees what was asked) and sends.
+  const suggest = (phrase: string) => {
+    setText(phrase);
+    void send(phrase);
+  };
+
   const reset = () => {
     resetWaveMood();
+    clearSavedMood();
     setChanged(false);
+    setParam("");
     setText("");
     setStatus({ kind: "idle" });
+  };
+
+  // The link keeps the visitor's own page (and so their language) and adds the mood's six numbers.
+  const copyLink = async () => {
+    const url = `${window.location.origin}${window.location.pathname}?mood=${param}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      return;
+    }
+    setCopied(true);
+    window.clearTimeout(copiedTimer.current);
+    copiedTimer.current = window.setTimeout(() => setCopied(false), COPIED_MS);
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
@@ -107,7 +186,17 @@ export function WaveMoodInput() {
   };
 
   const message =
-    status.kind === "thinking" ? t("moodThinking") : status.kind === "done" ? status.label : status.kind === "error" ? t(status.message) : "";
+    status.kind === "thinking"
+      ? t("moodThinking")
+      : status.kind === "done"
+        ? status.label
+        : status.kind === "shared"
+          ? t("moodShared")
+          : status.kind === "error"
+            ? t(status.message)
+            : "";
+  // A mood is on the waves: it can be sent to someone, or undone.
+  const hasMood = changed && (status.kind === "done" || status.kind === "shared");
 
   return (
     <div
@@ -116,16 +205,40 @@ export function WaveMoodInput() {
       {/* Always in the page, so a screen reader announces what appears in it. */}
       <div role="status" className="flex max-w-[calc(100vw-3rem)] justify-end">
         {message && (
-          <p className="flex items-center gap-3 rounded-full border border-border bg-background/70 px-4 py-1.5 text-sm text-foreground backdrop-blur">
+          <p className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1 rounded-3xl border border-border bg-background/70 px-4 py-1.5 text-sm text-foreground backdrop-blur">
             <span className="min-w-0 truncate">{message}</span>
-            {changed && status.kind === "done" && (
-              <button type="button" onClick={reset} className="shrink-0 cursor-pointer font-semibold text-accent underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:text-foreground">
-                {t("moodReset")}
-              </button>
+            {hasMood && (
+              <>
+                <button type="button" onClick={copyLink} className={`${actionClass} font-semibold`}>
+                  {copied ? t("moodCopied") : t("moodShare")}
+                </button>
+                <button type="button" onClick={reset} className={`${actionClass} font-semibold`}>
+                  {t("moodReset")}
+                </button>
+              </>
             )}
           </p>
         )}
       </div>
+      {/* Where to start: shown while the field is open and empty, and gone as soon as there is something written. */}
+      {open && !text.trim() && (
+        <div role="group" aria-label={t("moodSuggestionsLabel")} className="flex max-w-[min(26rem,calc(100vw-3rem))] flex-wrap justify-end gap-2">
+          {SUGGESTIONS.map((key) => {
+            const phrase = t(key);
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => suggest(phrase)}
+                disabled={thinking || cooling}
+                className="cursor-pointer rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-default disabled:opacity-40 disabled:hover:border-border disabled:hover:text-muted"
+              >
+                {phrase}
+              </button>
+            );
+          })}
+        </div>
+      )}
       <form
         onSubmit={submit}
         onKeyDown={onKeyDown}
