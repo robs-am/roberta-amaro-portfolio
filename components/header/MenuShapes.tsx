@@ -85,5 +85,13 @@ export function MenuShapes() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed inset-0 size-full" />;
+  // Same slight out-of-focus look as the hero's canvas (see HeroShapes.tsx), so the wave reads the same
+  // way behind the big nav type as it does behind the hero's name, instead of switching to sharp focus.
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 size-full scale-[1.03] blur-[1.5px]"
+    />
+  );
 }

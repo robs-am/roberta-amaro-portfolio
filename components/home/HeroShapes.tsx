@@ -211,6 +211,15 @@ export function HeroShapes() {
       {/* A slight blur puts the waves out of focus, so the sharp text reads as being in front of them. The
           scale hides the edges, where the blur would otherwise fade into the page. */}
       <canvas ref={canvasRef} className="size-full scale-[1.03] blur-[1.5px]" />
+      {/* Dark mode only: the empty sky above the waves is flat `--background`, so where the wave's paper-cut
+          edge begins reads as a hard stain against it. A soft radial wash of the page's own glow, anchored
+          low and to the right, fades that area out gradually — no straight edge anywhere. Same values as the
+          menu's (see Menu.tsx), and in this same fixed-to-viewport layer (not the hero section, which is
+          shorter and translated by its entrance animation) so both line up and fade together with the canvas. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 hidden dark:block dark:bg-[radial-gradient(ellipse_135%_100%_at_80%_82%,color-mix(in_oklab,var(--glow-1)_50%,transparent)_0%,transparent_82%)]"
+      />
     </div>,
     document.body,
   );
