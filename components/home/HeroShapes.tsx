@@ -5,12 +5,14 @@ import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { MathUtils } from "three";
 import { LAYER_COUNT, PORTRAIT_ASPECT, createWaveScene } from "@/components/shapes/waveScene";
+import { installWaveMoodConsole } from "@/components/shapes/mockWaveMood";
 import { subscribeTheme } from "@/components/theme/theme";
 import {
   HERO_ENTRANCE_MS,
   heroEntrance,
   pointerCurrent,
   pointerTarget,
+  stepWaves,
   waveHorizon,
   waveSafe,
 } from "@/components/shapes/shapesScene";
@@ -77,9 +79,11 @@ export function HeroShapes() {
       for (const item of faded) item.value = 1;
     }
 
-    // The waves move on the page's own clock (performance.now), which the menu's scene reads too.
-    const draw = (seconds: number) => {
-      waves.draw(motionQuery.matches ? seconds : 0, current.x, current.y, faded.map((item) => item.value));
+    // The waves move on a clock and a mood shared with the menu's scene (see `stepWaves`), fed by the page's own
+    // clock (performance.now), so the menu picks them up exactly where the hero left them.
+    const draw = (now: number) => {
+      const { seconds, layers } = stepWaves(now);
+      waves.draw(motionQuery.matches ? seconds : 0, current.x, current.y, faded.map((item) => item.value), layers);
     };
 
     const tick = (time: number) => {
@@ -169,6 +173,7 @@ export function HeroShapes() {
       pointerTarget.y = target.y;
     };
 
+    installWaveMoodConsole();
     waves.applyColors();
     resize();
     fade();

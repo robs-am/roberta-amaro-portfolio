@@ -2,7 +2,7 @@ import { Color, DoubleSide, Mesh, OrthographicCamera, Scene, ShaderMaterial, Web
 import { getTheme } from "@/components/theme/theme";
 import { fillFragment, fillVertex, shadowFragment, shadowVertex } from "@/components/shapes/waveShaders";
 import { OVERSCAN, SEGMENTS, createStrip } from "@/components/shapes/waveGeometry";
-import { CALM_ASPECT, DARK_OPACITIES, LAYERS, LAYER_COUNT, LIGHT_OPACITIES, MIN_FREQ_SCALE, PORTRAIT_ASPECT, edgeAt } from "@/components/shapes/waveLayers";
+import { CALM_ASPECT, DARK_OPACITIES, LAYERS, LAYER_COUNT, LIGHT_OPACITIES, MIN_FREQ_SCALE, PORTRAIT_ASPECT, edgeAt, type LayerSpec } from "@/components/shapes/waveLayers";
 
 export { LAYER_COUNT, PORTRAIT_ASPECT };
 
@@ -25,7 +25,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   const scene = new Scene();
   const camera = new OrthographicCamera(-1, 1, 1, -1, -1, 1);
 
-  const layers = LAYERS.map((spec, index) => {
+  const layers = LAYERS.map((_, index) => {
     const fill = createStrip("edge");
     const fillMaterial = new ShaderMaterial({
       uniforms: {
@@ -73,7 +73,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     shadowMesh.frustumCulled = false;
 
     scene.add(shadowMesh, fillMesh);
-    return { spec, fill, fillMesh, fillMaterial, shadow, shadowMesh, shadowMaterial };
+    return { fill, fillMesh, fillMaterial, shadow, shadowMesh, shadowMaterial };
   });
 
   let aspect = 1;
@@ -149,10 +149,18 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
 
   /**
    * Draws one frame. `seconds` moves the waves (pass 0 for a still frame), `pointerX/Y` is the eased pointer
-   * offset (-1..1), and `fades` is how visible each layer is (0..1), for the entrance.
+   * offset (-1..1), `fades` is how visible each layer is (0..1), for the entrance, and `specs` is the shape of
+   * each layer for the current mood (see `moodToLayers`); left out, the layers as hand-tuned.
    */
-  const draw = (seconds: number, pointerX: number, pointerY: number, fades: readonly number[]) => {
-    layers.forEach(({ spec, fill, fillMesh, fillMaterial, shadow, shadowMesh, shadowMaterial }, index) => {
+  const draw = (
+    seconds: number,
+    pointerX: number,
+    pointerY: number,
+    fades: readonly number[],
+    specs: readonly LayerSpec[] = LAYERS,
+  ) => {
+    layers.forEach(({ fill, fillMesh, fillMaterial, shadow, shadowMesh, shadowMaterial }, index) => {
+      const spec = specs[index] ?? LAYERS[index];
       for (let column = 0; column < fill.columns; column++) {
         const u = -OVERSCAN + (2 * OVERSCAN * column) / SEGMENTS;
         const edge = edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale);

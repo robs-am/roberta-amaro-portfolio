@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { LAYER_COUNT, createWaveScene } from "@/components/shapes/waveScene";
 import { subscribeTheme } from "@/components/theme/theme";
-import { pointerCurrent, pointerTarget, waveHorizon, waveSafe } from "@/components/shapes/shapesScene";
+import { pointerCurrent, pointerTarget, stepWaves, waveHorizon, waveSafe } from "@/components/shapes/shapesScene";
 
 const POINTER_EASING = 0.05;
 const FULL = Array.from({ length: LAYER_COUNT }, () => 1);
@@ -34,8 +34,9 @@ export function MenuShapes({ active }: Readonly<{ active: boolean }>) {
     const current = { ...pointerCurrent };
     let frame = 0;
 
-    const draw = (seconds: number) => {
-      waves.draw(motionQuery.matches ? seconds : 0, current.x, current.y, FULL);
+    const draw = (now: number) => {
+      const { seconds, layers } = stepWaves(now);
+      waves.draw(motionQuery.matches ? seconds : 0, current.x, current.y, FULL, layers);
     };
 
     const tick = (time: number) => {
