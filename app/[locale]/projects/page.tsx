@@ -50,6 +50,7 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
         src: image.src,
         width: image.width,
         height: image.height,
+        focus: image.focus,
         alt: localize(image.alt, locale),
       })),
     };
@@ -67,6 +68,8 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
           tech: t("tech"),
           whatIDid: t("whatIDid"),
           close: t("close"),
+          previous: t("previous"),
+          next: t("next"),
         }}
       />
     </main>

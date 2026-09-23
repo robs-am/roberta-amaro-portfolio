@@ -53,7 +53,9 @@
     "demo": "Ver site",
     "newTab": "(abre em nova aba)",
     "whatIDid": "Minha atuação",
-    "close": "Fechar"
+    "close": "Fechar",
+    "previous": "Projeto anterior",
+    "next": "Próximo projeto"
   },
   "About": {
     "title": "Sobre",

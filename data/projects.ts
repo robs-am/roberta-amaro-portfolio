@@ -2,60 +2,6 @@ import type { Project } from "./types";
 
 export const projects = [
   {
-    id: "simulador-mcmv",
-    featured: true,
-    category: {
-      pt: "Simulador",
-      en: "Simulator",
-    },
-    title: {
-      pt: "Simulador Minha Casa Minha Vida",
-      en: "Minha Casa Minha Vida Simulator",
-    },
-    description: {
-      pt: "Simulador de financiamento do programa usado no ZAP Imóveis, Viva Real e OLX.",
-      en: "Program financing simulator used on ZAP Imóveis, Viva Real and OLX.",
-    },
-    contribution: {
-      pt: "Facelift da página, melhorando a experiência do usuário na simulação.",
-      en: "Facelift of the page, improving the user experience during the simulation.",
-    },
-    tech: ["Next.js", "TypeScript", "REST", "Strapi"],
-    demoUrl: "https://www.zapimoveis.com.br/simulador-minha-casa-minha-vida/",
-    images: [
-      {
-        src: "/projects/zap_mcmv.png",
-        href: "https://www.zapimoveis.com.br/simulador-minha-casa-minha-vida/",
-        width: 1918,
-        height: 793,
-        alt: {
-          pt: "Simulador Minha Casa Minha Vida no ZAP Imóveis, com título, botão \"Começar a simulação\" e foto de uma sala de estar com varanda ao fundo",
-          en: "Minha Casa Minha Vida simulator on ZAP Imóveis, with a title, a \"Start simulation\" button and a photo of a living room with a balcony behind it",
-        },
-      },
-      {
-        src: "/projects/vivareal_mcmv.png",
-        href: "https://www.vivareal.com.br/simulador-minha-casa-minha-vida",
-        width: 1906,
-        height: 814,
-        alt: {
-          pt: "Simulador Minha Casa Minha Vida no Viva Real, com título, botão \"Começar a simulação\" e foto de uma sala com sofá azul e quadros na parede",
-          en: "Minha Casa Minha Vida simulator on Viva Real, with a title, a \"Start simulation\" button and a photo of a living room with a blue sofa and framed pictures on the wall",
-        },
-      },
-      {
-        src: "/projects/olx_mcmv.png",
-        href: "https://www.olx.com.br/simulador-minha-casa-minha-vida",
-        width: 1914,
-        height: 832,
-        alt: {
-          pt: "Simulador Minha Casa Minha Vida na OLX, com título, botão \"Começar a simulação\" e foto de uma sala com sofá de canto, televisão e estante",
-          en: "Minha Casa Minha Vida simulator on OLX, with a title, a \"Start simulation\" button and a photo of a living room with a corner sofa, a TV and a bookshelf",
-        },
-      },
-    ],
-  },
-  {
     id: "tommy-hilfiger",
     featured: true,
     category: {
@@ -76,6 +22,7 @@ export const projects = [
       src: "/projects/tommy-hilfiger.webp",
       width: 1280,
       height: 720,
+      focus: "50% 66%",
       alt: {
         pt: "Página inicial do e-commerce da Tommy Hilfiger, com faixa de frete grátis, menu Feminino, Masculino e Kids e uma foto de campanha com modelos em um terraço com prédios ao fundo",
         en: "Tommy Hilfiger e-commerce home page, with a free shipping banner, Women, Men and Kids navigation and a campaign photo of models on a rooftop with city buildings behind them",
@@ -103,6 +50,7 @@ export const projects = [
       src: "/projects/liritty_thumb.webp",
       width: 1437,
       height: 815,
+      focus: "50% 44%",
       alt: {
         pt: "Página inicial do e-commerce da Liritty, com banner de coleção de festival, menu com Shop, Estampas, Básicos e Jeans e Sarja, e uma foto de campanha com modelo sorrindo em um festival ao pôr do sol",
         en: "Liritty e-commerce home page, with a festival collection banner, Shop, Prints, Basics and Denim navigation, and a campaign photo of a model smiling at a festival at sunset",
@@ -130,6 +78,7 @@ export const projects = [
       src: "/projects/candide.webp",
       width: 1440,
       height: 900,
+      focus: "50% 55%",
       alt: {
         pt: "Página inicial do e-commerce da Candide, com menu de categorias de brinquedos e banner da linha Bluey, com as pelúcias da família Heeler",
         en: "Candide e-commerce home page, with a toy category menu and a banner for the Bluey line, featuring plush toys of the Heeler family",
@@ -157,6 +106,7 @@ export const projects = [
       src: "/projects/creamy-thumb.webp",
       width: 1440,
       height: 807,
+      focus: "50% 33%",
       alt: {
         pt: "Página inicial do e-commerce da Creamy Skincare, com banner de 15% de desconto no Pix e foto de uma mulher se olhando no espelho segurando produtos da linha",
         en: "Creamy Skincare e-commerce home page, with a 15%-off banner and a photo of a woman looking in a mirror holding products from the line",
@@ -183,6 +133,7 @@ export const projects = [
       src: "/projects/skelt-thumb.webp",
       width: 1433,
       height: 552,
+      focus: "50% 50%",
       alt: {
         pt: "Página inicial do e-commerce da Skelt, com banner em degradê coral do perfume capilar Amalfi Sunset, frasco entre flores e uma mecha de cabelo ondulado ao fundo",
         en: "Skelt e-commerce home page, with a coral-gradient banner for the Amalfi Sunset hair perfume, the bottle framed by flowers with a strand of wavy hair behind it",

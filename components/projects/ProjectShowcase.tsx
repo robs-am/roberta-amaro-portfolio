@@ -9,6 +9,7 @@ export type ShowcaseImage = {
   width: number;
   height: number;
   alt: string;
+  focus?: string;
 };
 
 export type ShowcaseItem = {
@@ -28,6 +29,8 @@ export type ShowcaseLabels = {
   tech: string;
   whatIDid: string;
   close: string;
+  previous: string;
+  next: string;
 };
 
 const focusRing =
@@ -40,12 +43,21 @@ export function ProjectShowcase({
   labels,
 }: Readonly<{ title: string; intro?: string; items: ShowcaseItem[]; labels: ShowcaseLabels }>) {
   const [openId, setOpenId] = useState<string | null>(null);
-  const openItem = items.find((item) => item.id === openId);
+  const openIndex = items.findIndex((item) => item.id === openId);
+  const openItem = items[openIndex];
+  const isOpen = openId !== null;
 
   const rootRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLElement | null>(null);
   const closing = useRef(false);
+  // Set from the moment a previous/next press starts fading the content out until the new
+  // project has finished fading in. `swapDirection` tells that fade-in which way to come from.
+  const swapping = useRef(false);
+  const swapDirection = useRef<1 | -1>(1);
+  const swapAnimations = useRef<JSAnimation[]>([]);
 
   // Same entrance as the experience list: each row enters once, when it scrolls into view. Its
   // title is wiped in from the left, then its category fades up. CSS hides them only until this
@@ -99,17 +111,17 @@ export function ProjectShowcase({
     };
   }, []);
 
-  // The lightbox's own shape grows out of the clicked row and shrinks back into it: its clip-path
-  // is the row's rectangle and corner radii, expressed in the dialog's coordinates, animated to
-  // the dialog's full box and its own corners (top-right 4rem, bottom-left 0.75rem).
-  const DIALOG_CLIP = "inset(0px 0px 0px 0px round 0px 64px 0px 12px)";
+  // The lightbox's card grows out of the clicked row and shrinks back into it: its clip-path is
+  // the row's rectangle and corner radii, expressed in the card's coordinates, animated to the
+  // card's full box and its own corners (top-right 4rem, bottom-left 0.75rem).
+  const PANEL_CLIP = "inset(0px 0px 0px 0px round 0px 64px 0px 12px)";
 
-  function rowClip(dialog: HTMLDialogElement): string {
+  function rowClip(panel: HTMLElement): string {
     // The row's visible shape is its image (the text sits straight on the page), so that's what
-    // the dialog grows out of.
+    // the card grows out of.
     const row = trigger.current?.querySelector<HTMLElement>("[data-showcase-image]");
-    if (!row) return DIALOG_CLIP;
-    const box = dialog.getBoundingClientRect();
+    if (!row) return PANEL_CLIP;
+    const box = panel.getBoundingClientRect();
     const rect = row.getBoundingClientRect();
     const style = getComputedStyle(row);
     const radii = [
@@ -127,9 +139,11 @@ export function ProjectShowcase({
 
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog || !openId) return;
+    const panel = panelRef.current;
+    if (!dialog || !panel || !isOpen) return;
 
     closing.current = false;
+    swapping.current = false;
     delete dialog.dataset.closing;
     dialog.showModal();
     // Lock the page's scroll without its scrollbar vanishing (which would shift everything, rows
@@ -137,17 +151,17 @@ export function ProjectShowcase({
     document.documentElement.style.overflow = "hidden";
     document.documentElement.style.scrollbarGutter = "stable";
 
-    // The clip is a window onto the dialog's content, not a copy of the row, so the dialog also
+    // The clip is a window onto the card's content, not a copy of the row, so the dialog also
     // fades in over the first moments to hide the switch from the row's own pixels.
     const animations: JSAnimation[] = [];
     if (window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
       animations.push(
-        animate(dialog, {
-          clipPath: [rowClip(dialog), DIALOG_CLIP],
+        animate(panel, {
+          clipPath: [rowClip(panel), PANEL_CLIP],
           duration: 900,
           ease: "outExpo",
           onComplete: () => {
-            dialog.style.clipPath = "";
+            panel.style.clipPath = "";
           },
         }),
         animate(dialog, { opacity: [0, 1], duration: 250, ease: "outQuad" }),
@@ -156,26 +170,82 @@ export function ProjectShowcase({
 
     return () => {
       for (const animation of animations) animation.cancel();
-      dialog.style.clipPath = "";
+      for (const animation of swapAnimations.current) animation.cancel();
+      swapAnimations.current = [];
+      panel.style.clipPath = "";
       dialog.style.opacity = "";
       document.documentElement.style.overflow = "";
       document.documentElement.style.scrollbarGutter = "";
     };
-  }, [openId]);
+  }, [isOpen]);
 
   function open(id: string, element: HTMLElement) {
     trigger.current = element;
     setOpenId(id);
   }
 
+  // Previous/next swap the project inside the open dialog (it doesn't reopen), wrapping around at
+  // the ends. The close animation then shrinks back into the row of the project being shown.
+  // The content slides a little and fades out the way it's leaving, the new project comes in from
+  // the other side (see the effect below); presses during the swap are ignored.
+  function step(direction: 1 | -1) {
+    const content = contentRef.current;
+    if (closing.current || swapping.current || !content || items.length < 2) return;
+    const next = items[(openIndex + direction + items.length) % items.length];
+    trigger.current =
+      rootRef.current?.querySelector<HTMLElement>(`[data-showcase-open="${next.id}"]`) ?? null;
+
+    if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+      setOpenId(next.id);
+      return;
+    }
+
+    swapping.current = true;
+    swapDirection.current = direction;
+    swapAnimations.current = [
+      animate(content, {
+        opacity: [1, 0],
+        translateX: [0, -direction * 32],
+        duration: 220,
+        ease: "inQuad",
+        onComplete: () => {
+          if (closing.current) return;
+          setOpenId(next.id);
+        },
+      }),
+    ];
+  }
+
+  // Fade the newly swapped-in project in from the side the press points to. The content is still
+  // at opacity 0 from the fade-out until this runs, so the swap itself is never visible.
+  useEffect(() => {
+    const content = contentRef.current;
+    if (!content || !swapping.current) return;
+
+    swapAnimations.current = [
+      animate(content, {
+        opacity: [0, 1],
+        translateX: [swapDirection.current * 32, 0],
+        duration: 600,
+        ease: "outExpo",
+        onComplete: () => {
+          content.style.opacity = "";
+          content.style.transform = "";
+          swapping.current = false;
+        },
+      }),
+    ];
+  }, [openId]);
+
   function requestClose() {
     const dialog = dialogRef.current;
-    if (!dialog || closing.current) return;
+    const panel = panelRef.current;
+    if (!dialog || !panel || closing.current) return;
     closing.current = true;
 
     const finish = () => {
       dialog.close();
-      dialog.style.clipPath = "";
+      panel.style.clipPath = "";
       dialog.style.opacity = "";
       setOpenId(null);
     };
@@ -187,8 +257,8 @@ export function ProjectShowcase({
     dialog.dataset.closing = "";
     // Shrink into the row, then fade out over the last stretch: the row underneath takes over
     // from the dialog's content without a jump.
-    animate(dialog, {
-      clipPath: [DIALOG_CLIP, rowClip(dialog)],
+    animate(panel, {
+      clipPath: [PANEL_CLIP, rowClip(panel)],
       duration: 700,
       ease: "inOutExpo",
     });
@@ -226,6 +296,7 @@ export function ProjectShowcase({
           <li key={item.id} data-showcase-item className="border-b border-border lg:py-4">
             <button
               type="button"
+              data-showcase-open={item.id}
               aria-haspopup="dialog"
               onClick={(event) => open(item.id, event.currentTarget)}
               className={`group grid w-full cursor-pointer text-left lg:h-28 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] ${focusRing}`}
@@ -270,60 +341,118 @@ export function ProjectShowcase({
         onClick={(event) => {
           if (event.target === event.currentTarget) requestClose();
         }}
-        className="showcase-dialog m-auto max-h-[calc(100dvh-2rem)] w-[min(72rem,calc(100vw-2rem))] max-w-none overflow-y-auto rounded-tr-[4rem] rounded-bl-xl border border-border bg-elevated p-0 text-foreground"
+        onKeyDown={(event) => {
+          if (event.key === "ArrowLeft") step(-1);
+          else if (event.key === "ArrowRight") step(1);
+        }}
+        className="showcase-dialog fixed inset-0 m-0 h-full max-h-none w-full max-w-none overflow-hidden border-0 bg-transparent p-4 text-foreground open:grid open:place-items-center"
       >
-        {openItem && (
-          <div className="grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-            {/* Every image gets the same frame so the lightbox has one height for all projects and
-                never needs to scroll on desktop; the screenshot is cropped to fit it. */}
-            <div className="relative aspect-[16/10] bg-elevated">
-              <ProjectImages images={openItem.images} sizes="(min-width: 1024px) 44rem, 100vw" />
-            </div>
-            <div className="flex flex-col gap-5 p-6 sm:p-8">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="font-display text-3xl leading-tight font-medium sm:text-4xl">
-                    {openItem.title}
-                  </h2>
-                  <p className="mt-1 text-sm text-muted">{openItem.category}</p>
+        {/* The dialog is a transparent full-screen layer so the arrows can sit outside the card
+            (anything outside a modal dialog's box can't be clicked). The card is the visible shape
+            the open/close animation clips. */}
+        <div className="relative flex w-full max-w-6xl flex-col gap-4 min-[56rem]:max-w-324 min-[56rem]:px-18">
+          <div
+            ref={panelRef}
+            className="max-h-[calc(100dvh-2rem-3.75rem)] overflow-x-hidden overflow-y-auto rounded-tr-[4rem] rounded-bl-xl border border-border bg-elevated min-[56rem]:max-h-[calc(100dvh-2rem)]"
+          >
+            {openItem && (
+              <div ref={contentRef} className="grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+                {/* Every image gets the same frame so the lightbox has one height for all projects and
+                    never needs to scroll on desktop; the screenshot is cropped to fit it. */}
+                <div className="relative aspect-[16/10] bg-elevated">
+                  <ProjectImages
+                    images={openItem.images}
+                    sizes="(min-width: 1024px) 44rem, 100vw"
+                  />
                 </div>
-                <button
-                  type="button"
-                  onClick={requestClose}
-                  className={`shrink-0 cursor-pointer rounded-sm text-base font-medium text-accent underline-offset-4 hover:underline ${focusRing}`}
-                >
-                  {labels.close}
-                </button>
+                <p aria-live="polite" className="sr-only">
+                  {openItem.title}
+                </p>
+                <div className="flex flex-col gap-5 p-6 sm:p-8">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h2 className="font-display text-3xl leading-tight font-medium sm:text-4xl">
+                        {openItem.title}
+                      </h2>
+                      <p className="mt-1 text-sm text-muted">{openItem.category}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={requestClose}
+                      className={`shrink-0 cursor-pointer rounded-sm text-base font-medium text-accent underline-offset-4 hover:underline ${focusRing}`}
+                    >
+                      {labels.close}
+                    </button>
+                  </div>
+
+                  <p className="text-base leading-7">{openItem.description}</p>
+                  {openItem.contribution && (
+                    <p className="text-base leading-7 text-muted">
+                      <span className="sr-only">{labels.whatIDid}: </span>
+                      {openItem.contribution}
+                    </p>
+                  )}
+                  {openItem.tech.length > 0 && (
+                    <p
+                      aria-label={labels.tech}
+                      className="text-base leading-7 font-medium text-accent"
+                    >
+                      {openItem.tech.join(", ")}
+                    </p>
+                  )}
+
+                  <a
+                    href={openItem.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`group mt-auto flex w-fit items-center gap-3 rounded-sm text-base font-medium ${focusRing}`}
+                  >
+                    {labels.visit}
+                    <span className="h-px w-6 bg-current transition-[width] duration-500 ease-expressive group-hover:w-12 motion-reduce:transition-none" />
+                    <span className="sr-only">{labels.newTab}</span>
+                  </a>
+                </div>
               </div>
-
-              <p className="text-base leading-7">{openItem.description}</p>
-              {openItem.contribution && (
-                <p className="text-base leading-7 text-muted">
-                  <span className="sr-only">{labels.whatIDid}: </span>
-                  {openItem.contribution}
-                </p>
-              )}
-              {openItem.tech.length > 0 && (
-                <p aria-label={labels.tech} className="text-base leading-7 font-medium text-accent">
-                  {openItem.tech.join(", ")}
-                </p>
-              )}
-
-              <a
-                href={openItem.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`group mt-auto flex w-fit items-center gap-3 rounded-sm text-base font-medium ${focusRing}`}
-              >
-                {labels.visit}
-                <span className="h-px w-6 bg-current transition-[width] duration-500 ease-expressive group-hover:w-12 motion-reduce:transition-none" />
-                <span className="sr-only">{labels.newTab}</span>
-              </a>
-            </div>
+            )}
           </div>
-        )}
+
+          {items.length > 1 && (
+            <div className="flex justify-between min-[56rem]:pointer-events-none min-[56rem]:absolute min-[56rem]:inset-0 min-[56rem]:items-center">
+              <ArrowButton direction="previous" label={labels.previous} onClick={() => step(-1)} />
+              <ArrowButton direction="next" label={labels.next} onClick={() => step(1)} />
+            </div>
+          )}
+        </div>
       </dialog>
     </div>
+  );
+}
+
+function ArrowButton({
+  direction,
+  label,
+  onClick,
+}: Readonly<{ direction: "previous" | "next"; label: string; onClick: () => void }>) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      className={`pointer-events-auto flex size-11 cursor-pointer items-center justify-center rounded-full border border-border bg-elevated text-foreground transition-colors hover:text-accent ${focusRing}`}
+    >
+      <svg
+        viewBox="0 0 16 16"
+        className={`size-4 ${direction === "previous" ? "" : "-scale-x-100"}`}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M10 3 5 8l5 5" />
+      </svg>
+    </button>
   );
 }
 
@@ -344,6 +473,7 @@ function ProjectImages({
         height={image.height}
         alt={image.alt}
         sizes={sizes}
+        style={{ objectPosition: image.focus }}
         className="h-full w-full object-cover object-center"
       />
     );

@@ -58,6 +58,8 @@ export type ProjectImage = {
   alt: Localized;
   /** Makes the image (e.g. a gallery slice) a link to this URL. */
   href?: string;
+  /** CSS `object-position` for the crop when the frame is a different shape than the screenshot; centered when omitted. */
+  focus?: string;
 };
 
 export type Project = {

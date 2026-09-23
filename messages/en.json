@@ -53,7 +53,9 @@
     "demo": "Visit site",
     "newTab": "(opens in a new tab)",
     "whatIDid": "My contribution",
-    "close": "Close"
+    "close": "Close",
+    "previous": "Previous project",
+    "next": "Next project"
   },
   "About": {
     "title": "About",
