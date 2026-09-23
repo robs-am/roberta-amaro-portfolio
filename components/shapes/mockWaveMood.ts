@@ -1,4 +1,5 @@
 import { setWaveMood } from "@/components/shapes/shapesScene";
+import { fetchWaveMood } from "@/components/shapes/waveMoodClient";
 import { NEUTRAL_MOOD, type WaveMood, type WaveMoodAnswer } from "@/components/shapes/waveMood";
 
 // Stands in for the AI when there is no API key to spend. It answers with the same shape as the route
@@ -24,17 +25,6 @@ export const mockWaveMood = (prompt: string): Promise<WaveMoodAnswer> => {
   const hit = PRESETS.find(({ words }) => words.some((word) => text.includes(word)));
   const answer: WaveMoodAnswer = { ...NEUTRAL_MOOD, label: "clima neutro", ...hit?.answer };
   return new Promise((resolve) => setTimeout(() => resolve(answer), MOCK_DELAY_MS));
-};
-
-/** Asks the route what mood a phrase is. Throws if it does not answer, so the caller can decide what to show. */
-export const fetchWaveMood = async (prompt: string): Promise<WaveMoodAnswer> => {
-  const response = await fetch("/api/wave-mood", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt }),
-  });
-  if (!response.ok) throw new Error(`wave-mood ${response.status}`);
-  return response.json();
 };
 
 /**

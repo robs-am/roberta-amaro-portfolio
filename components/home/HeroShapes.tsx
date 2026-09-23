@@ -13,6 +13,7 @@ import {
   pointerCurrent,
   pointerTarget,
   stepWaves,
+  subscribeWaveMood,
   waveHorizon,
   waveSafe,
 } from "@/components/shapes/shapesScene";
@@ -189,6 +190,10 @@ export function HeroShapes() {
       waves.applyColors();
       if (!frame) draw(0);
     });
+    // Without a loop (reduced motion) a new mood needs a new still frame.
+    const unsubscribeMood = subscribeWaveMood(() => {
+      if (!frame) draw(0);
+    });
 
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("scroll", fade, { passive: true });
@@ -200,6 +205,7 @@ export function HeroShapes() {
       for (const item of fades) item.cancel();
       resizeObserver.disconnect();
       unsubscribeTheme();
+      unsubscribeMood();
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("scroll", fade);
       document.removeEventListener("visibilitychange", sync);

@@ -37,7 +37,16 @@
     "github": "GitHub",
     "newTab": "(abre em nova aba)",
     "experienceCta": "Ver experiências",
-    "projectsCta": "Ver projetos"
+    "projectsCta": "Ver projetos",
+    "moodOpen": "Mudar o clima",
+    "moodClose": "Fechar",
+    "moodInputLabel": "Descreva um clima ou uma cor para as ondas",
+    "moodPlaceholder": "descreva um clima…",
+    "moodSend": "Enviar",
+    "moodThinking": "Interpretando…",
+    "moodReset": "Voltar ao original",
+    "moodBusy": "Um instante, tente de novo em seguida.",
+    "moodError": "Não consegui interpretar agora."
   },
   "Experience": {
     "title": "Experiências",

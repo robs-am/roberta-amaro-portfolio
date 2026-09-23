@@ -27,9 +27,35 @@ const mood = { current: { ...NEUTRAL_MOOD }, target: { ...NEUTRAL_MOOD } };
 // colours get these three.
 const clock = { seconds: 0, last: 0, layers: moodToLayers(NEUTRAL_MOOD), tone: { warmth: 0, hue: 0, tint: 0 } };
 
+// What the scene draws follows the current mood: its shape for the layers, its three colour dials for the paint.
+const publishMood = () => {
+  clock.layers = moodToLayers(mood.current);
+  const { warmth, hue, tint } = mood.current;
+  clock.tone = { warmth, hue, tint };
+};
+
+// The scene is drawn by a loop, which picks a new mood up by itself; with reduced motion there is no loop (a
+// still frame), so the scene has to be told to draw again. See `HeroShapes`.
+const listeners = new Set<() => void>();
+export const subscribeWaveMood = (listener: () => void) => {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+};
+
 export const setWaveMood = (next: Partial<WaveMood>) => {
   mood.target = cleanMood(next, mood.target);
+  // With reduced motion nothing eases: the still frame goes straight to the new mood.
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    mood.current = { ...mood.target };
+    publishMood();
+  }
+  for (const listener of listeners) listener();
 };
+
+/** Back to the scene as it was designed, easing there like any other mood. */
+export const resetWaveMood = () => setWaveMood(NEUTRAL_MOOD);
 
 /**
  * Moves the mood and the clock up to `now` (seconds, the page's own clock) and returns what to draw. The hero and
@@ -40,11 +66,7 @@ export const stepWaves = (now: number) => {
     const dt = Math.min(now - clock.last, MAX_STEP);
     clock.last = now;
     clock.seconds += dt * moodRate(mood.current);
-    if (easeMood(mood.current, mood.target, dt)) {
-      clock.layers = moodToLayers(mood.current);
-      const { warmth, hue, tint } = mood.current;
-      clock.tone = { warmth, hue, tint };
-    }
+    if (easeMood(mood.current, mood.target, dt)) publishMood();
   }
   return clock;
 };

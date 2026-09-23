@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
 import { EmailIcon, GithubIcon, LinkedinIcon } from "@/components/home/ContactIcons";
+import { WaveMoodInput } from "@/components/home/WaveMoodInput";
 import {
   textLinkArrowHeroClass,
   textLinkHeroClass,
@@ -83,6 +84,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 min-h-[calc(100dvh-4.25rem)] flex-col justify-center overflow-x-hidden sm:pb-20 max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
     >
       <HeroShapes />
+      <WaveMoodInput />
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8">
         <div className="hero-lift max-w-2xl">
           <h1 className="text-foreground text-[clamp(3rem,17.5vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-6xl lg:text-[min(6rem,15vh)] xl:text-[min(6.5rem,14vh)]">
