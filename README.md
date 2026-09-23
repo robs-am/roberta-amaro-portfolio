@@ -13,6 +13,8 @@ pnpm build      # build de produção (também confere tipos)
 pnpm lint
 ```
 
+Para a feature de IA (campo "Mudar o clima" no hero), crie `.env.local` com `ANTHROPIC_API_KEY=...`; sem a chave a rota responde 503. Detalhes e custo em [`docs/ai-wave-mood.md`](docs/ai-wave-mood.md).
+
 Em produção, defina `NEXT_PUBLIC_SITE_URL` (URL canônica, sitemap e pré-visualização ao compartilhar). Sem ela, o site é tratado como não publicado (veja `app/robots.ts`).
 
 ## Páginas
@@ -52,4 +54,5 @@ messages/       textos da interface (pt.json e en.json)
 ## Documentação
 
 - [`docs/design-system.md`](docs/design-system.md): tokens, tipografia, movimento, tema e padrões de componentes.
+- [`docs/ai-wave-mood.md`](docs/ai-wave-mood.md): a feature de IA que muda as ondas do hero a partir de uma frase da visitante (como funciona, custo, configuração e o que ajustar).
 - `openspec/changes/portfolio-mvp/`: proposta, design, specs e tarefas do MVP.
