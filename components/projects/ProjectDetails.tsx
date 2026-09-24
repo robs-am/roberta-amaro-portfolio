@@ -48,9 +48,9 @@ export function ProjectDetails({
           </button>
         </div>
 
-        <p className="text-base leading-7">{item.description}</p>
+        <p className="text-base leading-7 lg:text-xl lg:leading-9">{item.description}</p>
         {item.contribution && (
-          <p className="text-base leading-7 text-muted">
+          <p className="text-base leading-7 text-muted lg:text-xl lg:leading-9">
             <span className="sr-only">{labels.whatIDid}: </span>
             {item.contribution}
           </p>

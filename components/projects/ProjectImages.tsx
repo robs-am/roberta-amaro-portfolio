@@ -5,7 +5,8 @@ import type { ShowcaseImage } from "./types";
 export function ProjectImages({
   images,
   sizes,
-}: Readonly<{ images: ShowcaseImage[]; sizes: string }>) {
+  priority = false,
+}: Readonly<{ images: ShowcaseImage[]; sizes: string; priority?: boolean }>) {
   if (images.length === 0)
     return <span aria-hidden="true" className="project-panel block h-full w-full" />;
 
@@ -18,6 +19,7 @@ export function ProjectImages({
         height={image.height}
         alt={image.alt}
         sizes={sizes}
+        priority={priority}
         style={{ objectPosition: image.focus }}
         className="h-full w-full object-cover object-center"
       />
@@ -26,7 +28,7 @@ export function ProjectImages({
 
   return (
     <span className="flex h-full w-full">
-      {images.map((image) => (
+      {images.map((image, index) => (
         <span key={image.src} className="project-slice block min-w-0 flex-1 overflow-hidden">
           <Image
             src={image.src}
@@ -34,6 +36,7 @@ export function ProjectImages({
             height={image.height}
             alt={image.alt}
             sizes={sizes}
+            priority={priority && index === 0}
             className="h-full w-full object-cover object-[30%_50%]"
           />
         </span>

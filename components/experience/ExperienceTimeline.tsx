@@ -50,7 +50,7 @@ export async function ExperienceTimeline({
           <div data-experience-body>
             <h2 className="text-lg font-semibold">{localize(item.role, locale)}</h2>
             <p className="text-sm font-medium text-accent">{item.company}</p>
-            <p className="mt-3 leading-7">{localize(item.description, locale)}</p>
+            <p className="mt-3 leading-7 lg:text-xl lg:leading-9">{localize(item.description, locale)}</p>
             {awards.some((award) => award.experienceId === item.id) && (
               <div className="mt-5">
                 <h3 className="text-sm font-medium tracking-wide text-muted uppercase">

@@ -16,10 +16,12 @@ export function ProjectRow({
   item,
   labels,
   onOpen,
+  priority = false,
 }: Readonly<{
   item: ShowcaseItem;
   labels: Pick<ShowcaseLabels, "visit" | "newTab">;
   onOpen: (id: string, trigger: HTMLElement) => void;
+  priority?: boolean;
 }>) {
   return (
     <li data-showcase-item className="group/row border-b border-border py-6 last:border-b-0 lg:py-4">
@@ -31,7 +33,11 @@ export function ProjectRow({
           className="relative mb-6 block aspect-video overflow-hidden rounded-xl bg-elevated lg:mb-0 lg:aspect-auto lg:rounded-lg lg:rounded-tr-[3rem]"
         >
           <span className="absolute inset-0 block transition-transform duration-700 ease-soft group-hover/row:scale-105 motion-reduce:transition-none">
-            <ProjectImages images={item.images} sizes="(min-width: 1024px) 60vw, 100vw" />
+            <ProjectImages
+              images={item.images}
+              sizes="(min-width: 1024px) 60vw, 100vw"
+              priority={priority}
+            />
           </span>
           {/* Evens out the very different screenshots on the page; lifts on hover, and the
               lightbox shows the image with its original colors. */}
