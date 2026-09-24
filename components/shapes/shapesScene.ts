@@ -25,13 +25,13 @@ const MAX_STEP = 0.1;
 const mood = { current: { ...NEUTRAL_MOOD }, target: { ...NEUTRAL_MOOD } };
 // `tone` is what the colours follow (see `setTone` in waveScene.ts): the layers get the shape of the mood, the
 // colours get these three.
-const clock = { seconds: 0, last: 0, layers: moodToLayers(NEUTRAL_MOOD), tone: { warmth: 0, hue: 0, tint: 0 } };
+const clock = { seconds: 0, last: 0, layers: moodToLayers(NEUTRAL_MOOD), tone: { warmth: 0, hue: 0, tint: 0, spread: 0 } };
 
-// What the scene draws follows the current mood: its shape for the layers, its three colour dials for the paint.
+// What the scene draws follows the current mood: its shape for the layers, its four colour dials for the paint.
 const publishMood = () => {
   clock.layers = moodToLayers(mood.current);
-  const { warmth, hue, tint } = mood.current;
-  clock.tone = { warmth, hue, tint };
+  const { warmth, hue, tint, spread } = mood.current;
+  clock.tone = { warmth, hue, tint, spread };
 };
 
 // The scene is drawn by a loop, which picks a new mood up by itself; with reduced motion there is no loop (a

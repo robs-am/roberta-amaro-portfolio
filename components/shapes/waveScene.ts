@@ -23,8 +23,12 @@ const MAX_TINT = 0.4;
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
 const HUE_STRENGTH = 0.9;
 const HUE_SATURATION = 0.4;
+// A spread of colours (a party) asks for strong ones, so the saturation floor rises toward this as `spread` does, and
+// the layers' hues fan out over this many degrees, centred on the hue asked for.
+const SPREAD_SATURATION = 0.7;
+const SPREAD_DEGREES = 270;
 
-export type Tone = { warmth: number; hue: number; tint: number };
+export type Tone = { warmth: number; hue: number; tint: number; spread: number };
 let layerOpacities = DARK_OPACITIES;
 
 export function createWaveScene(canvas: HTMLCanvasElement) {
@@ -109,7 +113,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   // The palette as the theme gives it, kept so that a change of tone can repaint without reading the CSS
   // again (the tone eases over a few seconds, one repaint per frame).
   let palette: { dark: boolean; back: Color; front: Color; deepen: Color } | null = null;
-  let tone: Tone = { warmth: 0, hue: 0, tint: 0 };
+  let tone: Tone = { warmth: 0, hue: 0, tint: 0, spread: 0 };
 
   // Reads the theme's colours, then paints.
   const applyColors = () => {
@@ -147,8 +151,17 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       color.getHSL(hsl);
       // The short way round the wheel, in turns.
       const arc = ((target - hsl.h + 1.5) % 1) - 0.5;
-      const saturation = hsl.s + (Math.max(hsl.s, HUE_SATURATION) - hsl.s) * turn;
+      const floor = HUE_SATURATION + (SPREAD_SATURATION - HUE_SATURATION) * tone.spread;
+      const saturation = hsl.s + (Math.max(hsl.s, floor) - hsl.s) * turn;
       return color.setHSL((hsl.h + arc * turn + 1) % 1, saturation, hsl.l);
+    };
+    // Each layer's own share of the spread, in turns of the wheel: the back layer a fan's width behind the hue
+    // asked for, the front one the same ahead of it. It follows the tint, so it fades in and out with the colour.
+    const fan = turn > 0 ? tone.spread * tone.tint * (SPREAD_DEGREES / 360) : 0;
+    const turnHue = (color: Color, layerIndex: number) => {
+      if (fan <= 0) return color;
+      color.getHSL(hsl);
+      return color.setHSL((hsl.h + fan * (layerIndex / (LAYER_COUNT - 1) - 0.5) + 1) % 1, hsl.s, hsl.l);
     };
     const back = recolor(palette.back.clone().lerp(lean, tint));
     const front = recolor(palette.front.clone().lerp(lean, tint));
@@ -162,13 +175,13 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const safe = dark ? 0.25 : 0.5;
     layerOpacities = dark ? DARK_OPACITIES : LIGHT_OPACITIES;
     layers.forEach(({ fillMaterial, shadowMaterial }, index) => {
-      const edge = back.clone().lerp(front, index / (LAYER_COUNT - 1));
+      const edge = turnHue(back.clone().lerp(front, index / (LAYER_COUNT - 1)), index);
       fillMaterial.uniforms.uSafe.value = shadowMaterial.uniforms.uSafe.value = safe;
       fillMaterial.uniforms.uEdge.value.copy(edge);
-      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(deep, dark ? 0.3 : 0.38);
+      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), dark ? 0.3 : 0.38);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
-      fillMaterial.uniforms.uRim.value.copy(edge).lerp(rim, dark ? 0.55 : 0.5);
-      shadowMaterial.uniforms.uColor.value.copy(shadow);
+      fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), dark ? 0.55 : 0.5);
+      shadowMaterial.uniforms.uColor.value.copy(turnHue(shadow.clone(), index));
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
       const solidity = layerOpacities[index] / layerOpacities[LAYER_COUNT - 1];
@@ -181,6 +194,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const moved =
       Math.abs(next.warmth - tone.warmth) >= 0.002 ||
       Math.abs(next.tint - tone.tint) >= 0.002 ||
+      Math.abs(next.spread - tone.spread) >= 0.002 ||
       // The hue only shows through the tint, and is a circle: 359.9 is next to 0.
       (next.tint > 0 && Math.min(Math.abs(next.hue - tone.hue), 360 - Math.abs(next.hue - tone.hue)) >= 0.2);
     if (!moved) return;

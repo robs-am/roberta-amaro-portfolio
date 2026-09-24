@@ -1,6 +1,6 @@
 import { LAYERS, type LayerSpec } from "@/components/shapes/waveLayers";
 
-// The four dials the AI picks from a visitor's prompt. The AI never touches a shader value: it only chooses a
+// The dials the AI picks from a visitor's prompt. The AI never touches a shader value: it only chooses a
 // point on these dials, and `moodToLayers` turns that point into layers inside the range hand-tuned in
 // `LAYERS`, so no answer can come out ugly or off-brand.
 //
@@ -20,13 +20,16 @@ export type WaveMood = {
   hue: number;
   // How much of that colour the waves take: 0 none (her rose) to 1 as much as the scene allows.
   tint: number;
+  // How far apart the layers' hues are pushed around the wheel: 0 all the same colour, 1 a spread of colours, one per
+  // layer (a party, a rainbow). Only meaningful while `tint` is above 0, and it fades in and out with it.
+  spread: number;
 };
 
 // What `/api/wave-mood` answers (and what the mock stands in for): the dials plus a short phrase saying how the
 // prompt was read, to show the visitor.
 export type WaveMoodAnswer = WaveMood & { label: string };
 
-export const NEUTRAL_MOOD: WaveMood = { calm: 0.5, energy: 0.5, warmth: 0, speed: 0.5, hue: 0, tint: 0 };
+export const NEUTRAL_MOOD: WaveMood = { calm: 0.5, energy: 0.5, warmth: 0, speed: 0.5, hue: 0, tint: 0, spread: 0 };
 
 // What each end of a dial multiplies the resting value by. `low` applies at 0, `high` at 1, and 0.5 is always 1.
 const ENERGY_AMPLITUDE = { low: 0.55, high: 1.5 };
@@ -41,7 +44,7 @@ const EASE_SECONDS = 0.9;
 const SETTLED = 0.002;
 const SETTLED_DEGREES = 0.2;
 // The dials that ease in a straight line; the hue is a circle and has its own step in `easeMood`.
-const EASED = ["calm", "energy", "warmth", "speed", "tint"] as const;
+const EASED = ["calm", "energy", "warmth", "speed", "tint", "spread"] as const;
 // Under this much tint the colour is not visible, so the hue can change without anyone seeing it turn.
 const HUE_HIDDEN = 0.02;
 
@@ -66,17 +69,18 @@ export const cleanMood = (mood: Partial<WaveMood>, from: WaveMood = NEUTRAL_MOOD
   speed: dial(mood.speed, 0, 1, from.speed),
   hue: wrapHue(mood.hue, from.hue),
   tint: dial(mood.tint, 0, 1, from.tint),
+  spread: dial(mood.spread, 0, 1, from.spread),
 });
 
-// A mood in a link, as the six numbers in this order: `?mood=0.85,0.15,-0.3,0.1,270,0`. The label is left out on
+// A mood in a link, as the seven numbers in this order: `?mood=0.85,0.15,-0.3,0.1,270,0,0`. The label is left out on
 // purpose: it is text, and text from a link could put anyone's words on the page.
-const PARAM_KEYS = ["calm", "energy", "warmth", "speed", "hue", "tint"] as const;
+const PARAM_KEYS = ["calm", "energy", "warmth", "speed", "hue", "tint", "spread"] as const;
 const MAX_PARAM_LENGTH = 60;
 
 export const moodToParam = (mood: WaveMood) =>
   PARAM_KEYS.map((key) => (key === "hue" ? Math.round(mood[key]) : Math.round(mood[key] * 100) / 100)).join(",");
 
-/** Reads a `?mood=` value. Returns null when it is not exactly six numbers; the numbers are then cleaned like any answer. */
+/** Reads a `?mood=` value. Returns null when it is not exactly seven numbers; the numbers are then cleaned like any answer. */
 export const moodFromParam = (param: string | null): WaveMood | null => {
   if (!param || param.length > MAX_PARAM_LENGTH) return null;
   const parts = param.split(",");
