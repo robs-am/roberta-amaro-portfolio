@@ -13,7 +13,7 @@ pnpm build      # build de produção (também confere tipos)
 pnpm lint
 ```
 
-Para a feature de IA (campo "Mudar o clima" no hero), crie `.env.local` com `ANTHROPIC_API_KEY=...`; sem a chave a rota responde 503. Detalhes e custo em [`docs/ai-wave-mood.md`](docs/ai-wave-mood.md).
+Para a feature de IA (campo "Mudar o clima" no hero), crie `.env.local` com `ANTHROPIC_API_KEY=...`; sem a chave a rota responde 503. Em produção o cache e os limites de uso usam um Redis (Upstash, pelo Marketplace da Vercel); localmente não precisa de nada. Detalhes e custo em [`docs/ai-wave-mood.md`](docs/ai-wave-mood.md).
 
 Em produção, defina `NEXT_PUBLIC_SITE_URL` (URL canônica, sitemap e pré-visualização ao compartilhar). Sem ela, o site é tratado como não publicado (veja `app/robots.ts`).
 
