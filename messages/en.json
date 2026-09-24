@@ -53,6 +53,7 @@
     "moodThinking": "Reading your mood…",
     "moodReset": "Back to original",
     "moodBusy": "One moment, try again shortly.",
+    "moodLimit": "Today's limit was reached, come back tomorrow.",
     "moodError": "Couldn't read that right now."
   },
   "Experience": {

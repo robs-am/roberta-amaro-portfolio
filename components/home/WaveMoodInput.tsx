@@ -25,7 +25,7 @@ type Status =
   | { kind: "done"; label: string }
   // A mood that arrived by a link: there is no label for it (see `moodToParam`).
   | { kind: "shared" }
-  | { kind: "error"; message: "moodBusy" | "moodError" };
+  | { kind: "error"; message: "moodBusy" | "moodLimit" | "moodError" };
 
 const buttonClass =
   "inline-flex h-9 cursor-pointer items-center justify-center rounded-full text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:hover:text-foreground";
@@ -140,7 +140,9 @@ export function WaveMoodInput() {
       saveMood(answer, answer.label);
       setStatus({ kind: "done", label: answer.label });
     } catch (error) {
-      setStatus({ kind: "error", message: error instanceof WaveMoodError && error.status === 429 ? "moodBusy" : "moodError" });
+      const limited = error instanceof WaveMoodError && error.status === 429;
+      const message = limited ? (error.code === "daily-limit" ? "moodLimit" : "moodBusy") : "moodError";
+      setStatus({ kind: "error", message });
     }
     setCooling(true);
     cooldown.current = window.setTimeout(() => setCooling(false), COOLDOWN_MS);

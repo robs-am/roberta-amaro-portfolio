@@ -2,7 +2,10 @@ import { moodFromParam, moodToParam, type WaveMood, type WaveMoodAnswer } from "
 
 // The browser's side of `/api/wave-mood`: what the visitor typed goes in, the dials and a short label come out.
 export class WaveMoodError extends Error {
-  constructor(readonly status: number) {
+  constructor(
+    readonly status: number,
+    readonly code = "",
+  ) {
     super(`wave-mood ${status}`);
   }
 }
@@ -37,13 +40,16 @@ export const clearSavedMood = () => {
   } catch {}
 };
 
-/** Asks the route what mood a phrase is. Throws a `WaveMoodError` when it does not answer (429 is "too soon"). */
+/** Asks the route what mood a phrase is. Throws a `WaveMoodError` when it does not answer (429 is "too-soon" or "daily-limit", see `code`). */
 export const fetchWaveMood = async (prompt: string): Promise<WaveMoodAnswer> => {
   const response = await fetch("/api/wave-mood", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt }),
   });
-  if (!response.ok) throw new WaveMoodError(response.status);
+  if (!response.ok) {
+    const body: { error?: unknown } | null = await response.json().catch(() => null);
+    throw new WaveMoodError(response.status, typeof body?.error === "string" ? body.error : "");
+  }
   return response.json();
 };

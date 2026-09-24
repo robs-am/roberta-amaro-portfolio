@@ -53,6 +53,7 @@
     "moodThinking": "Interpretando…",
     "moodReset": "Voltar ao original",
     "moodBusy": "Um instante, tente de novo em seguida.",
+    "moodLimit": "O limite de hoje foi atingido, volte amanhã.",
     "moodError": "Não consegui interpretar agora."
   },
   "Experience": {

@@ -1,21 +1,48 @@
+import { createHash } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { cleanMood, type WaveMoodAnswer } from "@/components/shapes/waveMood";
+import { getStore } from "./store";
 
-// Turns a visitor's short text into the four dials that move the hero's waves (see waveMood.ts). The model only
+// Turns a visitor's short text into the dials that move the hero's waves (see waveMood.ts). The model only
 // picks numbers; `cleanMood` clamps them and the scene turns them into shapes inside what was hand-tuned, so no
 // answer can break the design. Every call is paid from the site owner's Anthropic account, so this is kept small:
-// a cheap model, a tiny output, a short prompt, a per-visitor pause. The real backstop is the spend limit set on
-// the Anthropic account itself.
+// a cheap model, a tiny output, a short prompt, and layers of protection (see `POST`): same-origin only, a cache of
+// answers, a pause and a daily cap per visitor, and a daily cap for the whole site. The last backstop is the spend
+// limit set on the Anthropic account itself.
 
 // Haiku 4.5: the task is mapping a few words to four bounded numbers, so the cheapest current model is enough.
 // Swap for a bigger one here if the readings turn out too literal.
 const MODEL = "claude-haiku-4-5";
 const MAX_PROMPT_LENGTH = 140;
 const MAX_LABEL_LENGTH = 40;
-// Same visitor, same server instance: at most one call per this long. It is a soft limit (serverless instances do
-// not share memory), so it stops a stuck button or a casual loop, not a determined abuser.
-const COOLDOWN_MS = 4000;
-const lastCall = new Map<string, number>();
+// Limits, all counted only for phrases that need a real call (a cached answer costs nothing, so it is never limited).
+// A call is about US$ 0.001, so 150 a day is at most about US$ 4.50 a month, inside the US$ 5 spend limit.
+const COOLDOWN_SECONDS = 4; // one call per visitor every so often: stops a stuck button or a casual loop
+const VISITOR_DAILY_CAP = 30; // calls per visitor per day
+const SITE_DAILY_CAP = 150; // calls for the whole site per day: the circuit breaker, so one bad day cannot spend the month
+const DAY_SECONDS = 24 * 60 * 60;
+// How long an answer for a phrase is remembered. The chips and common phrases are then answered for free.
+const CACHE_SECONDS = 7 * DAY_SECONDS;
+
+// "Um domingo chuvoso." and "  um  domingo chuvoso" are the same phrase, so they share one cached answer.
+const cacheKey = (prompt: string) => {
+  const normalized = prompt.toLowerCase().replace(/\s+/g, " ").replace(/[.!?…,;:\s]+$/, "").trim();
+  return `wave-mood:answer:${createHash("sha256").update(normalized).digest("hex")}`;
+};
+
+// Only the page of this same site may call the route: a browser always sends `Origin` on a POST, and it must match
+// the host it was sent to. It stops other websites from spending this key through their visitors' browsers; a
+// script outside a browser can fake the header, so this raises the bar and the limits below do the rest.
+const isSameOrigin = (request: Request) => {
+  const origin = request.headers.get("origin");
+  const host = request.headers.get("host");
+  if (!origin || !host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+};
 
 const SYSTEM = `You translate a short phrase from a website visitor into the mood of an animated background of soft, layered paper-cut waves in shades of rose. You only set four dials; nothing else.
 
@@ -52,12 +79,26 @@ export async function POST(request: Request) {
   const prompt = typeof (body as { prompt?: unknown } | null)?.prompt === "string" ? (body as { prompt: string }).prompt.trim() : "";
   if (!prompt || prompt.length > MAX_PROMPT_LENGTH) return fail(400, "invalid-prompt");
 
+  if (!isSameOrigin(request)) return fail(403, "forbidden");
+
+  const store = getStore();
+  const key = cacheKey(prompt);
+  // Vercel sets `x-forwarded-for` itself, so its first entry is the visitor's address.
   const visitor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  const now = Date.now();
-  if (now - (lastCall.get(visitor) ?? 0) < COOLDOWN_MS) return fail(429, "too-soon");
-  lastCall.set(visitor, now);
-  // Keeps the map from growing for good: drop what is already past its pause.
-  for (const [key, at] of lastCall) if (now - at > COOLDOWN_MS) lastCall.delete(key);
+  const day = new Date().toISOString().slice(0, 10);
+
+  // A store that is down must not open the tap: without the counters, nothing is spent.
+  try {
+    const cached = await store.get<WaveMoodAnswer>(key);
+    if (cached) return Response.json(cached);
+
+    if (!(await store.claim(`wave-mood:pause:${visitor}`, COOLDOWN_SECONDS))) return fail(429, "too-soon");
+    if ((await store.count(`wave-mood:day:${day}:${visitor}`, DAY_SECONDS)) > VISITOR_DAILY_CAP) return fail(429, "daily-limit");
+    if ((await store.count(`wave-mood:day:${day}`, DAY_SECONDS)) > SITE_DAILY_CAP) return fail(429, "daily-limit");
+  } catch (error) {
+    console.error("wave-mood store:", error instanceof Error ? error.message : error);
+    return fail(503, "unavailable");
+  }
 
   try {
     const response = await new Anthropic().messages.create({
@@ -76,6 +117,8 @@ export async function POST(request: Request) {
       ...cleanMood(raw),
       label: typeof raw.label === "string" ? raw.label.trim().slice(0, MAX_LABEL_LENGTH) : "",
     };
+    // A failed save only costs one more call for the same phrase, so it must not turn a good answer into an error.
+    await store.set(key, answer, CACHE_SECONDS).catch(() => {});
     return Response.json(answer);
   } catch (error) {
     if (error instanceof Anthropic.RateLimitError) return fail(429, "busy");
