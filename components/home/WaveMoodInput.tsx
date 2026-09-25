@@ -202,7 +202,7 @@ export function WaveMoodInput() {
 
   return (
     <div
-      className={`relative z-10 mt-6 flex flex-col items-end gap-2 transition-opacity duration-700 motion-reduce:transition-none sm:absolute sm:right-8 sm:bottom-8 sm:mt-0${shown ? "opacity-100" : "opacity-0"}`}
+      className={`relative z-10 mt-4 flex flex-col items-end gap-2 transition-opacity duration-700 motion-reduce:transition-none sm:absolute sm:right-8 sm:bottom-8 sm:mt-0${shown ? "opacity-100" : "opacity-0"}`}
     >
       <form
         onSubmit={submit}
@@ -252,6 +252,10 @@ export function WaveMoodInput() {
           </>
         )}
       </form>
+      {/* On a phone the suggestions and the message float under the field instead of taking room in the page:
+          the field sits in the flow with the content, and what opens below it must not make the page taller
+          (it would start to scroll under the header). From sm up they are plain children again (`contents`). */}
+      <div className="max-sm:absolute max-sm:top-full max-sm:right-0 max-sm:mt-2 max-sm:flex max-sm:flex-col max-sm:items-end max-sm:gap-2 sm:contents">
       {/* Where to start: shown while the field is open and empty, and gone as soon as there is something written. */}
       {open && !text.trim() && (
         <div
@@ -292,6 +296,7 @@ export function WaveMoodInput() {
             )}
           </p>
         )}
+      </div>
       </div>
     </div>
   );

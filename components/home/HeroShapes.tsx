@@ -27,9 +27,12 @@ const HORIZON_LIFT = 0.06;
 // Pixels of clear space kept to the right of the text before the waves start to come in.
 const SAFE_MARGIN = 24;
 // On a portrait phone there is no horizontal safe zone (the text fills the width), so the waves have to
-// clear the content vertically instead: the horizon is measured from the bottom of the CTAs, not the name,
-// with this much extra clearance so the nearest crest does not just graze them.
-const PORTRAIT_CLEAR = 28;
+// clear the content vertically instead: the horizon is measured from the bottom of the CTAs, not the name.
+// Negative on purpose: the four layers step down from the horizon by about 190px on a phone, so with the
+// horizon under the CTAs the back ones fell below the mood field and the footer, and a mood had almost
+// nothing to show on. Raised, they sit behind the icons and the field (faint, and the field has its own
+// backdrop), while the highest crest of the first layer still stops short of the CTAs.
+const PORTRAIT_CLEAR = -24;
 
 const SCENE_OPACITY = 1;
 
