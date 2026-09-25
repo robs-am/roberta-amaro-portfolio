@@ -24,7 +24,7 @@ export function Credits() {
   return (
     <div className="flex flex-col items-center gap-3 text-center">
       <div aria-hidden="true" style={ruleWidth ? { width: ruleWidth + 32 } : undefined} className="h-px w-12 bg-border" />
-      <p ref={ref} className="text-muted font-sans">
+      <p ref={ref} className="text-foreground/85 font-sans">
         {t('credits')} {t('copyright')}
       </p>
     </div>
