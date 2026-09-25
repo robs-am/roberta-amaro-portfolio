@@ -7,21 +7,33 @@
 // below the shapes and the content); the menu overlay is opaque and has its own stacking context, so
 // it renders its own grain, placed before its shapes in the DOM.
 //
-// Light only: most pixels are white and the rest are dark speckles, blended with `multiply`, which
+// Light: most pixels are white and the rest are dark speckles, blended with `multiply`, which
 // darkens mostly light tones (the near-white background). `overlay` does nothing on a background
-// that light. Dark mode dropped its layer — `screen` (the only blend that affects near-black) lifted
-// the background into a washed, milky gray instead of adding texture.
+// that light, and `screen` (the only blend that affects near-black) lifted a dark background into a
+// washed, milky gray instead of adding texture — that ruled both out for the dark layer below.
+//
+// Dark: the same noise, but recentred on mid-gray instead of near-white, and blended with
+// `soft-light`, which leaves mid-gray untouched and only pushes lighter/darker at the speckles —
+// texture in both directions instead of a wash in one.
 const noise = (matrix: string) =>
   `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n' color-interpolation-filters='sRGB'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='${matrix}'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`;
 
 const LIGHT_GRAIN = noise("-0.53 -0.53 -0.53 0 1.8 -0.53 -0.53 -0.53 0 1.8 -0.53 -0.53 -0.53 0 1.8 0 0 0 0 1");
+const DARK_GRAIN = noise("-0.53 -0.53 -0.53 0 1.3 -0.53 -0.53 -0.53 0 1.3 -0.53 -0.53 -0.53 0 1.3 0 0 0 0 1");
 
 export function Grain({ layerClassName }: Readonly<{ layerClassName: string }>) {
   return (
-    <div
-      aria-hidden="true"
-      className={`pointer-events-none fixed inset-0 ${layerClassName} opacity-[0.3] mix-blend-multiply dark:hidden`}
-      style={{ backgroundImage: LIGHT_GRAIN }}
-    />
+    <>
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none fixed inset-0 ${layerClassName} opacity-[0.3] mix-blend-multiply dark:hidden`}
+        style={{ backgroundImage: LIGHT_GRAIN }}
+      />
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none fixed inset-0 ${layerClassName} hidden opacity-[0.5] mix-blend-soft-light dark:block`}
+        style={{ backgroundImage: DARK_GRAIN }}
+      />
+    </>
   );
 }

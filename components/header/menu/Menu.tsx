@@ -4,14 +4,17 @@ import { useTranslations } from "next-intl";
 import { useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Grain } from "@/components/background/Grain";
+import { Credits } from "@/components/layout/Credits";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { usePathname } from "@/i18n/navigation";
 import { ControlDock, DockDivider, dockButtonClass } from "../ControlDock";
 import { LocaleSwitcher } from "../LocaleSwitcher";
+import { menuRowEnter } from "./menuEnter";
 import { CloseIcon, OpenIcon } from "./MenuIcons";
 import { MenuContacts } from "./MenuContacts";
 import { MenuNav } from "./MenuNav";
 import { MenuShapes } from "./MenuShapes";
+import { navItems } from "./navItems";
 import { useMenuDialog } from "./useMenuDialog";
 import { useMenuHomeAlignment } from "./useMenuHomeAlignment";
 import { useMenuNavigation } from "./useMenuNavigation";
@@ -110,7 +113,7 @@ export function Menu() {
                 match) it stays centered. */}
             <div
               ref={menuBodyRef}
-              className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 max-sm:justify-start max-sm:pt-[4.75rem] sm:px-8 sm:pb-20"
+              className="menu-body relative mx-auto flex min-h-[calc(100dvh-4.25rem)] max-w-5xl flex-col justify-center gap-10 px-6 pb-16 max-sm:justify-start max-sm:pt-[4.75rem] sm:pb-20"
             >
               <MenuNav open={open} pathname={pathname} onNavigate={navigate} />
               <MenuContacts open={open} />

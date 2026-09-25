@@ -1,10 +1,11 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { ArrowIcon } from '@/components/ui/ArrowIcon'
 import { textLinkArrowClass, textLinkClass, textLinkLabelClass } from '@/components/ui/textLinkStyles'
 import { usePathname } from '@/i18n/navigation'
+import { Credits } from './Credits'
 import { useContactLinks } from './useContactLinks'
 
 export function Footer() {
@@ -32,36 +33,13 @@ export function Footer() {
     }
   }, [pathname])
 
-  // The rule above the credits on the home tracks the text's own width (plus a bit) instead of a
-  // guessed fixed size, so it still fits when the phrase changes length between locales.
-  const creditsRef = useRef<HTMLParagraphElement>(null)
-  const [ruleWidth, setRuleWidth] = useState(0)
-
-  useLayoutEffect(() => {
-    if (!isHome) return
-    const el = creditsRef.current
-    if (!el) return
-    const update = () => setRuleWidth(el.offsetWidth)
-    update()
-    const observer = new ResizeObserver(update)
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [isHome, pathname])
-
   // The home's hero already carries the contact icons, so its footer is just the credits under a
   // short centered rule, instead of a full-width border fighting the hero's own composition.
   if (isHome) {
     return (
       <footer className="py-8 short:py-4 text-base">
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-6 text-center sm:px-8">
-          <div
-            aria-hidden="true"
-            style={ruleWidth ? { width: ruleWidth + 32 } : undefined}
-            className="h-px w-12 bg-border"
-          />
-          <p ref={creditsRef} className="text-muted font-sans">
-            {t('credits')} {t('copyright')}
-          </p>
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
+          <Credits />
         </div>
       </footer>
     )
