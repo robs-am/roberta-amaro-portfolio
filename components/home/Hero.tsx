@@ -1,7 +1,7 @@
 "use client";
 
 
-import { animate, stagger } from "animejs";
+import { animate, cubicBezier, set, stagger } from "animejs";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
@@ -15,7 +15,7 @@ import {
   textLinkLabelClass,
 } from "@/components/ui/textLinkStyles";
 import { profile } from "@/data/profile";
-import { backTarget } from "@/components/header/menu/menuEvents";
+import { HERO_REENTER_EVENT, backTarget } from "@/components/header/menu/menuEvents";
 import { heroEntrance } from "@/components/shapes/shapesScene";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
@@ -68,6 +68,30 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     return () => {
       animation.cancel();
     };
+  }, []);
+
+  // Menu closing back onto an already-mounted hero (see Menu.tsx): the name stays put, but the items
+  // below replay with the same feel as the menu's own rows entering (menuRowEnter) — not the slower,
+  // outExpo entrance above, which is a one-time first-paint thing tied to the name's CSS animation.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const onReenter = () => {
+      if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+      const items = section.querySelectorAll<HTMLElement>("[data-hero-item]");
+      set(items, { opacity: 0, translateY: 24 });
+      animate(items, {
+        opacity: [0, 1],
+        translateY: [24, 0],
+        duration: 700,
+        delay: stagger(80, { start: 250 }),
+        ease: cubicBezier(0.2, 0, 0, 1),
+      });
+    };
+
+    window.addEventListener(HERO_REENTER_EVENT, onReenter);
+    return () => window.removeEventListener(HERO_REENTER_EVENT, onReenter);
   }, []);
 
   const links = [

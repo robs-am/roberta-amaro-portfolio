@@ -204,47 +204,6 @@ export function WaveMoodInput() {
     <div
       className={`absolute right-6 bottom-6 z-10 flex flex-col items-end gap-2 transition-opacity duration-700 motion-reduce:transition-none sm:right-8 sm:bottom-8 ${shown ? "opacity-100" : "opacity-0"}`}
     >
-      {/* Always in the page, so a screen reader announces what appears in it. */}
-      <div role="status" className="flex max-w-[calc(100vw-3rem)] justify-end">
-        {message && (
-          <p className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1 rounded-3xl border border-border bg-background/70 px-4 py-1.5 text-sm text-foreground backdrop-blur">
-            <span className="min-w-0 truncate">{message}</span>
-            {hasMood && (
-              <>
-                <button type="button" onClick={copyLink} className={`${actionClass} font-semibold`}>
-                  {copied ? t("moodCopied") : t("moodShare")}
-                </button>
-                <button type="button" onClick={reset} className={`${actionClass} font-semibold`}>
-                  {t("moodReset")}
-                </button>
-              </>
-            )}
-          </p>
-        )}
-      </div>
-      {/* Where to start: shown while the field is open and empty, and gone as soon as there is something written. */}
-      {open && !text.trim() && (
-        <div
-          role="group"
-          aria-label={t("moodSuggestionsLabel")}
-          className="flex max-w-[min(26rem,calc(100vw-3rem))] flex-nowrap justify-end gap-2 overflow-x-auto sm:flex-wrap sm:overflow-visible"
-        >
-          {SUGGESTIONS.map((key) => {
-            const phrase = t(key);
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => suggest(phrase)}
-                disabled={thinking || cooling}
-                className="shrink-0 cursor-pointer rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-default disabled:opacity-40 disabled:hover:border-border disabled:hover:text-muted"
-              >
-                {phrase}
-              </button>
-            );
-          })}
-        </div>
-      )}
       <form
         onSubmit={submit}
         onKeyDown={onKeyDown}
@@ -293,6 +252,47 @@ export function WaveMoodInput() {
           </>
         )}
       </form>
+      {/* Where to start: shown while the field is open and empty, and gone as soon as there is something written. */}
+      {open && !text.trim() && (
+        <div
+          role="group"
+          aria-label={t("moodSuggestionsLabel")}
+          className="flex max-w-[min(26rem,calc(100vw-3rem))] flex-nowrap justify-end gap-2 overflow-x-auto sm:flex-wrap sm:overflow-visible"
+        >
+          {SUGGESTIONS.map((key) => {
+            const phrase = t(key);
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => suggest(phrase)}
+                disabled={thinking || cooling}
+                className="shrink-0 cursor-pointer rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-default disabled:opacity-40 disabled:hover:border-border disabled:hover:text-muted"
+              >
+                {phrase}
+              </button>
+            );
+          })}
+        </div>
+      )}
+      {/* Always in the page, so a screen reader announces what appears in it. */}
+      <div role="status" className="flex max-w-[calc(100vw-3rem)] justify-end">
+        {message && (
+          <p className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1 rounded-3xl border border-border bg-background/70 px-4 py-1.5 text-sm text-foreground backdrop-blur">
+            <span className="min-w-0 truncate">{message}</span>
+            {hasMood && (
+              <>
+                <button type="button" onClick={copyLink} className={`${actionClass} font-semibold`}>
+                  {copied ? t("moodCopied") : t("moodShare")}
+                </button>
+                <button type="button" onClick={reset} className={`${actionClass} font-semibold`}>
+                  {t("moodReset")}
+                </button>
+              </>
+            )}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

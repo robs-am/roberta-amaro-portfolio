@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useId, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Grain } from "@/components/background/Grain";
 import { Credits } from "@/components/layout/Credits";
@@ -11,6 +11,7 @@ import { ControlDock, DockDivider, dockButtonClass } from "../ControlDock";
 import { LocaleSwitcher } from "../LocaleSwitcher";
 import { CloseIcon, OpenIcon } from "./MenuIcons";
 import { MenuContacts } from "./MenuContacts";
+import { HERO_REENTER_EVENT } from "./menuEvents";
 import { MenuNav } from "./MenuNav";
 import { MenuShapes } from "./MenuShapes";
 import { useMenuControlAlignment } from "./useMenuControlAlignment";
@@ -44,6 +45,19 @@ export function Menu() {
   useMenuDialog({ open, setOpen, overlayRef, openRef, closeRef });
   useMenuHomeAlignment({ open, pathname, menuBodyRef, controlRowRef });
   useMenuControlAlignment({ open, controlRowRef });
+
+  // Closing back onto the home page without ever navigating away (close button, Escape, or "Home"
+  // clicked while already there) is the only case where the hero underneath was already mounted and
+  // just sat through the whole thing — everywhere else either a different page unmounts it or a fresh
+  // navigation to home mounts it with its own entrance already playing.
+  const wasOpenRef = useRef(open);
+  useEffect(() => {
+    const wasOpen = wasOpenRef.current;
+    wasOpenRef.current = open;
+    if (wasOpen && !open && pendingHref === null && pathname === "/") {
+      window.dispatchEvent(new Event(HERO_REENTER_EVENT));
+    }
+  }, [open, pendingHref, pathname]);
 
   return (
     <>
