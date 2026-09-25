@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { ArrowIcon } from '@/components/ui/ArrowIcon'
 import { textLinkArrowClass, textLinkClass, textLinkLabelClass } from '@/components/ui/textLinkStyles'
 import { usePathname } from '@/i18n/navigation'
@@ -10,9 +11,61 @@ export function Footer() {
   const t = useTranslations('Footer')
   const tHero = useTranslations('Hero')
   const contacts = useContactLinks()
-  // The home is a single screen with nothing to scroll back from, and its hero carries the credits
-  // itself, right under the contact icons (see Hero), so it has no footer.
-  if (usePathname() === '/') return null
+  const pathname = usePathname()
+  // The home's hero already carries the contact icons and a "back to top" would have nowhere below
+  // it to come back from, so its footer is credits only.
+  const isHome = pathname === '/'
+  // A page short enough to fit the viewport has nowhere to scroll down from, so "back to top" would
+  // do nothing. The Footer stays mounted across route changes (see layout.tsx), so this is re-checked
+  // per pathname, on resize, and whenever the page's own content changes height (e.g. data loading in).
+  const [scrollable, setScrollable] = useState(true)
+
+  useLayoutEffect(() => {
+    const check = () => setScrollable(document.documentElement.scrollHeight > window.innerHeight + 1)
+    check()
+    window.addEventListener('resize', check)
+    const observer = new ResizeObserver(check)
+    observer.observe(document.documentElement)
+    return () => {
+      window.removeEventListener('resize', check)
+      observer.disconnect()
+    }
+  }, [pathname])
+
+  // The rule above the credits on the home tracks the text's own width (plus a bit) instead of a
+  // guessed fixed size, so it still fits when the phrase changes length between locales.
+  const creditsRef = useRef<HTMLParagraphElement>(null)
+  const [ruleWidth, setRuleWidth] = useState(0)
+
+  useLayoutEffect(() => {
+    if (!isHome) return
+    const el = creditsRef.current
+    if (!el) return
+    const update = () => setRuleWidth(el.offsetWidth)
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [isHome, pathname])
+
+  // The home's hero already carries the contact icons, so its footer is just the credits under a
+  // short centered rule, instead of a full-width border fighting the hero's own composition.
+  if (isHome) {
+    return (
+      <footer className="py-8 short:py-4 text-base">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-6 text-center sm:px-8">
+          <div
+            aria-hidden="true"
+            style={ruleWidth ? { width: ruleWidth + 32 } : undefined}
+            className="h-px w-12 bg-border"
+          />
+          <p ref={creditsRef} className="text-muted font-sans">
+            {t('credits')} {t('copyright')}
+          </p>
+        </div>
+      </footer>
+    )
+  }
 
   return (
     <footer className="border-t border-border py-8 short:py-4 text-base">
@@ -38,24 +91,26 @@ export function Footer() {
             ))}
           </ul>
         )}
-        <a
-          href="#"
-          className="order-3 hidden items-center gap-2 rounded-sm text-muted sm:inline-flex font-sans transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        >
-          {t('backToTop')}
-          <svg
-            viewBox="0 0 16 16"
-            className="size-4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
+        {scrollable && (
+          <a
+            href="#"
+            className="order-3 hidden items-center gap-2 rounded-sm text-muted sm:inline-flex font-sans transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
-            <path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" />
-          </svg>
-        </a>
+            {t('backToTop')}
+            <svg
+              viewBox="0 0 16 16"
+              className="size-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" />
+            </svg>
+          </a>
+        )}
       </div>
     </footer>
   )

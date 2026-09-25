@@ -39,7 +39,6 @@ const leaveToPage = () => {
 
 export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const t = useTranslations("Hero");
-  const tFooter = useTranslations("Footer");
   const sectionRef = useRef<HTMLElement>(null);
 
   // Enters each `[data-hero-item]` in DOM order (bar → role → CTAs → links); the name words are CSS (globals.css).
@@ -81,11 +80,11 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     <section
       ref={sectionRef}
       id="hero"
-      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 min-h-[calc(100dvh-4.25rem)] flex-col justify-center overflow-x-hidden sm:pb-20 max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
+      className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden sm:pb-20 max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
     >
       <HeroShapes />
       <WaveMoodInput />
-      <div className="mx-auto w-full max-w-5xl px-6 sm:px-8 2xl:max-w-7xl 2xl:px-12">
+      <div className="mx-auto max-w-5xl px-6">
         <h1 className="hero-lift text-foreground text-[clamp(3rem,14vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-5xl sm:whitespace-nowrap md:text-6xl lg:text-[min(4.5rem,10vh)] xl:text-[min(5rem,9vh)] 2xl:text-[min(6.5rem,10vh)]">
           {profile.name.split(" ").map((word, index) => (
             <span key={`${word}-${index}`} className="inline-block">
@@ -101,15 +100,15 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
           ))}
         </h1>
         <div className="hero-lift max-w-2xl">
-          <div data-hero-item style={{ "--hero-index": 2 } as React.CSSProperties} aria-hidden="true" className="mt-6 short:mt-4 h-1 w-10 rounded-full bg-accent" />
           <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[clamp(1.25rem,5.5vw,1.375rem)] font-semibold tracking-wide text-balance text-foreground sm:mt-8 lg:text-3xl">
             {/* The size follows the width: the English role fits one line on a phone, the longer pt one wraps in two. */}
             {localize(profile.role, locale)}
           </p>
-          <p data-hero-item style={{ "--hero-index": 4 } as React.CSSProperties} className="mt-3 max-w-md text-base text-balance text-muted sm:mt-4">
-            {localize(profile.bio, locale)}
-          </p>
-          <div data-hero-item data-hero-cta style={{ "--hero-index": 5 } as React.CSSProperties} className="mt-6 flex flex-col items-start gap-y-1 sm:mt-14 short:mt-5 sm:flex-row sm:flex-wrap sm:gap-x-8">
+        </div>
+        {/* Wider than the role/bio column on purpose: justify-end below needs the full text-block width to
+            push the icons toward its right edge instead of crowding right after "Projects". */}
+        <div className="hero-lift mt-6 flex flex-col gap-y-4 sm:mt-14 short:mt-5">
+          <div data-hero-item data-hero-cta style={{ "--hero-index": 5 } as React.CSSProperties} className="flex flex-col items-start gap-y-1 sm:flex-row sm:flex-wrap sm:gap-x-8">
             <Link href="/experience" onClick={leaveToPage} className={`${textLinkHeroClass} order-2 sm:order-1`}>
               <ArrowIcon className={textLinkArrowHeroClass} />
               <span className={textLinkLabelClass}>{t("experienceCta")}</span>
@@ -120,7 +119,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             </Link>
           </div>
           {links.length > 0 && (
-            <ul data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="-ml-3 mt-8 short:mt-4 flex gap-3 sm:mt-14">
+            <ul data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="flex justify-end gap-3">
               {links.map((link) => (
                 <li key={link.href} className="relative">
                   <a
@@ -141,11 +140,6 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
               ))}
             </ul>
           )}
-          {/* The footer is not rendered on the home (see Footer): the credits sit right under the icons, so they
-              do not float at the bottom of a tall screen far from the block they belong to. */}
-          <p data-hero-item style={{ "--hero-index": 7 } as React.CSSProperties} className="mt-4 font-sans text-sm text-muted sm:mt-8 sm:text-base">
-            {tFooter("credits")} {tFooter("copyright")}
-          </p>
         </div>
       </div>
     </section>
