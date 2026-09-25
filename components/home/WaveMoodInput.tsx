@@ -224,7 +224,11 @@ export function WaveMoodInput() {
       </div>
       {/* Where to start: shown while the field is open and empty, and gone as soon as there is something written. */}
       {open && !text.trim() && (
-        <div role="group" aria-label={t("moodSuggestionsLabel")} className="flex max-w-[min(26rem,calc(100vw-3rem))] flex-wrap justify-end gap-2">
+        <div
+          role="group"
+          aria-label={t("moodSuggestionsLabel")}
+          className="flex max-w-[min(26rem,calc(100vw-3rem))] flex-nowrap justify-end gap-2 overflow-x-auto sm:flex-wrap sm:overflow-visible"
+        >
           {SUGGESTIONS.map((key) => {
             const phrase = t(key);
             return (
@@ -233,7 +237,7 @@ export function WaveMoodInput() {
                 type="button"
                 onClick={() => suggest(phrase)}
                 disabled={thinking || cooling}
-                className="cursor-pointer rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-default disabled:opacity-40 disabled:hover:border-border disabled:hover:text-muted"
+                className="shrink-0 cursor-pointer rounded-full border border-border bg-background/50 px-3 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-default disabled:opacity-40 disabled:hover:border-border disabled:hover:text-muted"
               >
                 {phrase}
               </button>

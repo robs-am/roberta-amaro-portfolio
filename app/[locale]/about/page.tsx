@@ -34,7 +34,7 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
   return (
     <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 pt-8 pb-16 sm:px-8 sm:pt-12 short:pt-6 short:pb-6">
       <h1 className="text-3xl font-semibold">{t("title")}</h1>
-      <div className="mt-10 max-w-3xl space-y-6 text-lg leading-8 short:mt-4 short:max-w-4xl short:space-y-3 short:text-base short:leading-7 lg:text-xl lg:leading-9">
+      <div className="mt-10 max-w-3xl space-y-6 text-lg leading-8 short:mt-4 short:max-w-4xl short:space-y-3 short:text-base short:leading-7">
         <p>{t("intro")}</p>
         <p>{t("curiosity")}</p>
       </div>

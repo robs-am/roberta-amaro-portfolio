@@ -34,7 +34,7 @@ export function ProjectShowcase({
         </span>
       </div>
 
-      {intro && <p className="mt-4 max-w-2xl text-base leading-7 text-muted lg:text-xl lg:leading-9">{intro}</p>}
+      {intro && <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">{intro}</p>}
 
       <ul className="mt-4 lg:mt-2">
         {items.map((item, index) => (
