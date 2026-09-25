@@ -4,7 +4,7 @@ Referência viva da feature em que a visitante escreve uma frase livre ("domingo
 
 ## Ideia e decisões de produto
 
-- **Não é um chatbot.** Um chatbot que responde perguntas sobre a Roberta foi considerado primeiro e descartado: é o movimento mais repetido em portfólios com IA. A interação com as ondas reforça o diferencial real dela (ex-designer 3D) e é algo que só este site tem.
+
 - **O modelo nunca mexe em valores do shader.** Ele só escolhe pontos em poucos "dials" semânticos. Uma função determinística (`moodToLayers`) converte esses dials em formas **dentro da faixa que a Roberta já ajustou à mão**. Assim nenhuma resposta, por mais estranha que seja a frase, gera um resultado feio ou fora da marca.
 - **O ponto de repouso é o design original.** Com os dials no meio, a cena é exatamente a que já existia. O clima só se afasta dela, e "Voltar ao original" leva de volta.
 - **A cor é parcial.** Um pedido de cor gira o matiz das camadas, mas com teto de força e saturação mínima, para o site não ficar berrante contra o texto nem perder a identidade rosa.
