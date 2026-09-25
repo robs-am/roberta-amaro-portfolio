@@ -70,18 +70,24 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     };
   }, []);
 
-  // Menu closing back onto an already-mounted hero (see Menu.tsx): the name stays put, but the items
-  // below replay with the same feel as the menu's own rows entering (menuRowEnter) — not the slower,
-  // outExpo entrance above, which is a one-time first-paint thing tied to the name's CSS animation.
+  // Menu closing back onto an already-mounted hero (see Menu.tsx): the name's CSS wipe already played
+  // once at first paint and (with `both`) is still holding its finished state — with nothing driving it
+  // a second time, the name would just sit there fully visible while the items below fade in, reading as
+  // if it had "snapped" in instantly. So it replays too, but as a plain fade/slide with the same feel as
+  // the menu's own rows entering (menuRowEnter), not the wipe again.
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     const onReenter = () => {
       if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+      const words = section.querySelectorAll<HTMLElement>("[data-hero-word]");
+      // Releases the CSS keyframe's held end state so these inline styles can drive opacity/transform instead.
+      for (const word of words) word.style.animation = "none";
       const items = section.querySelectorAll<HTMLElement>("[data-hero-item]");
-      set(items, { opacity: 0, translateY: 24 });
-      animate(items, {
+      const targets = [...words, ...items];
+      set(targets, { opacity: 0, translateY: 24 });
+      animate(targets, {
         opacity: [0, 1],
         translateY: [24, 0],
         duration: 700,
