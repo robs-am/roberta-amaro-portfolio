@@ -202,7 +202,7 @@ export function WaveMoodInput() {
 
   return (
     <div
-      className={`absolute right-6 bottom-6 z-10 flex flex-col items-end gap-2 transition-opacity duration-700 motion-reduce:transition-none sm:right-8 sm:bottom-8 ${shown ? "opacity-100" : "opacity-0"}`}
+      className={`relative z-10 mt-6 flex flex-col items-end gap-2 transition-opacity duration-700 motion-reduce:transition-none sm:absolute sm:right-8 sm:bottom-8 sm:mt-0${shown ? "opacity-100" : "opacity-0"}`}
     >
       <form
         onSubmit={submit}
@@ -257,7 +257,7 @@ export function WaveMoodInput() {
         <div
           role="group"
           aria-label={t("moodSuggestionsLabel")}
-          className="flex max-w-[min(26rem,calc(100vw-3rem))] flex-nowrap justify-end gap-2 overflow-x-auto sm:flex-wrap sm:overflow-visible"
+          className="flex max-w-[min(26rem,calc(100vw-3rem))] flex-wrap justify-end gap-2"
         >
           {SUGGESTIONS.map((key) => {
             const phrase = t(key);

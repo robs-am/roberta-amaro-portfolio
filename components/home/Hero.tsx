@@ -113,7 +113,6 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       className="hero-reveal relative ml-[calc(50%-50vw)] w-screen flex flex-1 flex-col justify-center overflow-x-hidden sm:pb-20 max-sm:justify-start max-sm:pt-36 scroll-mt-(--header-height,0px)"
     >
       <HeroShapes />
-      <WaveMoodInput />
       <div className="mx-auto max-w-5xl px-6">
         <h1 className="hero-lift text-foreground text-[clamp(3rem,14vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-5xl sm:whitespace-nowrap md:text-6xl lg:text-[min(4.5rem,10vh)] xl:text-[min(5rem,9vh)] 2xl:text-[min(6.5rem,10vh)]">
           {profile.name.split(" ").map((word, index) => (
@@ -171,6 +170,8 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             </ul>
           )}
         </div>
+        {/* In the flow on a phone so it stays with the content when the height changes; pinned to the corner from sm up. */}
+        <WaveMoodInput />
       </div>
     </section>
   );

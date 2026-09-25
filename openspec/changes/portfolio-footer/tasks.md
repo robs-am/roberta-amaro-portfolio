@@ -28,6 +28,6 @@
 
 ## 5. Verificação Final
 
-- [ ] 5.1 Rodar `pnpm build` e verificar que passa sem erros e que `/pt` e `/en` aparecem como rotas estáticas
+- [x] 5.1 Rodar `pnpm build` e verificar que passa sem erros e que `/pt` e `/en` aparecem como rotas estáticas
 
 - [ ] 5.2 Verificar que o HTML de `/en` renderizado no servidor já contém o texto do footer em inglês (sem depender de JavaScript), usando `curl http://localhost:3000/en | grep -i "back to top"` ou inspeção no navegador
