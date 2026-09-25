@@ -20,7 +20,9 @@ export async function Header() {
             <BackButton />
           </div>
         </HideOnHome>
-        <div className="ml-auto">
+        {/* Targeted by useMenuControlAlignment so the menu's own dock can match this row's exact
+            position instead of trusting two "identical" `max-w-7xl` rows to land in the same place. */}
+        <div id="header-controls" className="ml-auto">
           <ControlDock>
             <LocaleSwitcher />
             <DockDivider />
