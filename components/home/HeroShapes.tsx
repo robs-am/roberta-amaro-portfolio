@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import { MathUtils } from "three";
 import { LAYER_COUNT, PORTRAIT_ASPECT, createWaveScene } from "@/components/shapes/waveScene";
 import { installWaveMoodConsole } from "@/components/shapes/mockWaveMood";
+import { LAYERS, PORTRAIT_SPACING } from "@/components/shapes/waveLayers";
 import { subscribeTheme } from "@/components/theme/theme";
 import {
   HERO_ENTRANCE_MS,
@@ -33,6 +34,13 @@ const SAFE_MARGIN = 24;
 // nothing to show on. Raised, they sit behind the icons and the field (faint, and the field has its own
 // backdrop), while the highest crest of the first layer still stops short of the CTAs.
 const PORTRAIT_CLEAR = -24;
+// On a short phone (the browser's bars eat the height) the strip under the CTAs is too thin, and the back
+// layers end up below the fold. So on portrait the horizon never sits lower than where the last layer's edge
+// is at `LAST_LAYER_FLOOR` (screen height units, -1 the bottom): on a short screen the waves rise behind the
+// CTAs instead of being cut off. The layers behind are faint, so the text stays readable over them.
+const LAST_LAYER_FLOOR = -0.65;
+const LAST_LAYER_BASE = LAYERS[0].base + (LAYERS[LAYERS.length - 1].base - LAYERS[0].base) * PORTRAIT_SPACING;
+const PORTRAIT_HORIZON_FLOOR = LAST_LAYER_FLOOR - LAST_LAYER_BASE;
 
 const SCENE_OPACITY = 1;
 
@@ -129,7 +137,8 @@ export function HeroShapes() {
       let bottom = target.offsetHeight;
       for (let node: HTMLElement | null = target; node; node = node.offsetParent as HTMLElement | null) bottom += node.offsetTop;
       const gap = NAME_GAP + (portrait ? PORTRAIT_CLEAR : 0);
-      waveHorizon.y = MathUtils.clamp(1 - (2 * (bottom + gap)) / height + HORIZON_LIFT, -0.6, 0.4);
+      const horizon = MathUtils.clamp(1 - (2 * (bottom + gap)) / height + HORIZON_LIFT, -0.6, 0.4);
+      waveHorizon.y = portrait ? Math.max(horizon, PORTRAIT_HORIZON_FLOOR) : horizon;
       waves.setHorizon(waveHorizon.y);
     };
 
