@@ -10,6 +10,7 @@ const MOCK_DELAY_MS = 700;
 
 // A preset only names the dials it moves; the rest stay at rest (`NEUTRAL_MOOD`, which has no colour).
 const PRESETS: { words: string[]; answer: Partial<WaveMood> & { label: string } }[] = [
+  { words: ["deserto", "saara", "sahara", "duna", "areia", "poeira", "desert", "sand"], answer: { hue: 30, tint: 0.7, warmth: 0.8, calm: 0.8, energy: 0.35, speed: 0.25, grain: 1, label: "deserto seco" } },
   { words: ["azul", "blue"], answer: { hue: 215, tint: 0.85, label: "azul" } },
   { words: ["verde", "floresta", "green"], answer: { hue: 130, tint: 0.85, calm: 0.7, label: "verde" } },
   { words: ["amarelo", "yellow"], answer: { hue: 55, tint: 0.85, warmth: 0.5, label: "amarelo" } },

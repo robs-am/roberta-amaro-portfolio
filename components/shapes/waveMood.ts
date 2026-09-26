@@ -23,13 +23,16 @@ export type WaveMood = {
   // How far apart the layers' hues are pushed around the wheel: 0 all the same colour, 1 a spread of colours, one per
   // layer (a party, a rainbow). Only meaningful while `tint` is above 0, and it fades in and out with it.
   spread: number;
+  // How much the paper looks like sand: 0 smooth paper to 1 a coarse, dry grain (a desert, dust, a dry wind). Like
+  // warmth and hue it changes how the layers are painted and not their shape.
+  grain: number;
 };
 
 // What `/api/wave-mood` answers (and what the mock stands in for): the dials plus a short phrase saying how the
 // prompt was read, to show the visitor.
 export type WaveMoodAnswer = WaveMood & { label: string };
 
-export const NEUTRAL_MOOD: WaveMood = { calm: 0.5, energy: 0.5, warmth: 0, speed: 0.5, hue: 0, tint: 0, spread: 0 };
+export const NEUTRAL_MOOD: WaveMood = { calm: 0.5, energy: 0.5, warmth: 0, speed: 0.5, hue: 0, tint: 0, spread: 0, grain: 0 };
 
 // What each end of a dial multiplies the resting value by. `low` applies at 0, `high` at 1, and 0.5 is always 1.
 const ENERGY_AMPLITUDE = { low: 0.55, high: 1.5 };
@@ -44,7 +47,7 @@ const EASE_SECONDS = 0.9;
 const SETTLED = 0.002;
 const SETTLED_DEGREES = 0.2;
 // The dials that ease in a straight line; the hue is a circle and has its own step in `easeMood`.
-const EASED = ["calm", "energy", "warmth", "speed", "tint", "spread"] as const;
+const EASED = ["calm", "energy", "warmth", "speed", "tint", "spread", "grain"] as const;
 // Under this much tint the colour is not visible, so the hue can change without anyone seeing it turn.
 const HUE_HIDDEN = 0.02;
 
@@ -70,21 +73,23 @@ export const cleanMood = (mood: Partial<WaveMood>, from: WaveMood = NEUTRAL_MOOD
   hue: wrapHue(mood.hue, from.hue),
   tint: dial(mood.tint, 0, 1, from.tint),
   spread: dial(mood.spread, 0, 1, from.spread),
+  grain: dial(mood.grain, 0, 1, from.grain),
 });
 
-// A mood in a link, as the seven numbers in this order: `?mood=0.85,0.15,-0.3,0.1,270,0,0`. The label is left out on
-// purpose: it is text, and text from a link could put anyone's words on the page.
-const PARAM_KEYS = ["calm", "energy", "warmth", "speed", "hue", "tint", "spread"] as const;
+// A mood in a link, as the eight numbers in this order: `?mood=0.85,0.15,-0.3,0.1,270,0,0,0`. The label is left out on
+// purpose: it is text, and text from a link could put anyone's words on the page. Links made before the grain existed
+// have seven numbers; they still open, with no grain.
+const PARAM_KEYS = ["calm", "energy", "warmth", "speed", "hue", "tint", "spread", "grain"] as const;
 const MAX_PARAM_LENGTH = 60;
 
 export const moodToParam = (mood: WaveMood) =>
   PARAM_KEYS.map((key) => (key === "hue" ? Math.round(mood[key]) : Math.round(mood[key] * 100) / 100)).join(",");
 
-/** Reads a `?mood=` value. Returns null when it is not exactly seven numbers; the numbers are then cleaned like any answer. */
+/** Reads a `?mood=` value. Returns null when it is not exactly eight numbers (or the older seven); the numbers are then cleaned like any answer. */
 export const moodFromParam = (param: string | null): WaveMood | null => {
   if (!param || param.length > MAX_PARAM_LENGTH) return null;
   const parts = param.split(",");
-  if (parts.length !== PARAM_KEYS.length || parts.some((part) => part.trim() === "")) return null;
+  if ((parts.length !== PARAM_KEYS.length && parts.length !== PARAM_KEYS.length - 1) || parts.some((part) => part.trim() === "")) return null;
   const numbers = parts.map(Number);
   if (numbers.some((value) => !Number.isFinite(value))) return null;
   return cleanMood(Object.fromEntries(PARAM_KEYS.map((key, index) => [key, numbers[index]])));
