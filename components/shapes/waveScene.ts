@@ -115,19 +115,17 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   let palette: { dark: boolean; back: Color; front: Color; deepen: Color } | null = null;
   let tone: Tone = { warmth: 0, hue: 0, tint: 0, spread: 0 };
 
-  // Reads the theme's colours, then paints.
+  // Picks the palette for the current theme, then paints.
   const applyColors = () => {
-    const styles = getComputedStyle(document.documentElement);
-    const token = (name: string) => new Color(styles.getPropertyValue(name).trim());
     const dark = getTheme() === "dark";
-    // Light page: pale rose at the back to a deeper rose in front, never dark enough to hurt the text over it.
-    // Dark page: a soft pink at the back to a wine in front, kept light enough that the bottom corners do not
-    // sink into the page. Each layer is a clear step from the last.
-    // The dark page's colours are brighter than before to make up for the lower opacity: less of the layer
-    // shows, so what shows has to glow more.
-    const back = dark ? token("--accent").lerp(new Color(0xffffff), 0.1) : new Color(0xb9819a);
-    const front = dark ? new Color(0xb85a80) : new Color(0x7d4361);
-    const deepen = dark ? new Color(0x2a1621) : token("--accent");
+    // Both pages share one palette: a soft pink at the back to a wine in front. The light page used a paler,
+    // duller rose of its own and the waves washed into the background, so it now borrows the dark page's
+    // colours and makes up for the light ground with more opacity (see `LIGHT_OPACITIES`).
+    // The dark page's colours stay bright to make up for its lower opacity: less of the layer shows, so what
+    // shows has to glow more. Each layer is a clear step from the last.
+    const back = new Color(0xe08a9f).lerp(new Color(0xffffff), 0.1);
+    const front = new Color(0xb85a80);
+    const deepen = new Color(0x2a1621);
     palette = { dark, back, front, deepen };
     paint();
   };
@@ -138,7 +136,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     // Warmth leans the rose toward coral (warm) or toward a dusty violet (cool), only part of the way: it stays
     // recognisably her rose, just pushed, and the dark page's tints are kept light for the same reason as above.
     const { warmth } = tone;
-    const lean = new Color(warmth >= 0 ? (dark ? 0xe8825f : 0xd98a68) : dark ? 0x8a78d6 : 0x7f7fb8);
+    const lean = new Color(warmth >= 0 ? 0xe8825f : 0x8a78d6);
     const tint = Math.abs(warmth) * MAX_TINT;
     // A colour the visitor asked for turns the hue of everything the scene paints (the layers, their deep side,
     // the lit edge and the shadows) and leaves each one's lightness alone, so the paper-cut depth stays as
@@ -166,7 +164,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const back = recolor(palette.back.clone().lerp(lean, tint));
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
-    const rim = recolor(new Color(dark ? 0xf7b8cb : 0xffffff));
+    const rim = recolor(new Color(0xf7b8cb));
     const shadow = recolor(new Color(dark ? 0x14080f : 0x9a4a72));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
@@ -178,9 +176,9 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       const edge = turnHue(back.clone().lerp(front, index / (LAYER_COUNT - 1)), index);
       fillMaterial.uniforms.uSafe.value = shadowMaterial.uniforms.uSafe.value = safe;
       fillMaterial.uniforms.uEdge.value.copy(edge);
-      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), dark ? 0.3 : 0.38);
+      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), 0.3);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
-      fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), dark ? 0.55 : 0.5);
+      fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), 0.55);
       shadowMaterial.uniforms.uColor.value.copy(turnHue(shadow.clone(), index));
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
