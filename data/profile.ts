@@ -1,6 +1,6 @@
 import type { Profile } from "./types";
 
-export const profile = {
+export const profile: Profile = {
   name: "Roberta Amaro",
   role: {
     pt: "Engenheira de Software, Front-end & IA",
@@ -13,4 +13,5 @@ export const profile = {
   email: "roberta.amaro89@gmail.com",
   linkedinUrl: "https://linkedin.com/in/roberta-amaro",
   githubUrl: "https://github.com/robs-am",
-} satisfies Profile;
+  cvUrl: { pt: "/cv/roberta-amaro-pt.pdf", en: "/cv/roberta-amaro-en.pdf" },
+};

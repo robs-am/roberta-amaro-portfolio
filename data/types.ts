@@ -11,6 +11,8 @@ export type Profile = {
   email?: string;
   linkedinUrl?: string;
   githubUrl?: string;
+  /** Path of the résumé PDF per language, under `public/` (e.g. "/cv/roberta-amaro-en.pdf"). Without it, no link is shown. */
+  cvUrl?: Localized;
 };
 
 export type Experience = {

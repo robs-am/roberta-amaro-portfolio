@@ -32,6 +32,7 @@
     }
   },
   "Hero": {
+    "cv": "Currículo",
     "email": "E-mail",
     "linkedin": "LinkedIn",
     "github": "GitHub",
