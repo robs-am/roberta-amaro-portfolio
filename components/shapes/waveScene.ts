@@ -28,7 +28,7 @@ const HUE_SATURATION = 0.4;
 const SPREAD_SATURATION = 0.7;
 const SPREAD_DEGREES = 270;
 
-export type Tone = { warmth: number; hue: number; tint: number; spread: number };
+export type Tone = { warmth: number; hue: number; tint: number; spread: number; grain: number };
 let layerOpacities = DARK_OPACITIES;
 
 export function createWaveScene(canvas: HTMLCanvasElement) {
@@ -45,6 +45,10 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
         uDeep: { value: new Color() },
         uRim: { value: new Color() },
         uOpacity: { value: layerOpacities[index] },
+        uGrain: { value: 0 },
+        // Each sheet of paper has its own grain, so the layers do not repeat one pattern.
+        uSeed: { value: index * 17.31 },
+        uAspect: { value: 1 },
         uSafe: { value: 0.18 },
         uFadeFrom: { value: -0.75 },
         uFadeTo: { value: 0.15 },
@@ -112,21 +116,26 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
 
   // The palette as the theme gives it, kept so that a change of tone can repaint without reading the CSS
   // again (the tone eases over a few seconds, one repaint per frame).
-  let palette: { dark: boolean; back: Color; front: Color; deepen: Color } | null = null;
-  let tone: Tone = { warmth: 0, hue: 0, tint: 0, spread: 0 };
+  let palette: { dark: boolean; back: Color; front: Color; deepen: Color; rim: Color } | null = null;
+  let tone: Tone = { warmth: 0, hue: 0, tint: 0, spread: 0, grain: 0 };
 
   // Picks the palette for the current theme, then paints.
   const applyColors = () => {
     const dark = getTheme() === "dark";
-    // Both pages share one palette: a soft pink at the back to a wine in front. The light page used a paler,
-    // duller rose of its own and the waves washed into the background, so it now borrows the dark page's
-    // colours and makes up for the light ground with more opacity (see `LIGHT_OPACITIES`).
-    // The dark page's colours stay bright to make up for its lower opacity: less of the layer shows, so what
-    // shows has to glow more. Each layer is a clear step from the last.
-    const back = new Color(0xe08a9f).lerp(new Color(0xffffff), 0.1);
-    const front = new Color(0xb85a80);
-    const deepen = new Color(0x2a1621);
-    palette = { dark, back, front, deepen };
+    // Dark page: a soft pink at the back to a wine in front, deepening toward a near-black plum. Its colours are
+    // bright to make up for its lower opacity: less of the layer shows, so what shows has to glow more.
+    // Light page: the site's own plum accent (the colour of the links and of the current item in the menu),
+    // lightened toward the back and darkened toward the deep side, so the waves and the text share one colour.
+    // Pinks (the dark page's pastel, then a dusty and a burnt rose) all read as childish on a light ground.
+    // It is built like the dark page: faint veils with a dark deep side and shadows between them (its opacities
+    // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
+    const white = new Color(0xffffff);
+    const accent = new Color(getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
+    const back = dark ? new Color(0xe08a9f).lerp(white, 0.1) : accent.clone().lerp(white, 0.4);
+    const front = dark ? new Color(0xb85a80) : accent.clone();
+    const deepen = dark ? new Color(0x2a1621) : accent.clone().lerp(new Color(0x000000), 0.65);
+    const rim = dark ? new Color(0xf7b8cb) : accent.clone().lerp(white, 0.7);
+    palette = { dark, back, front, deepen, rim };
     paint();
   };
 
@@ -164,17 +173,20 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const back = recolor(palette.back.clone().lerp(lean, tint));
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
-    const rim = recolor(new Color(0xf7b8cb));
+    const rim = recolor(palette.rim.clone());
     const shadow = recolor(new Color(dark ? 0x14080f : 0x9a4a72));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
     // page, so the waves recede where they'd otherwise compete with the words.
-    const safe = dark ? 0.25 : 0.5;
+    // The light page is 0.7 (not 0.5): its layers are faint veils, so a bigger gap between the text side and the
+    // rest showed as a darker vertical band where the fade ends.
+    const safe = dark ? 0.25 : 0.7;
     layerOpacities = dark ? DARK_OPACITIES : LIGHT_OPACITIES;
     layers.forEach(({ fillMaterial, shadowMaterial }, index) => {
       const edge = turnHue(back.clone().lerp(front, index / (LAYER_COUNT - 1)), index);
       fillMaterial.uniforms.uSafe.value = shadowMaterial.uniforms.uSafe.value = safe;
+      fillMaterial.uniforms.uGrain.value = tone.grain;
       fillMaterial.uniforms.uEdge.value.copy(edge);
       fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), 0.3);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
@@ -183,7 +195,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
       const solidity = layerOpacities[index] / layerOpacities[LAYER_COUNT - 1];
-      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.28) * (0.35 + 0.65 * solidity);
+      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.4) * (0.35 + 0.65 * solidity);
     });
   };
 
@@ -193,6 +205,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       Math.abs(next.warmth - tone.warmth) >= 0.002 ||
       Math.abs(next.tint - tone.tint) >= 0.002 ||
       Math.abs(next.spread - tone.spread) >= 0.002 ||
+      Math.abs(next.grain - tone.grain) >= 0.002 ||
       // The hue only shows through the tint, and is a circle: 359.9 is next to 0.
       (next.tint > 0 && Math.min(Math.abs(next.hue - tone.hue), 360 - Math.abs(next.hue - tone.hue)) >= 0.2);
     if (!moved) return;
@@ -212,6 +225,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       layer.fillMesh.scale.x = aspect;
       layer.shadowMesh.scale.x = aspect;
       layer.fillMaterial.uniforms.uPortrait.value = portrait;
+      layer.fillMaterial.uniforms.uAspect.value = aspect;
       layer.shadowMaterial.uniforms.uPortrait.value = portrait;
     }
   };

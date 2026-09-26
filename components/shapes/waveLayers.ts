@@ -8,9 +8,10 @@ export const PORTRAIT_ASPECT = 0.85;
 // are faint, and the opacity rises step by step toward the front layer, which stays solid and reads as the
 // nearest. The shadows follow it (see `applyColors` in waveScene.ts).
 export const DARK_OPACITIES = [0.2, 0.32, 0.48, 0.6];
-// The light page has no glow to carry the waves, and it uses the dark page's pinks, which are light: on a light
-// ground they need more body than on a dark one, so every layer is more opaque and the front one is nearly solid.
-export const LIGHT_OPACITIES = [0.4, 0.55, 0.72, 0.88];
+// The light page is built like the dark one: translucent veils that get their depth from a dark side and from the
+// shadows between the layers, and only the front one has body. High opacities (0.4 to 0.88, then 0.4 to 0.82) made
+// every layer a flat pink sheet and read as sweet, not elegant.
+export const LIGHT_OPACITIES = [0.18, 0.3, 0.46, 0.64];
 
 // Below this aspect the screen is narrower than it is tall (a phone in portrait): the same amplitude that
 // reads as a calm, wide swell on a landscape screen gets squeezed into a much narrower width there, so every
