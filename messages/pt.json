@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "Roberta Amaro | Desenvolvedora Front-end",
-    "description": "Portfólio de Roberta Amaro: experiências profissionais e projetos."
+    "title": "Roberta Amaro | Engenheira de Software, Web e IA",
+    "description": "Portfólio de Roberta Amaro, Engenheira de Software que atua em Web e IA, da interface ao backend. Experiência, projetos e currículo."
   },
   "Common": {
     "skipToContent": "Pular para o conteúdo principal"
@@ -37,6 +37,7 @@
     "linkedin": "LinkedIn",
     "github": "GitHub",
     "newTab": "(abre em nova aba)",
+    "aboutCta": "Sobre",
     "experienceCta": "Experiências",
     "projectsCta": "Projetos",
     "moodOpen": "Mudar o clima",
@@ -84,7 +85,7 @@
   },
   "AboutPage": {
     "title": "Sobre | Roberta Amaro",
-    "description": "Sobre Roberta Amaro, Engenheira de Software especializada em Front-End."
+    "description": "Sobre Roberta Amaro, Engenheira de Software que atua em Web e IA, com formação em design 3D."
   },
   "Awards": {
     "title": "Prêmios",

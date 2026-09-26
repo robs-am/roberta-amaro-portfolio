@@ -146,6 +146,10 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
               <ArrowIcon className={textLinkArrowHeroClass} />
               <span className={textLinkLabelActiveClass}>{t("projectsCta")}</span>
             </Link>
+            <Link href="/about" onClick={leaveToPage} className={`${textLinkHeroClass} order-3`}>
+              <ArrowIcon className={textLinkArrowHeroClass} />
+              <span className={textLinkLabelClass}>{t("aboutCta")}</span>
+            </Link>
           </div>
           {links.length > 0 && (
             <ul data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="flex justify-end gap-3">

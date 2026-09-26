@@ -49,7 +49,7 @@ export async function ExperienceTimeline({
           </div>
           <div data-experience-body>
             <h2 className="text-lg font-semibold">{localize(item.role, locale)}</h2>
-            <p className="text-sm font-medium text-accent">{item.company}</p>
+            <p className="text-base font-medium text-accent">{item.company}</p>
             <p className="mt-3 text-lg leading-8">{localize(item.description, locale)}</p>
             {awards.some((award) => award.experienceId === item.id) && (
               <div className="mt-5">
@@ -60,7 +60,7 @@ export async function ExperienceTimeline({
                   {awards
                     .filter((award) => award.experienceId === item.id)
                     .map((award) => (
-                      <li key={award.id} className="text-sm leading-6">
+                      <li key={award.id} className="text-base leading-7">
                         <span className="font-semibold">{localize(award.title, locale)}</span>
                         {", "}
                         {localize(award.event, locale)} ({formatMonth(award.date)})

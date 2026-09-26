@@ -41,7 +41,7 @@ export async function EducationTimeline({
           </div>
           <div data-experience-body>
             <h3 className="text-lg font-semibold">{localize(item.course, locale)}</h3>
-            <p className="text-sm font-medium text-accent">{item.institution}</p>
+            <p className="text-base font-medium text-accent">{item.institution}</p>
           </div>
         </li>
       ))}

@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "Roberta Amaro | Front-end Developer",
-    "description": "Roberta Amaro's portfolio: professional experience and projects."
+    "title": "Roberta Amaro | Software Engineer, Web & AI",
+    "description": "Portfolio of Roberta Amaro, a Software Engineer working on the web and AI, from the interface to the backend. Experience, projects and résumé."
   },
   "Common": {
     "skipToContent": "Skip to main content"
@@ -37,6 +37,7 @@
     "linkedin": "LinkedIn",
     "github": "GitHub",
     "newTab": "(opens in a new tab)",
+    "aboutCta": "About",
     "experienceCta": "Experience",
     "projectsCta": "Projects",
     "moodOpen": "Change the mood",
@@ -84,7 +85,7 @@
   },
   "AboutPage": {
     "title": "About | Roberta Amaro",
-    "description": "About Roberta Amaro, a Software Engineer specialized in Front-End."
+    "description": "About Roberta Amaro, a Software Engineer working on the web and AI, with a background in 3D design."
   },
   "Awards": {
     "title": "Awards",
