@@ -142,13 +142,16 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     // Light page: the site's own plum accent (the colour of the links and of the current item in the menu),
     // lightened toward the back and darkened toward the deep side, so the waves and the text share one colour.
     // Pinks (the dark page's pastel, then a dusty and a burnt rose) all read as childish on a light ground.
+    // A deep wine turned toward red was tried too, and read as too red on the screens that show colour true.
     // It is built like the dark page: faint veils with a dark deep side and shadows between them (its opacities
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
     const white = new Color(0xffffff);
     const accent = new Color(getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
     const back = dark ? new Color(0xe08a9f).lerp(white, 0.1) : accent.clone().lerp(white, 0.4);
     const front = dark ? new Color(0xb85a80) : accent.clone();
-    const deepen = dark ? new Color(0x2a1621) : accent.clone().lerp(new Color(0x000000), 0.65);
+    // The light page deepens toward a saturated plum, not toward black: black only greys it, and the front
+    // layer, the biggest block of colour on the screen, came out a dusty mauve.
+    const deepen = dark ? new Color(0x2a1621) : new Color(0x4a0d33);
     const rim = dark ? new Color(0xf7b8cb) : accent.clone().lerp(white, 0.7);
     palette = { dark, back, front, deepen, rim };
     paint();
@@ -189,7 +192,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
     const rim = recolor(palette.rim.clone());
-    const shadow = recolor(new Color(dark ? 0x14080f : 0x9a4a72));
+    const shadow = recolor(new Color(dark ? 0x14080f : 0x6b1f4d));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
@@ -203,14 +206,15 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       fillMaterial.uniforms.uSafe.value = shadowMaterial.uniforms.uSafe.value = safe;
       fillMaterial.uniforms.uGrain.value = tone.grain;
       fillMaterial.uniforms.uEdge.value.copy(edge);
-      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), 0.3);
+      // The light page's deep side goes further toward the dark, so each layer has more body under its lit edge.
+      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), dark ? 0.3 : 0.45);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
       fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), 0.55);
       shadowMaterial.uniforms.uColor.value.copy(turnHue(shadow.clone(), index));
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
       const solidity = layerOpacities[index] / layerOpacities[LAYER_COUNT - 1];
-      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.4) * (0.35 + 0.65 * solidity);
+      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.45) * (0.35 + 0.65 * solidity);
     });
   };
 
