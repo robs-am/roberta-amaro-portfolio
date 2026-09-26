@@ -2,7 +2,19 @@ import { Color, DoubleSide, Mesh, OrthographicCamera, Scene, ShaderMaterial, Web
 import { getTheme } from "@/components/theme/theme";
 import { fillFragment, fillVertex, shadowFragment, shadowVertex } from "@/components/shapes/waveShaders";
 import { OVERSCAN, SEGMENTS, createStrip } from "@/components/shapes/waveGeometry";
-import { CALM_ASPECT, DARK_OPACITIES, LAYERS, LAYER_COUNT, LIGHT_OPACITIES, MIN_FREQ_SCALE, PORTRAIT_ASPECT, edgeAt, type LayerSpec } from "@/components/shapes/waveLayers";
+import {
+  CALM_ASPECT,
+  DARK_OPACITIES,
+  LAYERS,
+  LAYER_COUNT,
+  LIGHT_OPACITIES,
+  PORTRAIT_AMPLITUDE,
+  PORTRAIT_ASPECT,
+  PORTRAIT_FREQ_SCALE,
+  PORTRAIT_SPACING,
+  edgeAt,
+  type LayerSpec,
+} from "@/components/shapes/waveLayers";
 
 export { LAYER_COUNT, PORTRAIT_ASPECT };
 
@@ -93,8 +105,11 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   });
 
   let aspect = 1;
-  // See `CALM_ASPECT`/`MIN_FREQ_SCALE`: 1 on landscape screens, lower (wider humps) on narrow portrait ones.
+  // See `CALM_ASPECT`/`PORTRAIT_FREQ_SCALE`: 1 on landscape screens, lower (wider humps) on narrow ones.
   let freqScale = 1;
+  // See `PORTRAIT_SPACING`/`PORTRAIT_AMPLITUDE`: closer, taller layers on a portrait screen, 1 elsewhere.
+  let spacing = 1;
+  let amplitudeScale = 1;
   // Where the waves start, in screen height units (-1 bottom, 1 top). The home sets it from the name's position.
   let horizon = 0;
 
@@ -219,8 +234,11 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     camera.left = -aspect;
     camera.right = aspect;
     camera.updateProjectionMatrix();
-    freqScale = aspect < CALM_ASPECT ? Math.max(aspect, MIN_FREQ_SCALE) : 1;
     const portrait = aspect < PORTRAIT_ASPECT ? 1 : 0;
+    const landscapeFreq = aspect < CALM_ASPECT ? aspect : 1;
+    freqScale = portrait ? PORTRAIT_FREQ_SCALE : landscapeFreq;
+    spacing = portrait ? PORTRAIT_SPACING : 1;
+    amplitudeScale = portrait ? PORTRAIT_AMPLITUDE : 1;
     for (const layer of layers) {
       layer.fillMesh.scale.x = aspect;
       layer.shadowMesh.scale.x = aspect;
@@ -246,7 +264,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       const spec = specs[index] ?? LAYERS[index];
       for (let column = 0; column < fill.columns; column++) {
         const u = -OVERSCAN + (2 * OVERSCAN * column) / SEGMENTS;
-        const edge = edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale);
+        const edge = edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale, spacing, amplitudeScale);
         fill.positions[column * 6 + 1] = edge;
         fill.positions[column * 6 + 4] = FLOOR;
         fill.edges[column * 2] = fill.edges[column * 2 + 1] = edge;

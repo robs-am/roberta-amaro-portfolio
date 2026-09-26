@@ -18,7 +18,17 @@ export const LIGHT_OPACITIES = [0.18, 0.3, 0.46, 0.64];
 // hump turns into a sharp, tall spike. `freqScale` widens the humps back out on those screens by lowering
 // their frequency in proportion to how much narrower the screen is; landscape screens (>= 1) are untouched.
 export const CALM_ASPECT = 1;
-export const MIN_FREQ_SCALE = 0.55;
+// On a real phone (`PORTRAIT_ASPECT`) that proportional cut went too far: at the 0.55 it bottomed out at, the
+// main wave showed less than half a hump across the width, so the layers read as one broad slope, not as waves.
+// This fixed value shows about one crest per layer while the skew and the taller waves below keep them from spiking.
+export const PORTRAIT_FREQ_SCALE = 0.9;
+
+// On a portrait screen (see `PORTRAIT_ASPECT`) the text takes most of the height, so the waves only get the strip
+// under it. Two changes make the four layers fit that strip and still read as full: the steps between them
+// shrink (`PORTRAIT_SPACING`, measured from the first layer, which stays where it is so it keeps clear of the
+// CTAs), and the waves grow taller (`PORTRAIT_AMPLITUDE`) so the layers still interlock. Landscape is untouched.
+export const PORTRAIT_SPACING = 0.75;
+export const PORTRAIT_AMPLITUDE = 1.25;
 
 // Each edge is three sines added up: a main wave, a finer ripple on it, and a long slow swell that carries the
 // whole hump along, so the shape does not repeat. Their speeds differ (and run in opposite directions), so it
@@ -52,12 +62,21 @@ export const LAYERS: LayerSpec[] = [
 
 // `lean` shifts the main wave with the pointer (in opposite directions on alternate layers), so the waves
 // lean toward the cursor like liquid rather than only sliding as a block.
-export const edgeAt = (spec: LayerSpec, u: number, seconds: number, horizon: number, lean: number, freqScale: number) => {
-  let y = horizon + spec.base;
+export const edgeAt = (
+  spec: LayerSpec,
+  u: number,
+  seconds: number,
+  horizon: number,
+  lean: number,
+  freqScale: number,
+  spacing = 1,
+  amplitudeScale = 1,
+) => {
+  let y = horizon + LAYERS[0].base + (spec.base - LAYERS[0].base) * spacing;
   for (let i = 0; i < 3; i++) {
     const angle = spec.frequency[i] * freqScale * u + spec.phase[i] + spec.speed[i] * seconds + (i === 0 ? lean : 0);
     // Bending the angle by its own sine skews the wave: sin(a + k sin a) is steeper on one side than the other.
-    y += spec.amplitude[i] * Math.sin(i === 0 ? angle + spec.skew * Math.sin(angle) : angle);
+    y += spec.amplitude[i] * amplitudeScale * Math.sin(i === 0 ? angle + spec.skew * Math.sin(angle) : angle);
   }
   return y;
 };
