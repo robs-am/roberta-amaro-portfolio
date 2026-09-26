@@ -7,10 +7,10 @@ export const PORTRAIT_ASPECT = 0.85;
 // How opaque each layer is, back to front. The layers behind are the ones that pass behind the text, so they
 // are faint, and the opacity rises step by step toward the front layer, which stays solid and reads as the
 // nearest. The shadows follow it (see `applyColors` in waveScene.ts).
-export const DARK_OPACITIES = [0.14, 0.24, 0.4, 0.52];
+export const DARK_OPACITIES = [0.2, 0.32, 0.48, 0.6];
 // The light page has no glow to carry the waves, so all of its layers hold a visible tint of rose (not only the
 // front one) and rise from a light wash at the back to the solid front layer.
-export const LIGHT_OPACITIES = [0.22, 0.32, 0.42, 0.5];
+export const LIGHT_OPACITIES = [0.3, 0.4, 0.5, 0.6];
 
 // Below this aspect the screen is narrower than it is tall (a phone in portrait): the same amplitude that
 // reads as a calm, wide swell on a landscape screen gets squeezed into a much narrower width there, so every

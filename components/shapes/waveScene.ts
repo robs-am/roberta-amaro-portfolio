@@ -125,8 +125,8 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     // sink into the page. Each layer is a clear step from the last.
     // The dark page's colours are brighter than before to make up for the lower opacity: less of the layer
     // shows, so what shows has to glow more.
-    const back = dark ? token("--accent").lerp(new Color(0xffffff), 0.1) : new Color(0xc79aad);
-    const front = dark ? new Color(0xb85a80) : new Color(0x8c566f);
+    const back = dark ? token("--accent").lerp(new Color(0xffffff), 0.1) : new Color(0xb9819a);
+    const front = dark ? new Color(0xb85a80) : new Color(0x7d4361);
     const deepen = dark ? new Color(0x2a1621) : token("--accent");
     palette = { dark, back, front, deepen };
     paint();
