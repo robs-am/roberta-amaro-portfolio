@@ -39,10 +39,12 @@ export const fillFragment = /* glsl */ `
   uniform float uPortrait;
   varying float vDepth;
   varying float vU;
+  // A random-looking number from 0 to 1 for a whole-number cell (Dave Hoskins' hash: no sin, so it does not
+  // repeat in bands on a phone's GPU).
   float hash(vec2 cell) {
-    vec2 p = fract(cell * vec2(123.34, 456.21));
-    p += dot(p, p + 45.32);
-    return fract(p.x * p.y);
+    vec3 p3 = fract(vec3(cell.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
   }
   void main() {
     vec3 color = mix(uEdge, uDeep, smoothstep(0.0, 0.7, vDepth));
@@ -50,12 +52,14 @@ export const fillFragment = /* glsl */ `
     float alpha = 1.0;
     if (uGrain > 0.0) {
       vec2 p = vec2(vU * uAspect, vDepth) + uSeed;
-      float fine = hash(floor(p * 320.0));
-      float clump = hash(floor(p * 90.0) + 3.7);
+      float fine = hash(floor(p * 220.0));
+      float clump = hash(floor(p * 70.0) + 3.7);
       float strength = uGrain * mix(1.0, 0.6, uPortrait);
-      color *= 1.0 + (mix(fine, clump, 0.35) - 0.5) * 0.55 * strength;
-      color = mix(color, uRim, step(0.985, fine) * 0.5 * strength);
-      alpha -= smoothstep(0.75, 1.0, hash(floor(p * 200.0) + 9.1)) * 0.22 * strength;
+      // The colour is in linear light and the layer only shows through its opacity, so a swing of a few percent
+      // here reaches the screen as almost nothing: it takes about +-45% to read as grain.
+      color *= 1.0 + (mix(fine, clump, 0.35) - 0.5) * 1.1 * strength;
+      color = mix(color, uRim, step(0.97, fine) * 0.6 * strength);
+      alpha -= smoothstep(0.7, 1.0, hash(floor(p * 150.0) + 9.1)) * 0.35 * strength;
     }
     float side = mix(uSafe, 1.0, smoothstep(uFadeFrom, uFadeTo, vU));
     gl_FragColor = vec4(color, alpha * uOpacity * mix(side, ${PORTRAIT_STRENGTH}, uPortrait));
