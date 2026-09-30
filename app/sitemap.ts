@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
+import { projects } from "@/data/projects";
 import { routes, siteUrl } from "@/data/site";
 import { alternatesFor } from "@/i18n/alternates";
 import { routing } from "@/i18n/routing";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return routes.flatMap((path) =>
+  const paths = [...routes, ...projects.map((project) => `/projects/${project.id}`)];
+  return paths.flatMap((path) =>
     routing.locales.map((locale) => ({
       url: `${siteUrl}/${locale}${path}`,
       lastModified: new Date(),

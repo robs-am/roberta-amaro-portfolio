@@ -81,6 +81,22 @@ export type Project = {
   featured?: boolean;
 };
 
+export type CaseSection = {
+  /** Anchor in the page; also keys the side index. */
+  id: string;
+  /** Short name in the side index. */
+  label: Localized;
+  /** Heading that states the conclusion of the section, not just its topic. */
+  title: Localized;
+  /** One string per paragraph. */
+  body: Localized[];
+};
+
+/** The long-form page of a project (`/projects/[slug]`); lives in `data/cases.ts`, keyed by `Project["id"]`. */
+export type ProjectCase = {
+  sections: CaseSection[];
+};
+
 export function localize(value: Localized, locale: Locale): string {
   return value[locale];
 }

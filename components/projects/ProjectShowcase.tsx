@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { ProjectDialog } from "./ProjectDialog";
-import { ProjectRow } from "./ProjectRow";
+import { ProjectCard } from "./ProjectCard";
 import type { ShowcaseItem, ShowcaseLabels } from "./types";
 import { useProjectLightbox } from "./useProjectLightbox";
 import { useShowcaseEntrance } from "./useShowcaseEntrance";
@@ -36,9 +36,9 @@ export function ProjectShowcase({
 
       {intro && <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">{intro}</p>}
 
-      <ul className="mt-4 lg:mt-2">
+      <ul className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
         {items.map((item, index) => (
-          <ProjectRow
+          <ProjectCard
             key={item.id}
             item={item}
             labels={labels}

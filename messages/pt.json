@@ -70,11 +70,18 @@
     "tech": "Tecnologias",
     "repo": "Repositório",
     "demo": "Ver site",
+    "viewCase": "Ver case",
     "newTab": "(abre em nova aba)",
     "whatIDid": "Minha atuação",
     "close": "Fechar",
     "previous": "Projeto anterior",
     "next": "Próximo projeto"
+  },
+  "ProjectCase": {
+    "onThisPage": "Nesta página",
+    "back": "Todos os projetos",
+    "visit": "Ver site",
+    "newTab": "(abre em nova aba)"
   },
   "About": {
     "title": "Sobre",

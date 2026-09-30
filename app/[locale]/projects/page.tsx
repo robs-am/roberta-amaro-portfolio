@@ -44,6 +44,7 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
       title: localize(project.title, locale),
       category: localize(project.category, locale),
       href,
+      caseHref: `/projects/${project.id}`,
       description: localize(project.description, locale),
       contribution: project.contribution && localize(project.contribution, locale),
       tech: project.tech,
@@ -65,6 +66,7 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
         items={items}
         labels={{
           visit: t("demo"),
+          viewCase: t("viewCase"),
           newTab: t("newTab"),
           tech: t("tech"),
           whatIDid: t("whatIDid"),

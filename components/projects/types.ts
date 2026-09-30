@@ -11,6 +11,8 @@ export type ShowcaseItem = {
   title: string;
   category: string;
   href: string;
+  /** Path of the project's own page, when it has one; the card links there instead of opening the lightbox. */
+  caseHref?: string;
   images: ShowcaseImage[];
   description: string;
   contribution?: string;
@@ -19,6 +21,7 @@ export type ShowcaseItem = {
 
 export type ShowcaseLabels = {
   visit: string;
+  viewCase: string;
   newTab: string;
   tech: string;
   whatIDid: string;
