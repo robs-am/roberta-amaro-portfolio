@@ -139,16 +139,17 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const dark = getTheme() === "dark";
     // Dark page: a soft pink at the back to a wine in front, deepening toward a near-black plum. Its colours are
     // bright to make up for its lower opacity: less of the layer shows, so what shows has to glow more.
-    // Light page: a greyed blue-violet, from a pale lilac at the back to a deep violet in front, deepening toward an
-    // ink indigo. Every pink tried on the light ground (the dark page's pastel, a dusty rose, a burnt rose, a plum
-    // and a deep wine) read as sweet or childish; this violet is what her "azul profundo" mood gave, and she
-    // liked it better. The accent stays plum, so the links and the current item stand out against the waves.
+    // Twilight (her reference photo of a city at dusk): a slate blue, pale at the back and steel in front,
+    // deepening toward a navy ink, with a thin coral-orange light on each edge, like the last glow at the
+    // horizon. The cool part is most of the colour and the warm part is small, as in the photo. Every pink tried
+    // on the light ground (pastel, dusty rose, burnt rose, plum, deep wine) read as sweet or childish, and a
+    // violet came before this one. The accent stays plum, so the links and the current item stand out.
     // It is built like the dark page: faint veils with a dark deep side and shadows between them (its opacities
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
-    const back = dark ? new Color(0xb8a9dc) : new Color(0xb0a6c6);
-    const front = dark ? new Color(0x7a62b4) : new Color(0x5c4e82);
-    const deepen = dark ? new Color(0x1e1636) : new Color(0x241a3d);
-    const rim = dark ? new Color(0xd9d0f0) : new Color(0xd0c9e2);
+    const back = dark ? new Color(0x8fa3c4) : new Color(0xa9b3c8);
+    const front = dark ? new Color(0x4f6a96) : new Color(0x46597f);
+    const deepen = dark ? new Color(0x141c30) : new Color(0x1c2640);
+    const rim = dark ? new Color(0xff9a70) : new Color(0xf2b596);
     palette = { dark, back, front, deepen, rim };
     paint();
   };
@@ -188,7 +189,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
     const rim = recolor(palette.rim.clone());
-    const shadow = recolor(new Color(dark ? 0x0b0716 : 0x1f1638));
+    const shadow = recolor(new Color(dark ? 0x070b14 : 0x141b30));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the

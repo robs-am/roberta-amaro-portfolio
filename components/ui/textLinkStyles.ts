@@ -12,9 +12,9 @@ export const textLinkArrowClass =
 // Light text for what sits on the dark wine front wave of the light theme (the menu's contacts and the
 // credits). Only on landscape screens: on a portrait one the waves are faint (see `PORTRAIT_ASPECT` in
 // waveLayers.ts, 0.85 = 17/20), and light text would vanish on the pale page. The dark theme is already light.
-// A greyed lilac, not white or pink: white was too stark against the waves and pink too sweet. Important so it
+// A greyed blue-white, not white or pink: white was too stark against the waves and pink too sweet. Important so it
 // wins over the base colour of whatever it is added to (the credits' `text-foreground/85`).
-export const onWaveTextClass = "[@media(min-aspect-ratio:17/20)]:text-[#e0dce8]!";
+export const onWaveTextClass = "[@media(min-aspect-ratio:17/20)]:text-[#e0e4ec]!";
 
 // Larger variant, for links that sit next to big type (the hero and the menu's contact links). Large from
 // the smallest screen (not just from `sm`): on the menu these sit under giant nav type, where the base
