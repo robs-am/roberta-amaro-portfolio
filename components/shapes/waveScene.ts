@@ -32,10 +32,10 @@ const SAFE_FEATHER = 0.45;
 // How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
 // The dark page's layers from the sky down to the horizon: magenta, coral, gold, and a dark wine-brown silhouette in front.
 const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
-// The light page is the other end of the same horizon light: dawn. A pale-blue sky that warms to cream, apricot and
-// a soft peach at the horizon. The four are close in lightness and saturation so they read as one light, not four
-// colours, and light all the way to the front so the text over it stays dark.
-const LIGHT_STOPS = [0xbdd3e6, 0xf5e6b8, 0xf4d2a8, 0xf0bd8e];
+// The light page is the same landscape by day: the dark page's four colours (magenta, coral, gold, wine), in the same
+// order, each mixed with the page's cream (#f3ece8) so only the lightness changes: 50%, 50%, 55% and 35% of the dark
+// colour. Light all the way to the front, so the text over it stays dark.
+const LIGHT_STOPS = [0xdd99ba, 0xf9ab9b, 0xfacd8f, 0xb2a3a5];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
@@ -146,8 +146,8 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     // Dark page: a dusk sky with the glow at the horizon (her reference photos). Each layer has its own colour,
     // from the sky down to the horizon (see `DARK_STOPS`). A single back-to-front blend would go
     // muddy between the warm colours and the dark one, so the stops are set one by one.
-    // Light page: dawn, the other end of the same horizon light (see `LIGHT_STOPS`), with a thin cream-gold light
-    // on each edge and a plum deep side. It replaced a slate-blue twilight. Earlier, flat pinks on this light ground
+    // Light page: the same landscape by day (see `LIGHT_STOPS`), with a thin cream-gold light
+    // on each edge and a warm deep side. It replaced a slate-blue twilight. Earlier, flat pinks on this light ground
     // (pastel, dusty rose, burnt rose, plum, deep wine) read as sweet or childish: watch the rose layer for that.
     // It is built like the dark page: faint veils with a dark deep side and shadows between them (its opacities
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.

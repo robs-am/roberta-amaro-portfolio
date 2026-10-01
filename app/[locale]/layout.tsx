@@ -94,6 +94,12 @@ export default async function LocaleLayout({
           <Header />
           {children}
           <Footer />
+          {/* Light theme only: a pale lavender at the top of the sky, fading into the page's cream. It is the cool
+              counterpart of the dark theme's violet top, so the two read as the same sky. Behind the grain. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none fixed inset-0 -z-8 dark:hidden bg-[linear-gradient(to_bottom,#e3ddf0_0%,color-mix(in_oklab,#e3ddf0_40%,transparent)_35%,transparent_65%)]"
+          />
           <Grain layerClassName="-z-6" />
         </NextIntlClientProvider>
       </body>
