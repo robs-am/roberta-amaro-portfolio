@@ -27,7 +27,7 @@ export function Credits() {
       <div
         aria-hidden="true"
         style={ruleWidth ? { width: ruleWidth + 32 } : undefined}
-        className="h-px w-12 bg-border [@media(min-aspect-ratio:17/20)]:bg-white/25"
+        className="h-px w-12 bg-border [@media(min-aspect-ratio:17/20)]:dark:bg-white/25"
       />
       <p ref={ref} className={`text-foreground/85 font-sans ${onWaveTextClass}`}>
         {t('credits')} {t('copyright')}

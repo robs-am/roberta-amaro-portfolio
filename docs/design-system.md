@@ -68,7 +68,7 @@ Razão de contraste WCAG dos pares de texto usados hoje:
 | `accent` / pill (`bg-accent/10` sobre `card`) | 4.70 | 7.13 |
 | `accent-foreground` / `accent` | 6.02 | 7.91 |
 
-Todos os pares passam AA; no claro o accent fica mais apertado (4,5 a 5,4), então não o use sobre `elevated` (4,56). Ainda assim, não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
+Todos os pares passam AA; no claro o accent fica mais apertado (4,7 a 5,4); sobre `elevated` dá 4,56, então evite. Ainda assim, não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
 
 ### Texto sobre o brilho
 

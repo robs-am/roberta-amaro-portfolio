@@ -32,6 +32,10 @@ const SAFE_FEATHER = 0.45;
 // How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
 // The dark page's layers from the sky down to the horizon: magenta, coral, gold, and a dark wine-brown silhouette in front.
 const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
+// The light page is the other end of the same horizon light: dawn. One warm family (peach-rose to gold), light all
+// the way to the front, so the text over it stays dark. The layers are translucent, so the colours are stronger
+// than they look on the page.
+const LIGHT_STOPS = [0xf2c4b4, 0xeea89a, 0xf0a878, 0xe8b76f];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
@@ -142,17 +146,16 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     // Dark page: a dusk sky with the glow at the horizon (her reference photos). Each layer has its own colour,
     // from the sky down to the horizon (see `DARK_STOPS`). A single back-to-front blend would go
     // muddy between the warm colours and the dark one, so the stops are set one by one.
-    // Light page: twilight in a slate blue, pale at the back and steel in front, deepening toward a navy ink, with a
-    // thin peach-coral light on each edge. Every pink tried on the light ground (pastel, dusty rose, burnt rose,
-    // plum, deep wine) read as sweet or childish, and a violet came before this one. The accent stays plum, so
-    // the links and the current item stand out.
+    // Light page: dawn, the other end of the same horizon light (see `LIGHT_STOPS`), with a thin cream-gold light
+    // on each edge and a plum deep side. It replaced a slate-blue twilight. Earlier, flat pinks on this light ground
+    // (pastel, dusty rose, burnt rose, plum, deep wine) read as sweet or childish: watch the rose layer for that.
     // It is built like the dark page: faint veils with a dark deep side and shadows between them (its opacities
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
     const back = dark ? new Color(0x8fa3c4) : new Color(0xa9b3c8);
     const front = dark ? new Color(0x4f6a96) : new Color(0x46597f);
-    const deepen = dark ? new Color(0x141c30) : new Color(0x1c2640);
-    const rim = dark ? new Color(0xff9a70) : new Color(0xf2b596);
-    palette = { dark, back, front, deepen, rim, stops: dark ? DARK_STOPS.map((hex) => new Color(hex)) : null };
+    const deepen = dark ? new Color(0x141c30) : new Color(0x9a5a5a);
+    const rim = dark ? new Color(0xff9a70) : new Color(0xfff1d6);
+    palette = { dark, back, front, deepen, rim, stops: (dark ? DARK_STOPS : LIGHT_STOPS).map((hex) => new Color(hex)) };
     paint();
   };
 
@@ -191,7 +194,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
     const rim = recolor(palette.rim.clone());
-    const shadow = recolor(new Color(dark ? 0x0a0612 : 0x141b30));
+    const shadow = recolor(new Color(dark ? 0x0a0612 : 0x6a3a40));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the

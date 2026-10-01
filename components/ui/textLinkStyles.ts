@@ -9,13 +9,13 @@ export const textLinkLabelClass =
 export const textLinkArrowClass =
   "size-4 shrink-0 transition-transform duration-300 ease-expressive motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5";
 
-// Light text for what sits on the dark wine front wave of the light theme (the menu's contacts and the
+// Light text for what sits on the dark front wave of the dark page (the menu's contacts and the
 // credits). Only on landscape screens: on a portrait one the waves are faint (see `PORTRAIT_ASPECT` in
 // waveLayers.ts, 0.85 = 17/20), and light text would vanish on the pale page. The dark theme is already light.
-// A greyed blue-white on the light page (its waves are slate blue) and a warm cream on the dark one (its waves are the dusk glow); never plain white or pink: white was too stark against the waves and pink too sweet. Important so it
-// wins over the base colour of whatever it is added to (the credits' `text-foreground/85`).
-export const onWaveTextClass =
-  "[@media(min-aspect-ratio:17/20)]:text-[#e0e4ec]! [@media(min-aspect-ratio:17/20)]:dark:text-[#f3e4da]!";
+// A warm cream, on the dark page only: the light page's waves are light all the way down, so its text stays dark.
+// Never plain white or pink: white was too stark against the waves and pink too sweet. Important so it wins over
+// the base colour of whatever it is added to (the credits' `text-foreground/85`).
+export const onWaveTextClass = "[@media(min-aspect-ratio:17/20)]:dark:text-[#f3e4da]!";
 
 // Larger variant, for links that sit next to big type (the hero and the menu's contact links). Large from
 // the smallest screen (not just from `sm`): on the menu these sit under giant nav type, where the base
