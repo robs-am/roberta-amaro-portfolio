@@ -30,6 +30,8 @@ const MAX_PIXEL_RATIO = 1.5;
 // How far past the end of the text (in `u`) the layers take to reach full strength.
 const SAFE_FEATHER = 0.45;
 // How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
+// The dark page's layers from the sky down to the horizon: magenta, coral, gold, and a navy silhouette in front.
+const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x0e1428];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
@@ -131,26 +133,26 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
 
   // The palette as the theme gives it, kept so that a change of tone can repaint without reading the CSS
   // again (the tone eases over a few seconds, one repaint per frame).
-  let palette: { dark: boolean; back: Color; front: Color; deepen: Color; rim: Color } | null = null;
+  let palette: { dark: boolean; back: Color; front: Color; deepen: Color; rim: Color; stops: Color[] | null } | null = null;
   let tone: Tone = { warmth: 0, hue: 0, tint: 0, spread: 0, grain: 0 };
 
   // Picks the palette for the current theme, then paints.
   const applyColors = () => {
     const dark = getTheme() === "dark";
-    // Dark page: a soft pink at the back to a wine in front, deepening toward a near-black plum. Its colours are
-    // bright to make up for its lower opacity: less of the layer shows, so what shows has to glow more.
-    // Twilight (her reference photo of a city at dusk): a slate blue, pale at the back and steel in front,
-    // deepening toward a navy ink, with a thin coral-orange light on each edge, like the last glow at the
-    // horizon. The cool part is most of the colour and the warm part is small, as in the photo. Every pink tried
-    // on the light ground (pastel, dusty rose, burnt rose, plum, deep wine) read as sweet or childish, and a
-    // violet came before this one. The accent stays plum, so the links and the current item stand out.
+    // Dark page: a dusk sky with the glow at the horizon (her reference photos). Each layer has its own colour,
+    // from the sky down to the horizon: magenta, coral, gold, and a navy silhouette in front. A single
+    // back-to-front blend would go a muddy brown between coral and navy, so the stops are set one by one.
+    // Light page: twilight in a slate blue, pale at the back and steel in front, deepening toward a navy ink, with a
+    // thin peach-coral light on each edge. Every pink tried on the light ground (pastel, dusty rose, burnt rose,
+    // plum, deep wine) read as sweet or childish, and a violet came before this one. The accent stays plum, so
+    // the links and the current item stand out.
     // It is built like the dark page: faint veils with a dark deep side and shadows between them (its opacities
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
     const back = dark ? new Color(0x8fa3c4) : new Color(0xa9b3c8);
     const front = dark ? new Color(0x4f6a96) : new Color(0x46597f);
     const deepen = dark ? new Color(0x141c30) : new Color(0x1c2640);
     const rim = dark ? new Color(0xff9a70) : new Color(0xf2b596);
-    palette = { dark, back, front, deepen, rim };
+    palette = { dark, back, front, deepen, rim, stops: dark ? DARK_STOPS.map((hex) => new Color(hex)) : null };
     paint();
   };
 
@@ -189,7 +191,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
     const rim = recolor(palette.rim.clone());
-    const shadow = recolor(new Color(dark ? 0x070b14 : 0x141b30));
+    const shadow = recolor(new Color(dark ? 0x0a0612 : 0x141b30));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
@@ -199,12 +201,15 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const safe = dark ? 0.25 : 0.7;
     layerOpacities = dark ? DARK_OPACITIES : LIGHT_OPACITIES;
     layers.forEach(({ fillMaterial, shadowMaterial }, index) => {
-      const edge = turnHue(back.clone().lerp(front, index / (LAYER_COUNT - 1)), index);
+      // The dark page's own colour per layer (leaned and turned like the rest), else a blend from back to front.
+      const stop = palette?.stops?.[index];
+      const base = stop ? recolor(stop.clone().lerp(lean, tint)) : back.clone().lerp(front, index / (LAYER_COUNT - 1));
+      const edge = turnHue(base, index);
       fillMaterial.uniforms.uSafe.value = shadowMaterial.uniforms.uSafe.value = safe;
       fillMaterial.uniforms.uGrain.value = tone.grain;
       fillMaterial.uniforms.uEdge.value.copy(edge);
       // The light page's deep side goes further toward the dark, so each layer has more body under its lit edge.
-      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), dark ? 0.3 : 0.45);
+      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), dark ? 0.18 : 0.45);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
       fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), 0.55);
       shadowMaterial.uniforms.uColor.value.copy(turnHue(shadow.clone(), index));

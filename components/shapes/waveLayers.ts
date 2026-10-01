@@ -7,7 +7,9 @@ export const PORTRAIT_ASPECT = 0.85;
 // How opaque each layer is, back to front. The layers behind are the ones that pass behind the text, so they
 // are faint, and the opacity rises step by step toward the front layer, which stays solid and reads as the
 // nearest. The shadows follow it (see `applyColors` in waveScene.ts).
-export const DARK_OPACITIES = [0.2, 0.32, 0.48, 0.6];
+// The dark page is a dusk sky: the three back layers are the glow, so they are more present than before, and the front one
+// is a near-solid silhouette.
+export const DARK_OPACITIES = [0.32, 0.52, 0.64, 0.95];
 // The light page is built like the dark one: translucent veils that get their depth from a dark side and from the
 // shadows between the layers, and only the front one has body. High opacities (0.4 to 0.88, then 0.4 to 0.82) made
 // every layer a flat pink sheet and read as sweet, not elegant.

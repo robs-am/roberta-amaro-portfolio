@@ -39,7 +39,7 @@ O tema segue a preferência do navegador (`prefers-color-scheme`) até a visitan
 | `--background` | `bg-background` | `#ebe6e4` | `#15131a` | fundo da página |
 | `--card` | `bg-card` | `#f5f2f0` | `#1e1a26` | cards e blocos de conteúdo |
 | `--elevated` | `bg-elevated` | `#e4dfdd` | `#272231` | superfícies internas e hover |
-| `--foreground` | `text-foreground` | `#2a2427` | `#f5f1f3` | texto principal |
+| `--foreground` | `text-foreground` | `#2a2427` | `#f4e9e1` | texto principal |
 | `--muted` | `text-muted` | `#675d63` | `#c4bdcc` | texto secundário (datas, empresa, descrições) |
 | `--accent` | `text-accent`, `bg-accent` | `#7f2f5f` | `#e08a9f` | destaque: links, traço decorativo do hero, pills, botão principal |
 | `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1029` | texto sobre fundo `bg-accent` |
