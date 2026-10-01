@@ -90,7 +90,7 @@ export function ProjectCard({
             <Link
               data-showcase-meta
               href={item.caseHref}
-              className={`inline-flex min-h-11 items-center gap-2 text-base font-semibold text-accent dark:text-foreground ${titleTriggerClass}`}
+              className={`inline-flex min-h-11 items-center gap-2 text-base font-semibold text-foreground transition-colors hover:text-accent ${titleTriggerClass}`}
             >
               <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1.5px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-300 ease-expressive group-hover/card:bg-[length:100%_1.5px] group-focus-within/card:bg-[length:100%_1.5px] motion-reduce:transition-none">
                 {labels.viewCase}
