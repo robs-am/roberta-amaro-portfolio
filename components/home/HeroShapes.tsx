@@ -33,6 +33,10 @@ const SAFE_MARGIN = 24;
 // horizon under the CTAs the back ones fell below the mood field and the footer, and a mood had almost
 // nothing to show on. Raised, they sit behind the icons and the field (faint, and the field has its own
 // backdrop), while the highest crest of the first layer still stops short of the CTAs.
+// Pixels of clear space under the CTAs (the words) on a wide screen: the crest of the first layer rises about this
+// much above the horizon, so it stops just short of the links. The icons below them are not words and can sit on the
+// faint top of the waves (under the icons, as it was, the waves were pushed too low).
+const DESKTOP_CLEAR = 72;
 const PORTRAIT_CLEAR = 20;
 // (Now 20, from -24: the crest was touching the last row of the CTAs. The layers lean toward the bottom left, see
 // `PORTRAIT_TILT`, so the left edge keeps this clearance and the right drops away from it.)
@@ -127,19 +131,18 @@ export function HeroShapes() {
       if (visible !== wasVisible) sync();
     };
 
-    // The waves start just under the name, so it stands clear above them; on a portrait phone, where the
-    // waves can't dodge sideways, they start under the CTAs instead, clearing the name, role and CTAs
-    // together. Either reference's place comes from the layout (offsetTop), which the entrance animation
+    // The waves start under the CTAs, so the name, role and links stand clear above them, and the waves keep their
+    // own shape (a valley bent around the text read as a bowl and flattened the middle; starting under the icons
+    // too put them too low). Either reference's place comes from the layout (offsetTop), which the entrance animation
     // does not move, so this can run at any time.
     const placeHorizon = (height: number, portrait: boolean) => {
-      const target = portrait
-        ? (document.querySelector<HTMLElement>("#hero [data-hero-cta]") ?? document.querySelector<HTMLElement>("#hero h1"))
-        : document.querySelector<HTMLElement>("#hero h1");
+      const target =
+        document.querySelector<HTMLElement>("#hero [data-hero-cta]") ?? document.querySelector<HTMLElement>("#hero h1");
       if (!target) return;
       let bottom = target.offsetHeight;
       for (let node: HTMLElement | null = target; node; node = node.offsetParent as HTMLElement | null) bottom += node.offsetTop;
-      const gap = NAME_GAP + (portrait ? PORTRAIT_CLEAR : 0);
-      const horizon = MathUtils.clamp(1 - (2 * (bottom + gap)) / height + HORIZON_LIFT, -0.6, 0.4);
+      const gap = NAME_GAP + (portrait ? PORTRAIT_CLEAR : DESKTOP_CLEAR);
+      const horizon = MathUtils.clamp(1 - (2 * (bottom + gap)) / height + (portrait ? HORIZON_LIFT : 0), -0.6, 0.4);
       waveHorizon.y = portrait ? Math.max(horizon, PORTRAIT_HORIZON_FLOOR) : horizon;
       waves.setHorizon(waveHorizon.y);
     };

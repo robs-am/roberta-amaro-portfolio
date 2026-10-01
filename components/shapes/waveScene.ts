@@ -3,10 +3,14 @@ import { getTheme } from "@/components/theme/theme";
 import { fillFragment, fillVertex, shadowFragment, shadowVertex } from "@/components/shapes/waveShaders";
 import { OVERSCAN, SEGMENTS, createStrip } from "@/components/shapes/waveGeometry";
 import {
-  CALM_ASPECT,
   DARK_OPACITIES,
   LAYERS,
   LAYER_COUNT,
+  LANDSCAPE_AMPLITUDE,
+  LANDSCAPE_FREQ_SCALE,
+  LANDSCAPE_SIDE_LIFT,
+  LANDSCAPE_SIDE_REACH,
+  LANDSCAPE_SPACING,
   LIGHT_OPACITIES,
   PORTRAIT_AMPLITUDE,
   PORTRAIT_ASPECT,
@@ -115,13 +119,14 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   });
 
   let aspect = 1;
-  // See `CALM_ASPECT`/`PORTRAIT_FREQ_SCALE`: 1 on landscape screens, lower (wider humps) on narrow ones.
+  // See `LANDSCAPE_FREQ_SCALE`/`PORTRAIT_FREQ_SCALE`: lower on both (wider humps).
   let freqScale = 1;
   // See `PORTRAIT_SPACING`/`PORTRAIT_AMPLITUDE`: closer, taller layers on a portrait screen, 1 elsewhere.
   let spacing = 1;
   let amplitudeScale = 1;
   // See `PORTRAIT_TILT`: the diagonal of the layers on a portrait screen, 0 elsewhere.
   let tilt = 0;
+  let portraitScreen = false;
   // Where the waves start, in screen height units (-1 bottom, 1 top). The home sets it from the name's position.
   let horizon = 0;
 
@@ -132,7 +137,9 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   // Where the text on the left ends, as `u` (-1 the left edge of the screen, 1 the right). The layers are
   // faint (`uSafe`) up to there and grow to full strength over the next stretch, so the waves stay out of the
   // way of the text however wide it is.
+  let textEdgeU = 0.4;
   const setSafeZone = (textRightU: number) => {
+    textEdgeU = textRightU;
     for (const { fillMaterial, shadowMaterial } of layers) {
       for (const material of [fillMaterial, shadowMaterial]) {
         material.uniforms.uFadeFrom.value = textRightU;
@@ -250,11 +257,12 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     camera.right = aspect;
     camera.updateProjectionMatrix();
     const portrait = aspect < PORTRAIT_ASPECT ? 1 : 0;
-    const landscapeFreq = aspect < CALM_ASPECT ? aspect : 1;
+    const landscapeFreq = LANDSCAPE_FREQ_SCALE;
     freqScale = portrait ? PORTRAIT_FREQ_SCALE : landscapeFreq;
-    spacing = portrait ? PORTRAIT_SPACING : 1;
-    amplitudeScale = portrait ? PORTRAIT_AMPLITUDE : 1;
+    spacing = portrait ? PORTRAIT_SPACING : LANDSCAPE_SPACING;
+    amplitudeScale = portrait ? PORTRAIT_AMPLITUDE : LANDSCAPE_AMPLITUDE;
     tilt = portrait ? PORTRAIT_TILT : 0;
+    portraitScreen = portrait === 1;
     for (const layer of layers) {
       layer.fillMesh.scale.x = aspect;
       layer.shadowMesh.scale.x = aspect;
@@ -262,6 +270,15 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       layer.fillMaterial.uniforms.uAspect.value = aspect;
       layer.shadowMaterial.uniforms.uPortrait.value = portrait;
     }
+  };
+
+  // See `LANDSCAPE_SIDE_LIFT`: how much an edge is lifted at `u`, past either end of the text; zero on a portrait screen.
+  const sideLift = (u: number) => {
+    if (portraitScreen) return 0;
+    const past = Math.abs(u) - Math.abs(textEdgeU);
+    if (past <= 0) return 0;
+    const t = Math.min(past / LANDSCAPE_SIDE_REACH, 1);
+    return (u < 0 ? LANDSCAPE_SIDE_LIFT.left : LANDSCAPE_SIDE_LIFT.right) * t * t * (3 - 2 * t);
   };
 
   /**
@@ -280,7 +297,9 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       const spec = specs[index] ?? LAYERS[index];
       for (let column = 0; column < fill.columns; column++) {
         const u = -OVERSCAN + (2 * OVERSCAN * column) / SEGMENTS;
-        const edge = edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale, spacing, amplitudeScale, tilt);
+        const edge =
+          edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale, spacing, amplitudeScale, tilt) +
+          sideLift(u);
         fill.positions[column * 6 + 1] = edge;
         fill.positions[column * 6 + 4] = FLOOR;
         fill.edges[column * 2] = fill.edges[column * 2 + 1] = edge;

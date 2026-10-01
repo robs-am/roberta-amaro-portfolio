@@ -22,7 +22,23 @@ export const LIGHT_OPACITIES = [0.3, 0.42, 0.54, 0.62];
 // reads as a calm, wide swell on a landscape screen gets squeezed into a much narrower width there, so every
 // hump turns into a sharp, tall spike. `freqScale` widens the humps back out on those screens by lowering
 // their frequency in proportion to how much narrower the screen is; landscape screens (>= 1) are untouched.
-export const CALM_ASPECT = 1;
+// Screens that are not portrait use this one factor. 1 was the original; 1.5 (more, tighter waves) read as a ripple, not
+// as swells, so it went below 1 (her call: fewer, wider humps) and the waves got taller instead (`LANDSCAPE_AMPLITUDE`):
+// lowering the frequency only widens a hump, its height is the amplitude.
+export const LANDSCAPE_FREQ_SCALE = 0.85;
+// How tall the waves are on a wide screen, as a multiple of the hand-tuned amplitudes. The crests rise higher above
+// the horizon by this much, so the hero keeps its text clear with `DESKTOP_CLEAR` (HeroShapes.tsx).
+export const LANDSCAPE_AMPLITUDE = 1.45;
+// The steps between the layers on a wide screen: closer (0.8 of the hand-tuned steps), so a front layer's crest rises
+// above the valleys of the one behind it and the layers overlap where they can be seen. At the wider humps, and with the
+// two back layers faint, the full steps left the layers as separate bands.
+export const LANDSCAPE_SPACING = 0.8;
+// On a wide screen the layers also come in from the sides and sag toward the middle: past the text (see `setSafeZone`)
+// each edge is lifted by up to this much (screen height units) at the screen's sides, the left more than the right so
+// the two sides are not a mirrored bowl. The middle, under the text, keeps the waves' own shape. The lift grows over
+// `LANDSCAPE_SIDE_REACH` (in `u`) from where the text ends.
+export const LANDSCAPE_SIDE_LIFT = { left: 0.34, right: 0.2 };
+export const LANDSCAPE_SIDE_REACH = 0.9;
 // On a real phone (`PORTRAIT_ASPECT`) that proportional cut went too far: at the 0.55 it bottomed out at, the
 // main wave showed less than half a hump across the width, so the layers read as one broad slope, not as waves.
 // This fixed value shows about one crest per layer while the skew and the taller waves below keep them from spiking.
