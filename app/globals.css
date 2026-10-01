@@ -41,16 +41,16 @@
    two identical. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #171416;
-    --card: #201c1e;
-    --elevated: #292427;
+    --background: #15131a;
+    --card: #1e1a26;
+    --elevated: #272231;
     --foreground: #f5f1f3;
-    --muted: #c5babf;
+    --muted: #c4bdcc;
     --accent: #e08a9f;
     --accent-foreground: #3a1029;
     --border: rgba(255, 255, 255, 0.12);
-    --glow-1: #532a42;
-    --glow-2: #74424f;
+    --glow-1: #3b3068;
+    --glow-2: #54467f;
     /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
     --glow-opacity: 0.32;
     --highlight: #f8d8e8;
@@ -59,16 +59,16 @@
 }
 
 :root[data-theme="dark"] {
-  --background: #171416;
-  --card: #201c1e;
-  --elevated: #292427;
+  --background: #15131a;
+  --card: #1e1a26;
+  --elevated: #272231;
   --foreground: #f5f1f3;
-  --muted: #c5babf;
+  --muted: #c4bdcc;
   --accent: #e08a9f;
   --accent-foreground: #3a1029;
   --border: rgba(255, 255, 255, 0.12);
-  --glow-1: #532a42;
-  --glow-2: #74424f;
+  --glow-1: #3b3068;
+  --glow-2: #54467f;
   --glow-opacity: 0.32;
   --highlight: #f8d8e8;
   color-scheme: dark;

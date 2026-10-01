@@ -36,17 +36,17 @@ O tema segue a preferência do navegador (`prefers-color-scheme`) até a visitan
 
 | Token | Classe Tailwind | Claro | Escuro | Uso |
 |---|---|---|---|---|
-| `--background` | `bg-background` | `#ebe6e4` | `#171416` | fundo da página |
-| `--card` | `bg-card` | `#f5f2f0` | `#201c1e` | cards e blocos de conteúdo |
-| `--elevated` | `bg-elevated` | `#e4dfdd` | `#292427` | superfícies internas e hover |
+| `--background` | `bg-background` | `#ebe6e4` | `#15131a` | fundo da página |
+| `--card` | `bg-card` | `#f5f2f0` | `#1e1a26` | cards e blocos de conteúdo |
+| `--elevated` | `bg-elevated` | `#e4dfdd` | `#272231` | superfícies internas e hover |
 | `--foreground` | `text-foreground` | `#2a2427` | `#f5f1f3` | texto principal |
-| `--muted` | `text-muted` | `#675d63` | `#c5babf` | texto secundário (datas, empresa, descrições) |
+| `--muted` | `text-muted` | `#675d63` | `#c4bdcc` | texto secundário (datas, empresa, descrições) |
 | `--accent` | `text-accent`, `bg-accent` | `#7f2f5f` | `#e08a9f` | destaque: links, traço decorativo do hero, pills, botão principal |
 | `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1029` | texto sobre fundo `bg-accent` |
 | `--border` | `border-border` | `rgba(42,36,39,0.13)` | `rgba(255,255,255,0.12)` | bordas e divisórias (decorativo, nunca texto) |
 | `--highlight` | `text-highlight` | `#66264c` | `#f8d8e8` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
-| `--glow-1` | `bg-glow-1` | `#f5d5e5` | `#532a42` | brilho de fundo, primeira mancha (decorativo; ameixa no escuro, rosa no claro) |
-| `--glow-2` | `bg-glow-2` | `#f9e4da` | `#74424f` | brilho de fundo, segunda mancha (decorativo; rosa-terra no escuro, pêssego no claro) |
+| `--glow-1` | `bg-glow-1` | `#f5d5e5` | `#3b3068` | brilho de fundo, primeira mancha (decorativo; violeta no escuro, rosa no claro) |
+| `--glow-2` | `bg-glow-2` | `#f9e4da` | `#54467f` | brilho de fundo, segunda mancha (decorativo; violeta mais claro no escuro, pêssego no claro) |
 | `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.32` | `0.32` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
 
 Opacidades sobre tokens funcionam normalmente (`bg-background/85`, `bg-accent/10`).
