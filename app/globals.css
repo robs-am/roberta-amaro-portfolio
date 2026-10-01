@@ -34,6 +34,11 @@
   --glow-opacity: 0.32;
   /* Darker violet for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
   --highlight: #3f2a6b;
+  /* The sky behind the page and the menu (light only, the dark page has none) and the sun's glow low on the right of
+     the hero and the menu, with how much of it shows. */
+  --sky: #e2d9f3;
+  --sun-glow: #ffd9a0;
+  --sun-glow-mix: 58%;
   color-scheme: light;
 }
 
@@ -55,6 +60,8 @@
     /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
     --glow-opacity: 0.32;
     --highlight: #ffe3d3;
+    --sun-glow: #ff9a70;
+    --sun-glow-mix: 32%;
     color-scheme: dark;
   }
 }
@@ -72,6 +79,8 @@
   --glow-2: #54467f;
   --glow-opacity: 0.32;
   --highlight: #ffe3d3;
+  --sun-glow: #ff9a70;
+  --sun-glow-mix: 32%;
   color-scheme: dark;
 }
 

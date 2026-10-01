@@ -94,7 +94,7 @@ export function Menu() {
             {/* Light theme only: the same lavender sky as the page's (see the layout), since this panel covers it. */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 dark:hidden bg-[linear-gradient(to_bottom,#e2d9f3_0%,color-mix(in_oklab,#e2d9f3_40%,transparent)_35%,transparent_65%)]"
+              className="pointer-events-none absolute inset-0 dark:hidden bg-[linear-gradient(to_bottom,var(--sky)_0%,color-mix(in_oklab,var(--sky)_40%,transparent)_35%,transparent_65%)]"
             />
 
             {/* Same atmosphere as the hero's (see Hero.tsx): dark mode only, softens the empty sky above the
@@ -102,7 +102,7 @@ export function Menu() {
                 No explicit z-index — DOM order alone puts it above the grain/waves and below the content. */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_55%_at_75%_100%,color-mix(in_oklab,#ffd9a0_58%,transparent)_0%,transparent_100%)] dark:bg-[radial-gradient(ellipse_120%_55%_at_75%_100%,color-mix(in_oklab,#ff9a70_32%,transparent)_0%,transparent_100%)]"
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_55%_at_75%_100%,color-mix(in_oklab,var(--sun-glow)_var(--sun-glow-mix),transparent)_0%,transparent_100%)]"
             />
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}

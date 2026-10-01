@@ -33,7 +33,7 @@ export function generateStaticParams() {
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f1ece9" },
-    { media: "(prefers-color-scheme: dark)", color: "#171416" },
+    { media: "(prefers-color-scheme: dark)", color: "#15131a" },
   ],
 };
 
@@ -98,7 +98,7 @@ export default async function LocaleLayout({
               (the cool blue read as an overcast day). It ties to the dark theme's violet. Behind the grain. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none fixed inset-0 -z-8 dark:hidden bg-[linear-gradient(to_bottom,#e2d9f3_0%,color-mix(in_oklab,#e2d9f3_40%,transparent)_35%,transparent_65%)]"
+            className="pointer-events-none fixed inset-0 -z-8 dark:hidden bg-[linear-gradient(to_bottom,var(--sky)_0%,color-mix(in_oklab,var(--sky)_40%,transparent)_35%,transparent_65%)]"
           />
           <Grain layerClassName="-z-6" />
         </NextIntlClientProvider>
