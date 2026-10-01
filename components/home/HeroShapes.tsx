@@ -242,7 +242,7 @@ export function HeroShapes() {
           shorter and translated by its entrance animation) so both line up and fade together with the canvas. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hidden dark:block dark:bg-[radial-gradient(ellipse_135%_100%_at_80%_82%,color-mix(in_oklab,var(--glow-1)_50%,transparent)_0%,transparent_82%)]"
+        className="pointer-events-none absolute inset-0 hidden dark:block dark:bg-[radial-gradient(ellipse_120%_55%_at_75%_100%,color-mix(in_oklab,#ff9a70_32%,transparent)_0%,transparent_100%)]"
       />
     </div>,
     document.body,

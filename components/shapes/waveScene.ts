@@ -30,8 +30,8 @@ const MAX_PIXEL_RATIO = 1.5;
 // How far past the end of the text (in `u`) the layers take to reach full strength.
 const SAFE_FEATHER = 0.45;
 // How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
-// The dark page's layers from the sky down to the horizon: magenta, coral, gold, and a navy silhouette in front.
-const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x0e1428];
+// The dark page's layers from the sky down to the horizon: magenta, coral, gold, and a dark wine-brown silhouette in front.
+const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
@@ -140,8 +140,8 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   const applyColors = () => {
     const dark = getTheme() === "dark";
     // Dark page: a dusk sky with the glow at the horizon (her reference photos). Each layer has its own colour,
-    // from the sky down to the horizon: magenta, coral, gold, and a navy silhouette in front. A single
-    // back-to-front blend would go a muddy brown between coral and navy, so the stops are set one by one.
+    // from the sky down to the horizon (see `DARK_STOPS`). A single back-to-front blend would go
+    // muddy between the warm colours and the dark one, so the stops are set one by one.
     // Light page: twilight in a slate blue, pale at the back and steel in front, deepening toward a navy ink, with a
     // thin peach-coral light on each edge. Every pink tried on the light ground (pastel, dusty rose, burnt rose,
     // plum, deep wine) read as sweet or childish, and a violet came before this one. The accent stays plum, so
