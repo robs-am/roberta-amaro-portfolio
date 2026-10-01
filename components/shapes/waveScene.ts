@@ -156,7 +156,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
     const back = dark ? new Color(0x8fa3c4) : new Color(0xa9b3c8);
     const front = dark ? new Color(0x4f6a96) : new Color(0x46597f);
-    const deepen = dark ? new Color(0x141c30) : new Color(0xa08488);
+    const deepen = dark ? new Color(0x141c30) : new Color(0xb89ca4);
     const rim = dark ? new Color(0xff9a70) : new Color(0xfff6e0);
     palette = { dark, back, front, deepen, rim, stops: (dark ? DARK_STOPS : LIGHT_STOPS).map((hex) => new Color(hex)) };
     paint();
@@ -197,7 +197,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
     const rim = recolor(palette.rim.clone());
-    const shadow = recolor(new Color(dark ? 0x0a0612 : 0x5a4450));
+    const shadow = recolor(new Color(dark ? 0x0a0612 : 0x7c6679));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
@@ -222,7 +222,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
       const solidity = layerOpacities[index] / layerOpacities[LAYER_COUNT - 1];
-      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.45) * (0.35 + 0.65 * solidity);
+      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.36) * (0.35 + 0.65 * solidity);
     });
   };
 
