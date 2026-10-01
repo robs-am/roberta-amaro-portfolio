@@ -167,7 +167,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const back = dark ? new Color(0x8fa3c4) : new Color(0xa9b3c8);
     const front = dark ? new Color(0x4f6a96) : new Color(0x46597f);
     const deepen = dark ? new Color(0x141c30) : new Color(0xb89ca4);
-    const rim = dark ? new Color(0xff9a70) : new Color(0xfff6e0);
+    const rim = dark ? new Color(0xff9a70) : new Color(0xe6cdbd);
     palette = { dark, back, front, deepen, rim, stops: (dark ? DARK_STOPS : LIGHT_STOPS).map((hex) => new Color(hex)) };
     paint();
   };
@@ -227,7 +227,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       // The light page's deep side goes further toward the dark, so each layer has more body under its lit edge.
       fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), dark ? 0.18 : 0.45);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
-      fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), 0.55);
+      fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), dark ? 0.55 : 0.4);
       shadowMaterial.uniforms.uColor.value.copy(turnHue(shadow.clone(), index));
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
