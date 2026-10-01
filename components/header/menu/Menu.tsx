@@ -96,7 +96,7 @@ export function Menu() {
                 No explicit z-index — DOM order alone puts it above the grain/waves and below the content. */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 hidden dark:block dark:bg-[radial-gradient(ellipse_135%_100%_at_80%_82%,color-mix(in_oklab,var(--glow-1)_50%,transparent)_0%,transparent_82%)]"
+              className="pointer-events-none absolute inset-0 hidden dark:block dark:bg-[radial-gradient(ellipse_120%_55%_at_75%_100%,color-mix(in_oklab,#ff9a70_32%,transparent)_0%,transparent_100%)]"
             />
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}

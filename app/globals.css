@@ -25,14 +25,14 @@
   --elevated: #e4dfdd;
   --foreground: #2a2427;
   --muted: #675d63;
-  --accent: #7f2f5f;
+  --accent: #a8431f;
   --accent-foreground: #ffffff;
   --border: rgba(42, 36, 39, 0.13);
   --glow-1: #f5d5e5;
   --glow-2: #f9e4da;
   --glow-opacity: 0.32;
   /* Darker plum for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
-  --highlight: #66264c;
+  --highlight: #7f3014;
   color-scheme: light;
 }
 
@@ -46,14 +46,14 @@
     --elevated: #272231;
     --foreground: #f4e9e1;
     --muted: #c4bdcc;
-    --accent: #e08a9f;
-    --accent-foreground: #3a1029;
+    --accent: #ffa07a;
+    --accent-foreground: #3a1a10;
     --border: rgba(255, 255, 255, 0.12);
     --glow-1: #3b3068;
     --glow-2: #54467f;
     /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
     --glow-opacity: 0.32;
-    --highlight: #f8d8e8;
+    --highlight: #ffe3d3;
     color-scheme: dark;
   }
 }
@@ -64,13 +64,13 @@
   --elevated: #272231;
   --foreground: #f4e9e1;
   --muted: #c4bdcc;
-  --accent: #e08a9f;
-  --accent-foreground: #3a1029;
+  --accent: #ffa07a;
+  --accent-foreground: #3a1a10;
   --border: rgba(255, 255, 255, 0.12);
   --glow-1: #3b3068;
   --glow-2: #54467f;
   --glow-opacity: 0.32;
-  --highlight: #f8d8e8;
+  --highlight: #ffe3d3;
   color-scheme: dark;
 }
 

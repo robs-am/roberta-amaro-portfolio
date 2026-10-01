@@ -24,12 +24,12 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ loc
           flexDirection: "column",
           justifyContent: "center",
           padding: "0 96px",
-          background: "radial-gradient(circle at 70% 30%, #532a42 0%, #171416 60%)",
+          background: "radial-gradient(circle at 70% 30%, #3a1c28 0%, #171416 60%)",
           color: "#f5f1f3",
         }}
       >
         <div style={{ fontSize: 112, fontWeight: 700, lineHeight: 1.05 }}>{profile.name}</div>
-        <div style={{ width: 72, height: 6, borderRadius: 3, background: "#e08a9f", marginTop: 32 }} />
+        <div style={{ width: 72, height: 6, borderRadius: 3, background: "#ffa07a", marginTop: 32 }} />
         <div style={{ fontSize: 44, fontWeight: 600, marginTop: 32 }}>
           {localize(profile.role, locale)}
         </div>

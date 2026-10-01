@@ -39,7 +39,7 @@ const PORTRAIT_CLEAR = -24;
 // is at `LAST_LAYER_FLOOR` (screen height units, -1 the bottom): on a short screen the waves rise behind the
 // CTAs instead of being cut off. The layers behind are faint, so the text stays readable over them.
 const LAST_LAYER_FLOOR = -0.65;
-const LAST_LAYER_BASE = LAYERS[0].base + (LAYERS[LAYERS.length - 1].base - LAYERS[0].base) * PORTRAIT_SPACING;
+const LAST_LAYER_BASE = LAYERS[0].base + (LAYERS.at(-1)!.base - LAYERS[0].base) * PORTRAIT_SPACING;
 const PORTRAIT_HORIZON_FLOOR = LAST_LAYER_FLOOR - LAST_LAYER_BASE;
 
 const SCENE_OPACITY = 1;
