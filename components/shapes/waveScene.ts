@@ -39,7 +39,7 @@ const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
 // stays dark.
 // Rejected before it: lavender on all four (an overcast day), a lavender, rose, peach and gold set (too many
 // colours), and blue, yellow, gold and orange (the orange front read as a desert and was too strong).
-const LIGHT_STOPS = [0xd6d0e6, 0xc2b8dc, 0xeee0c8, 0xead0c2];
+const LIGHT_STOPS = [0xd6d0e6, 0xc2b8dc, 0xeee0c8, 0xeccab6];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.

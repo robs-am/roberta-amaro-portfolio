@@ -94,11 +94,11 @@ export default async function LocaleLayout({
           <Header />
           {children}
           <Footer />
-          {/* Light theme only: a pale sky blue at the top, fading into the page's cream, the blue of a sunrise sky
-              above the warm horizon (the waves). Behind the grain. */}
+          {/* Light theme only: a pale warm lavender at the top, fading into the page's cream, the sky before sunrise
+              (the cool blue read as an overcast day). It ties to the dark theme's violet. Behind the grain. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none fixed inset-0 -z-8 dark:hidden bg-[linear-gradient(to_bottom,#cbdcec_0%,color-mix(in_oklab,#cbdcec_40%,transparent)_35%,transparent_65%)]"
+            className="pointer-events-none fixed inset-0 -z-8 dark:hidden bg-[linear-gradient(to_bottom,#e8ddef_0%,color-mix(in_oklab,#e8ddef_40%,transparent)_35%,transparent_65%)]"
           />
           <Grain layerClassName="-z-6" />
         </NextIntlClientProvider>
