@@ -37,8 +37,8 @@ export const LANDSCAPE_SPACING = 0.8;
 // each edge is lifted by up to this much (screen height units) at the screen's sides, the left more than the right so
 // the two sides are not a mirrored bowl. The middle, under the text, keeps the waves' own shape. The lift grows over
 // `LANDSCAPE_SIDE_REACH` (in `u`) from where the text ends.
-export const LANDSCAPE_SIDE_LIFT = { left: 0.34, right: 0.2 };
-export const LANDSCAPE_SIDE_REACH = 0.9;
+export const LANDSCAPE_SIDE_LIFT = { left: 0.5, right: 0.42 };
+export const LANDSCAPE_SIDE_REACH = 0.6;
 // On a real phone (`PORTRAIT_ASPECT`) that proportional cut went too far: at the 0.55 it bottomed out at, the
 // main wave showed less than half a hump across the width, so the layers read as one broad slope, not as waves.
 // This fixed value shows about one crest per layer while the skew and the taller waves below keep them from spiking.
