@@ -91,12 +91,18 @@ export function Menu() {
             <Grain layerClassName="z-0" />
             {shapesMounted && <MenuShapes active={open && pendingHref === null} />}
 
+            {/* Light theme only: the same lavender sky as the page's (see the layout), since this panel covers it. */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 dark:hidden bg-[linear-gradient(to_bottom,var(--sky)_0%,color-mix(in_oklab,var(--sky)_40%,transparent)_35%,transparent_65%)]"
+            />
+
             {/* Same atmosphere as the hero's (see Hero.tsx): dark mode only, softens the empty sky above the
                 waves into the page's own glow so the wave's edge doesn't read as a stain against flat black.
                 No explicit z-index — DOM order alone puts it above the grain/waves and below the content. */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 hidden dark:block dark:bg-[radial-gradient(ellipse_135%_100%_at_80%_82%,color-mix(in_oklab,var(--glow-1)_50%,transparent)_0%,transparent_82%)]"
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_55%_at_75%_100%,color-mix(in_oklab,var(--sun-glow)_var(--sun-glow-mix),transparent)_0%,transparent_100%)]"
             />
 
             {/* Same box as the header row, so the controls stay put when the menu opens. */}

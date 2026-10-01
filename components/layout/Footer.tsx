@@ -48,8 +48,8 @@ export function Footer() {
   return (
     <footer className="border-t border-border py-8 short:py-4 text-base">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 sm:px-8">
-        <p className="order-2 text-muted font-sans sm:order-1">
-          {t('credits')} {t('copyright')}
+        <p className="order-2 text-muted font-sans leading-7 tracking-wide sm:order-1">
+          <span className="font-semibold text-foreground">{t('credits')}</span> {t('copyright')}
         </p>
         {contacts.length > 0 && (
           <ul className="order-1 flex flex-wrap gap-x-6 sm:order-2">

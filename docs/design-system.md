@@ -36,22 +36,25 @@ O tema segue a preferência do navegador (`prefers-color-scheme`) até a visitan
 
 | Token | Classe Tailwind | Claro | Escuro | Uso |
 |---|---|---|---|---|
-| `--background` | `bg-background` | `#ebe6e4` | `#171416` | fundo da página |
-| `--card` | `bg-card` | `#f5f2f0` | `#201c1e` | cards e blocos de conteúdo |
-| `--elevated` | `bg-elevated` | `#e4dfdd` | `#292427` | superfícies internas e hover |
-| `--foreground` | `text-foreground` | `#2a2427` | `#f5f1f3` | texto principal |
-| `--muted` | `text-muted` | `#675d63` | `#c5babf` | texto secundário (datas, empresa, descrições) |
-| `--accent` | `text-accent`, `bg-accent` | `#7f2f5f` | `#e08a9f` | destaque: links, traço decorativo do hero, pills, botão principal |
-| `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1029` | texto sobre fundo `bg-accent` |
+| `--background` | `bg-background` | `#f1ece9` | `#15131a` | fundo da página |
+| `--card` | `bg-card` | `#f9f6f4` | `#1e1a26` | cards e blocos de conteúdo |
+| `--elevated` | `bg-elevated` | `#e8e2e1` | `#272231` | superfícies internas e hover |
+| `--foreground` | `text-foreground` | `#2a2427` | `#f4e9e1` | texto principal |
+| `--muted` | `text-muted` | `#554c52` | `#c4bdcc` | texto secundário (datas, empresa, descrições) |
+| `--accent` | `text-accent`, `bg-accent` | `#5b3f8c` | `#ffa07a` | destaque: estado do hover dos links, item ativo do menu, anos e empresas da timeline, traço decorativo do hero, pills, botão principal |
+| `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1a10` | texto sobre fundo `bg-accent` |
 | `--border` | `border-border` | `rgba(42,36,39,0.13)` | `rgba(255,255,255,0.12)` | bordas e divisórias (decorativo, nunca texto) |
-| `--highlight` | `text-highlight` | `#66264c` | `#f8d8e8` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
-| `--glow-1` | `bg-glow-1` | `#f5d5e5` | `#532a42` | brilho de fundo, primeira mancha (decorativo; ameixa no escuro, rosa no claro) |
-| `--glow-2` | `bg-glow-2` | `#f9e4da` | `#74424f` | brilho de fundo, segunda mancha (decorativo; rosa-terra no escuro, pêssego no claro) |
-| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.32` | `0.32` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
+| `--highlight` | `text-highlight` | `#3f2a6b` | `#ffe3d3` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
+| `--glow-1` | `bg-glow-1` | `#e2d9f3` | `#25283f` | brilho de fundo, primeira mancha (decorativo; lavanda no claro, azul-marinho acinzentado no escuro; o violeta `#3b3068` foi trocado porque o topo das páginas internas chamava mais atenção que o conteúdo) |
+| `--glow-2` | `bg-glow-2` | `#fbe3d6` | `#333650` | brilho de fundo, segunda mancha (decorativo; pêssego no claro, azul-ardósia no escuro) |
+| `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.32` | `0.2` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
+| `--sky` | — (usado via `var(--sky)` no gradiente do `Sky.tsx` e do `Menu.tsx`) | `#e2d9f3` | — | céu lavanda no topo da página e do menu, só no claro (o escuro não tem). Na home e no menu o gradiente é forte; nas páginas internas (`Sky.tsx`) ele é mais curto e bem mais pálido, para a cor não pesar mais que o conteúdo. O menu repete o gradiente porque o painel é opaco e cobre o do layout |
+| `--sun-glow` | — (usado via `var(--sun-glow)` no brilho do hero e do menu) | `#ffd9a0` | `#ff9a70` | cor do brilho do sol, embaixo à direita: dourado ao amanhecer, coral ao entardecer |
+| `--sun-glow-mix` | — (idem) | `58%` | `32%` | quanto do `--sun-glow` aparece; o do claro é maior porque o dourado some sobre o fundo claro, e passar disso (ou usar um amarelo mais saturado) inunda a metade de baixo da página |
 
 Opacidades sobre tokens funcionam normalmente (`bg-background/85`, `bg-accent/10`).
 
-**Botões do hero.** No claro usam o accent (o principal em `bg-accent/25` com `text-highlight`, o secundário em `bg-accent/15` com `text-accent`). No escuro são **neutros**: o principal é sólido em `--foreground` com texto `--background` (contraste 16.36), e o secundário é só um contorno `--foreground`/40% com texto `--foreground`. O rosa vivo sobre a névoa ameixa apagada ficava doce demais, então no escuro a cor fica só no brilho e nos detalhes (links, anos, traço do hero).
+**Botões do hero.** No claro usam o accent (o principal em `bg-accent/25` com `text-highlight`, o secundário em `bg-accent/15` com `text-accent`). No escuro são **neutros**: o principal é sólido em `--foreground` com texto `--background` (contraste 15.43), e o secundário é só um contorno `--foreground`/40% com texto `--foreground`. O rosa vivo sobre a névoa ameixa apagada ficava doce demais, então no escuro a cor fica só no brilho e nos detalhes (links, anos, traço do hero).
 
 ### Contraste verificado
 
@@ -59,16 +62,16 @@ Razão de contraste WCAG dos pares de texto usados hoje:
 
 | Par (texto / fundo) | Claro | Escuro |
 |---|---|---|
-| `foreground` / `background` | 12.30 | 16.34 |
-| `foreground` / `card` | 13.65 | 15.05 |
-| `muted` / `background` | 5.11 | 9.71 |
-| `muted` / `card` | 5.67 | 8.95 |
-| `accent` / `background` | 6.86 | 7.23 |
-| `accent` / `card` | 7.62 | 6.66 |
-| `accent` / pill (`bg-accent/10` sobre `card`) | 6.51 | 5.66 |
-| `accent-foreground` / `accent` | 8.49 | 6.46 |
+| `foreground` / `background` | 12.98 | 15.43 |
+| `foreground` / `card` | 14.14 | 14.29 |
+| `muted` / `background` | 7.05 | 10.09 |
+| `muted` / `card` | 7.68 | 9.34 |
+| `accent` / `background` | 7.07 | 9.26 |
+| `accent` / `card` | 7.70 | 8.58 |
+| `accent` / pill (`bg-accent/10` sobre `card`) | 6.60 | 7.12 |
+| `accent-foreground` / `accent` | 8.29 | 7.91 |
 
-Todos os pares passam AA com folga. Ainda assim, não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
+Todos os pares passam AA; no claro o accent fica mais apertado (6,6 a 8,3); sobre `elevated` dá 6,47. Ainda assim, não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
 
 ### Texto sobre o brilho
 
@@ -83,12 +86,35 @@ Com isso, o único par que precisa passar no pior caso é `foreground`:
 | Escuro | 0.8 | 7.76 |
 | Escuro | 0.65 | 8.60 |
 | Escuro | 0.5 | 9.79 |
-| Escuro | **0.32 (valor em uso, com as cores atuais)** | **11.93** |
-| Claro | **0.32 (valor em uso, com as cores atuais)** | **13.02** |
+| Escuro | **0.2 (valor em uso, com as cores atuais)** | **13.97** |
+| Claro | **0.32 (valor em uso, com as cores atuais)** | **12.25** |
 
-A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **9.96 no escuro** e **9.80 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
+A bio do hero usa `text-foreground/90` (não `foreground` puro) pra ganhar um pouco de hierarquia visual sobre o nome/cargo; com essa diluição o pior caso cai para **11.51 no escuro** e **9.32 no claro** — ainda dentro de AA, mas com bem menos folga que o `foreground` puro. Não dilua mais que isso (`/90`) sem recalcular.
 
 Se `--glow-1`, `--glow-2` ou `--glow-opacity` de qualquer tema mudarem, recalcule esse pior caso antes de assumir que o texto continua legível — cores mais claras de `--glow-2` custam mais opacidade no escuro. Se `muted`/`accent` voltarem a aparecer sobre o brilho em algum ponto, a opacidade segura cai bem mais (no claro, `muted` só passa com `--glow-opacity` em torno de 0.3 ou menos com as cores atuais).
+
+### Ondas: amanhecer e crepúsculo
+
+O fundo da home e do menu são camadas de onda de papel recortado (Three.js, `components/shapes/waveScene.ts`; opacidades em `waveLayers.ts`). Cada tema é um momento do mesmo horizonte, e as cores das camadas ficam em `DARK_STOPS` e `LIGHT_STOPS` (hexadecimais no código, porque o Three.js não lê variáveis CSS). O restante da página usa os tokens acima.
+
+| | Escuro: crepúsculo | Claro: amanhecer |
+|---|---|---|
+| Camadas, do céu ao horizonte | magenta `#c7458c`, coral `#ff6a4d`, dourado `#ffb347`, silhueta vinho `#3a1c28` | lavanda `#d6d0e6`, rosa-pêssego `#f4c8c6`, bege amanteigado `#f0dcba`, pêssego `#eccab6` |
+| Opacidades | `[0.32, 0.52, 0.64, 0.95]` | `[0.3, 0.42, 0.54, 0.62]` |
+| Brilho do sol | `--sun-glow` coral a 32% | `--sun-glow` dourado a 58% |
+| Céu | fundo `#15131a` | gradiente `--sky` lavanda no topo |
+| Texto sobre as ondas | creme `#f3e4da` (só em telas largas) | segue o `--foreground` |
+
+Regras que custaram tentativas:
+
+- **Poucas cores, uma rampa só.** No claro, quatro famílias de cor (pêssego, dourado, lavanda e azul) leram como paleta e não como luz, e o mesmo aconteceu com uma rampa de lavanda, rosa, pêssego e dourado mais saturados do que a atual (o que a aprovada tem de diferente é a dessaturação e a proximidade entre os tons). Lavanda nas quatro camadas, por outro lado, lê como dia nublado, sem luz: o calor precisa aparecer nas camadas da frente, só que bem suave.
+- **Amarelo e laranja de verdade inundam o claro.** Mesmo claros, tomam a metade de baixo da página e lembram deserto. O calor do claro vem de creme e pêssego dessaturados e do brilho no canto, não de uma faixa amarela.
+- **A parte de baixo de cada camada e as sombras ficam na mesma família** das camadas (malva no claro), nunca numa cor nova.
+- Se mudar um `LIGHT_STOPS` ou `DARK_STOPS`, confira o texto sobre as ondas nos dois temas: o claro mantém texto escuro porque as camadas são claras até a frente.
+
+### Links
+
+Todo link de texto (`textLinkClass`, em `components/ui/textLinkStyles.ts`) fica na cor do texto em repouso (`--foreground`: creme no escuro, quase preto no claro) e ganha o accent só no hover e no foco, igual nos dois temas. A seta e o peso semibold marcam que é um link. O accent em repouso fica para destaques que não são links (anos e empresas da timeline, item ativo do menu). Os ícones do hero são exceção: o hover do accent só vale no claro, porque o coral sobre o brilho do escuro perde contraste.
 
 ## Tipografia
 
@@ -114,7 +140,7 @@ Em `app/globals.css`, `h1`, `h2` e `h3` recebem automaticamente:
 | Título de página (`h1`) | `text-3xl font-bold` | página 404 |
 | Título de seção (`h2`) | `text-3xl font-semibold` | Experiências, Projetos |
 | Título de card (`h3`) | `text-xl font-semibold` | card de projeto |
-| Ano da experiência | `font-display text-5xl font-bold tracking-wide text-accent` | item de experiência (é um `p`, não um título) |
+| Ano da experiência | `font-display text-5xl font-bold tracking-wide text-muted` | item de experiência (é um `p`, não um título; em `text-muted` para o número grande ser estrutura e não competir com o cargo) |
 | Cargo (`h3`) | `text-lg font-semibold` | item de experiência |
 | Cargo do hero | `text-xl font-semibold text-foreground sm:text-2xl`, em caixa normal | hero |
 | Bio do hero | `text-xl leading-8 tracking-wide text-foreground/90` | hero |
@@ -165,7 +191,7 @@ Ao clicar em "Início" no menu, a entrada curta ainda parece truncada (relato de
 
 ### Experiências
 
-Sem cards, linha nem pontos: cada experiência é uma linha em duas colunas (`sm:grid-cols-[9rem_1fr]`), com o **ano de início grande** em Jost na cor accent à esquerda, o período completo logo abaixo em `text-muted`, e cargo, empresa e descrição à direita. No celular as colunas empilham. A lista tem `max-w-3xl` para manter o texto perto de 68 caracteres por linha.
+Sem cards, linha nem pontos: cada experiência é uma linha em duas colunas (`sm:grid-cols-[9rem_1fr]`), com o **ano de início grande** em Jost em `text-muted` à esquerda (estrutura, não destaque), o período completo logo abaixo também em `text-muted`, e cargo, empresa e descrição à direita. No celular as colunas empilham. A lista tem `max-w-3xl` para manter o texto perto de 68 caracteres por linha.
 
 `ExperienceEntrance` (client) renderiza o `ol` e anima cada item uma vez, quando ele entra na tela (`IntersectionObserver`, `threshold: 0.3`): o ano é revelado da esquerda pra direita (`clipPath` + `translateX` de −24px, 1200ms, o mesmo gesto do primeiro nome do hero), e 400ms depois o período e o texto sobem 16px com fade (900ms). Os alvos são marcados com `data-experience-year` e `data-experience-body`.
 
@@ -196,7 +222,7 @@ O menu fecha ao: acionar um link, pressionar Esc (o foco volta pro botão), clic
 - 3 manchas (`div`, `border-radius: 9999px`, `filter: blur(170px)`, cor sólida em `--glow-1`/`--glow-2`, opacidade em `--glow-opacity`). As duas cores ficam separadas horizontalmente (`--glow-1` mais à esquerda, `--glow-2` mais à direita, com uma faixa de transição no meio) — com muito overlap entre elas o brilho lê como uma cor só em vez de gradiente.
 - `pointermove` na `window` define um alvo normalizado (-1 a 1); um loop `requestAnimationFrame` interpola a posição atual até o alvo (fator `0.18`) e grava `--glow-x`/`--glow-y` no container. Cada mancha tem uma profundidade (`--glow-depth`) diferente — `150`, `240`, `340`px de deslocamento máximo — criando parallax entre elas. O loop para quando a distância até o alvo fica abaixo de 0.1px e só recomeça no próximo `pointermove`.
 - Ativo só com `(pointer: fine) and (prefers-reduced-motion: no-preference)`; com toque ou movimento reduzido as manchas ficam paradas na posição base.
-- `--glow-opacity` é `0.5` no claro (cores bem pálidas, então já dá um brilho suave) e `0.4` no escuro (as cores do escuro são ameixa e rosa-terra apagados de propósito: uma versão magenta mais saturada lia forte demais sobre o fundo quase preto) — nos dois temas o texto que fica sobre o brilho (hero e nav do header antes de rolar) usa `--foreground`, não `--muted`/`--accent`; os números de contraste que sustentam esses valores estão em "Texto sobre o brilho" acima.
+- `--glow-opacity` é `0.32` no claro e `0.2` no escuro (no claro as cores são lavanda e pêssego bem pálidos, no escuro azuis apagados de propósito: uma versão magenta mais saturada lia forte demais sobre o fundo quase preto) — nos dois temas o texto que fica sobre o brilho (hero e nav do header antes de rolar) usa `--foreground`, não `--muted`/`--accent`; os números de contraste que sustentam esses valores estão em "Texto sobre o brilho" acima.
 
 O brilho existe só no topo da página (o hero). A seção de Projetos não tem brilho próprio: ela chegou a ter duas manchas e uma camada de fade, mas destoavam do resto e foram removidas. Os painéis decorativos dos cards sem imagem (`.project-panel`) ainda usam `--glow-1` num gradiente radial pequeno.
 

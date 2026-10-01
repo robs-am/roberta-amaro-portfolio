@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { BackgroundGlow } from "@/components/background/BackgroundGlow";
 import { Footer } from "@/components/layout/Footer";
 import { Grain } from "@/components/background/Grain";
+import { Sky } from "@/components/background/Sky";
 import { Header } from "@/components/header/Header";
 import { ScrollReset } from "@/components/layout/ScrollReset";
 import { ThemeSync } from "@/components/theme/ThemeSync";
@@ -32,8 +33,8 @@ export function generateStaticParams() {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ebe6e4" },
-    { media: "(prefers-color-scheme: dark)", color: "#171416" },
+    { media: "(prefers-color-scheme: light)", color: "#f1ece9" },
+    { media: "(prefers-color-scheme: dark)", color: "#15131a" },
   ],
 };
 
@@ -94,6 +95,7 @@ export default async function LocaleLayout({
           <Header />
           {children}
           <Footer />
+          <Sky />
           <Grain layerClassName="-z-6" />
         </NextIntlClientProvider>
       </body>

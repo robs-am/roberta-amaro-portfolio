@@ -37,7 +37,7 @@ export async function ExperienceTimeline({
           <div>
             <p
               data-experience-year
-              className="w-fit font-display text-5xl leading-none font-bold tracking-wide text-accent"
+              className="w-fit font-display text-5xl leading-none font-bold tracking-wide text-muted"
             >
               {item.start.slice(0, 4)}
             </p>
@@ -49,7 +49,7 @@ export async function ExperienceTimeline({
           </div>
           <div data-experience-body>
             <h2 className="text-lg font-semibold">{localize(item.role, locale)}</h2>
-            <p className="text-base font-medium text-accent">{item.company}</p>
+            <p className="text-base font-medium text-muted">{item.company}</p>
             <p className="mt-3 text-lg leading-8">{localize(item.description, locale)}</p>
             {awards.some((award) => award.experienceId === item.id) && (
               <div className="mt-5">

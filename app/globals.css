@@ -19,20 +19,26 @@
 
 :root {
   /* Neutrals (background, text, muted, borders) are near-grey with only a trace of warmth, so the
-     plum accent and the glow are the only pink on the page instead of tinting everything. */
-  --background: #ebe6e4;
-  --card: #f5f2f0;
-  --elevated: #e4dfdd;
+     violet accent and the glow (lavender and peach, the colours of the dawn waves) are the only colour
+     on the page instead of tinting everything. */
+  --background: #f1ece9;
+  --card: #f9f6f4;
+  --elevated: #e8e2e1;
   --foreground: #2a2427;
-  --muted: #675d63;
-  --accent: #7f2f5f;
+  --muted: #554c52;
+  --accent: #5b3f8c;
   --accent-foreground: #ffffff;
   --border: rgba(42, 36, 39, 0.13);
-  --glow-1: #f5d5e5;
-  --glow-2: #f9e4da;
+  --glow-1: #e2d9f3;
+  --glow-2: #fbe3d6;
   --glow-opacity: 0.32;
-  /* Darker plum for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
-  --highlight: #66264c;
+  /* Darker violet for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
+  --highlight: #3f2a6b;
+  /* The sky behind the page and the menu (light only, the dark page has none) and the sun's glow low on the right of
+     the hero and the menu, with how much of it shows. */
+  --sky: #e2d9f3;
+  --sun-glow: #ffd9a0;
+  --sun-glow-mix: 58%;
   color-scheme: light;
 }
 
@@ -41,36 +47,40 @@
    two identical. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: #171416;
-    --card: #201c1e;
-    --elevated: #292427;
-    --foreground: #f5f1f3;
-    --muted: #c5babf;
-    --accent: #e08a9f;
-    --accent-foreground: #3a1029;
+    --background: #15131a;
+    --card: #1e1a26;
+    --elevated: #272231;
+    --foreground: #f4e9e1;
+    --muted: #c4bdcc;
+    --accent: #ffa07a;
+    --accent-foreground: #3a1a10;
     --border: rgba(255, 255, 255, 0.12);
-    --glow-1: #532a42;
-    --glow-2: #74424f;
+    --glow-1: #25283f;
+    --glow-2: #333650;
     /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
-    --glow-opacity: 0.32;
-    --highlight: #f8d8e8;
+    --glow-opacity: 0.2;
+    --highlight: #ffe3d3;
+    --sun-glow: #ff9a70;
+    --sun-glow-mix: 32%;
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --background: #171416;
-  --card: #201c1e;
-  --elevated: #292427;
-  --foreground: #f5f1f3;
-  --muted: #c5babf;
-  --accent: #e08a9f;
-  --accent-foreground: #3a1029;
+  --background: #15131a;
+  --card: #1e1a26;
+  --elevated: #272231;
+  --foreground: #f4e9e1;
+  --muted: #c4bdcc;
+  --accent: #ffa07a;
+  --accent-foreground: #3a1a10;
   --border: rgba(255, 255, 255, 0.12);
-  --glow-1: #532a42;
-  --glow-2: #74424f;
-  --glow-opacity: 0.32;
-  --highlight: #f8d8e8;
+  --glow-1: #25283f;
+  --glow-2: #333650;
+  --glow-opacity: 0.2;
+  --highlight: #ffe3d3;
+  --sun-glow: #ff9a70;
+  --sun-glow-mix: 32%;
   color-scheme: dark;
 }
 

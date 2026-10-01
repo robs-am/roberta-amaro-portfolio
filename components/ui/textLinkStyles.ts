@@ -1,7 +1,8 @@
 // Text-only link: the underline is a background gradient that grows from the left on hover/focus.
-// Apply `textLinkClass` to the link, `textLinkLabelClass` to its label and `textLinkArrowClass` to its arrow.
+// The text is the page's ink at rest (cream on dark, near-black on light) and takes the accent on hover/focus,
+// the same in both themes. Apply `textLinkClass` to the link, `textLinkLabelClass` to its label and `textLinkArrowClass` to its arrow.
 export const textLinkClass =
-  "group inline-flex min-h-11 shrink-0 items-center gap-2 text-base font-semibold text-accent dark:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent";
+  "group inline-flex min-h-11 shrink-0 items-center gap-2 text-base font-semibold text-foreground hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent";
 
 export const textLinkLabelClass =
   "bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1.5px] bg-left-bottom bg-no-repeat pb-0.5 transition-[background-size] duration-300 ease-expressive group-hover:bg-[length:100%_1.5px] group-focus-visible:bg-[length:100%_1.5px]";
@@ -9,12 +10,13 @@ export const textLinkLabelClass =
 export const textLinkArrowClass =
   "size-4 shrink-0 transition-transform duration-300 ease-expressive motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5";
 
-// Light text for what sits on the dark wine front wave of the light theme (the menu's contacts and the
+// Light text for what sits on the dark front wave of the dark page (the menu's contacts and the
 // credits). Only on landscape screens: on a portrait one the waves are faint (see `PORTRAIT_ASPECT` in
 // waveLayers.ts, 0.85 = 17/20), and light text would vanish on the pale page. The dark theme is already light.
-// A greyed lilac, not white or pink: white was too stark against the wine and pink too sweet. Important so it
-// wins over the base colour of whatever it is added to (the credits' `text-foreground/85`).
-export const onWaveTextClass = "[@media(min-aspect-ratio:17/20)]:text-[#e0d5da]!";
+// A warm cream, on the dark page only: the light page's waves are light all the way down, so its text stays dark.
+// Never plain white or pink: white was too stark against the waves and pink too sweet. Important so it wins over
+// the base colour of whatever it is added to (the credits' `text-foreground/85`).
+export const onWaveTextClass = "[@media(min-aspect-ratio:17/20)]:dark:text-[#f3e4da]!";
 
 // Larger variant, for links that sit next to big type (the hero and the menu's contact links). Large from
 // the smallest screen (not just from `sm`): on the menu these sit under giant nav type, where the base

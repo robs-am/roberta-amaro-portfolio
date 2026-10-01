@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { dockButtonClass } from "@/components/header/ControlDock";
+import { tooltipBelowClass } from "@/components/ui/tooltipStyles";
 import { getTheme, setTheme, subscribeTheme } from "@/components/theme/theme";
 
 export function ThemeToggle() {
@@ -35,9 +36,13 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={isDark ? t("toLight") : t("toDark")}
-      className={dockButtonClass}
+      className={`${dockButtonClass} group/tip relative`}
     >
       {isDark ? <SunIcon /> : <MoonIcon />}
+      {/* Names the theme the click goes to: the light one is the dawn, the dark one the dusk. */}
+      <span aria-hidden="true" className={tooltipBelowClass}>
+        {isDark ? t("dawn") : t("dusk")}
+      </span>
     </button>
   );
 }

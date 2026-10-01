@@ -28,7 +28,9 @@
     },
     "theme": {
       "toDark": "Ativar tema escuro",
-      "toLight": "Ativar tema claro"
+      "toLight": "Ativar tema claro",
+      "dawn": "Amanhecer",
+      "dusk": "Crepúsculo"
     }
   },
   "Hero": {

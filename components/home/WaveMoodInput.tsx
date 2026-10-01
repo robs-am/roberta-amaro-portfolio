@@ -31,7 +31,7 @@ const buttonClass =
   "inline-flex h-9 cursor-pointer items-center justify-center rounded-full text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:hover:text-foreground";
 
 const actionClass =
-  "shrink-0 cursor-pointer text-accent underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:text-foreground";
+  "shrink-0 cursor-pointer text-foreground underline underline-offset-2 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 function WaveIcon() {
   return (

@@ -3,15 +3,20 @@ import { getTheme } from "@/components/theme/theme";
 import { fillFragment, fillVertex, shadowFragment, shadowVertex } from "@/components/shapes/waveShaders";
 import { OVERSCAN, SEGMENTS, createStrip } from "@/components/shapes/waveGeometry";
 import {
-  CALM_ASPECT,
   DARK_OPACITIES,
   LAYERS,
   LAYER_COUNT,
+  LANDSCAPE_AMPLITUDE,
+  LANDSCAPE_FREQ_SCALE,
+  LANDSCAPE_SIDE_LIFT,
+  LANDSCAPE_SIDE_REACH,
+  LANDSCAPE_SPACING,
   LIGHT_OPACITIES,
   PORTRAIT_AMPLITUDE,
   PORTRAIT_ASPECT,
   PORTRAIT_FREQ_SCALE,
   PORTRAIT_SPACING,
+  PORTRAIT_TILT,
   edgeAt,
   type LayerSpec,
 } from "@/components/shapes/waveLayers";
@@ -30,6 +35,15 @@ const MAX_PIXEL_RATIO = 1.5;
 // How far past the end of the text (in `u`) the layers take to reach full strength.
 const SAFE_FEATHER = 0.45;
 // How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
+// The dark page's layers from the sky down to the horizon: magenta, coral, gold, and a dark wine-brown silhouette in front.
+const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
+// The light page is a sunrise (her reference photos), from the sky down: the lavender sky (the overlay at the top of the
+// page and the back layer), then a lit peach-pink, the sun coming through the morning haze, a buttery beige, and a
+// warm peach at the bottom. All kept soft: any real yellow or orange (even a pale one) floods the bottom half of the
+// page. Light enough all the way to the front that the text stays dark.
+// Rejected before it: lavender on all four (an overcast day), and blue, yellow, gold and orange (the orange front read
+// as a desert and was too strong).
+const LIGHT_STOPS = [0xd6d0e6, 0xf4c8c6, 0xf0dcba, 0xeccab6];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
@@ -105,11 +119,14 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   });
 
   let aspect = 1;
-  // See `CALM_ASPECT`/`PORTRAIT_FREQ_SCALE`: 1 on landscape screens, lower (wider humps) on narrow ones.
+  // See `LANDSCAPE_FREQ_SCALE`/`PORTRAIT_FREQ_SCALE`: lower on both (wider humps).
   let freqScale = 1;
   // See `PORTRAIT_SPACING`/`PORTRAIT_AMPLITUDE`: closer, taller layers on a portrait screen, 1 elsewhere.
   let spacing = 1;
   let amplitudeScale = 1;
+  // See `PORTRAIT_TILT`: the diagonal of the layers on a portrait screen, 0 elsewhere.
+  let tilt = 0;
+  let portraitScreen = false;
   // Where the waves start, in screen height units (-1 bottom, 1 top). The home sets it from the name's position.
   let horizon = 0;
 
@@ -120,7 +137,9 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   // Where the text on the left ends, as `u` (-1 the left edge of the screen, 1 the right). The layers are
   // faint (`uSafe`) up to there and grow to full strength over the next stretch, so the waves stay out of the
   // way of the text however wide it is.
+  let textEdgeU = 0.4;
   const setSafeZone = (textRightU: number) => {
+    textEdgeU = textRightU;
     for (const { fillMaterial, shadowMaterial } of layers) {
       for (const material of [fillMaterial, shadowMaterial]) {
         material.uniforms.uFadeFrom.value = textRightU;
@@ -131,33 +150,25 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
 
   // The palette as the theme gives it, kept so that a change of tone can repaint without reading the CSS
   // again (the tone eases over a few seconds, one repaint per frame).
-  let palette: { dark: boolean; back: Color; front: Color; deepen: Color; rim: Color } | null = null;
+  let palette: { dark: boolean; back: Color; front: Color; deepen: Color; rim: Color; stops: Color[] | null } | null = null;
   let tone: Tone = { warmth: 0, hue: 0, tint: 0, spread: 0, grain: 0 };
 
   // Picks the palette for the current theme, then paints.
   const applyColors = () => {
     const dark = getTheme() === "dark";
-    // Dark page: a soft pink at the back to a wine in front, deepening toward a near-black plum. Its colours are
-    // bright to make up for its lower opacity: less of the layer shows, so what shows has to glow more.
-    // Light page: the site's own plum accent (the colour of the links and of the current item in the menu),
-    // lightened toward the back and darkened toward the deep side, so the waves and the text share one colour.
-    // Pinks (the dark page's pastel, then a dusty and a burnt rose) all read as childish on a light ground.
-    // A deep wine turned toward red was tried too, and read as too red on the screens that show colour true.
+    // Dark page: a dusk sky with the glow at the horizon (her reference photos). Each layer has its own colour,
+    // from the sky down to the horizon (see `DARK_STOPS`). A single back-to-front blend would go
+    // muddy between the warm colours and the dark one, so the stops are set one by one.
+    // Light page: sunrise (see `LIGHT_STOPS`), with a near-white warm light on each edge (the sun catching the
+    // clouds) and a greyed mauve deep side and shadows, like the shaded underside of a cloud. It replaced a slate-blue twilight. Earlier, flat pinks on this light ground
+    // (pastel, dusty rose, burnt rose, plum, deep wine) read as sweet or childish: watch the rose layer for that.
     // It is built like the dark page: faint veils with a dark deep side and shadows between them (its opacities
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
-    const white = new Color(0xffffff);
-    const accent = new Color(getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
-    // The light page was read as too sweet (pastel back layers, a pale rim), so it is pulled toward a dark
-    // wine: less white mixed into the back and the rim, the front darkened toward the deep plum. The hue stays
-    // the accent's, since turning it toward red already read as too red.
-    const wine = new Color(0x2e0a20);
-    const back = dark ? new Color(0xe08a9f).lerp(white, 0.1) : accent.clone().lerp(white, 0.15);
-    const front = dark ? new Color(0xb85a80) : accent.clone().lerp(wine, 0.6);
-    // The light page deepens toward a saturated plum, not toward black: black only greys it, and the front
-    // layer, the biggest block of colour on the screen, came out a dusty mauve.
-    const deepen = dark ? new Color(0x2a1621) : wine;
-    const rim = dark ? new Color(0xf7b8cb) : accent.clone().lerp(white, 0.5);
-    palette = { dark, back, front, deepen, rim };
+    const back = dark ? new Color(0x8fa3c4) : new Color(0xa9b3c8);
+    const front = dark ? new Color(0x4f6a96) : new Color(0x46597f);
+    const deepen = dark ? new Color(0x141c30) : new Color(0xb89ca4);
+    const rim = dark ? new Color(0xff9a70) : new Color(0xe6cdbd);
+    palette = { dark, back, front, deepen, rim, stops: (dark ? DARK_STOPS : LIGHT_STOPS).map((hex) => new Color(hex)) };
     paint();
   };
 
@@ -196,7 +207,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
     const rim = recolor(palette.rim.clone());
-    const shadow = recolor(new Color(dark ? 0x14080f : 0x3a0d2a));
+    const shadow = recolor(new Color(dark ? 0x0a0612 : 0x7c6679));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
@@ -206,19 +217,22 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const safe = dark ? 0.25 : 0.7;
     layerOpacities = dark ? DARK_OPACITIES : LIGHT_OPACITIES;
     layers.forEach(({ fillMaterial, shadowMaterial }, index) => {
-      const edge = turnHue(back.clone().lerp(front, index / (LAYER_COUNT - 1)), index);
+      // The dark page's own colour per layer (leaned and turned like the rest), else a blend from back to front.
+      const stop = palette?.stops?.[index];
+      const base = stop ? recolor(stop.clone().lerp(lean, tint)) : back.clone().lerp(front, index / (LAYER_COUNT - 1));
+      const edge = turnHue(base, index);
       fillMaterial.uniforms.uSafe.value = shadowMaterial.uniforms.uSafe.value = safe;
       fillMaterial.uniforms.uGrain.value = tone.grain;
       fillMaterial.uniforms.uEdge.value.copy(edge);
       // The light page's deep side goes further toward the dark, so each layer has more body under its lit edge.
-      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), dark ? 0.3 : 0.45);
+      fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), dark ? 0.18 : 0.45);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
-      fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), 0.55);
+      fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), dark ? 0.55 : 0.4);
       shadowMaterial.uniforms.uColor.value.copy(turnHue(shadow.clone(), index));
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
       const solidity = layerOpacities[index] / layerOpacities[LAYER_COUNT - 1];
-      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.45) * (0.35 + 0.65 * solidity);
+      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.36) * (0.35 + 0.65 * solidity);
     });
   };
 
@@ -243,10 +257,12 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     camera.right = aspect;
     camera.updateProjectionMatrix();
     const portrait = aspect < PORTRAIT_ASPECT ? 1 : 0;
-    const landscapeFreq = aspect < CALM_ASPECT ? aspect : 1;
+    const landscapeFreq = LANDSCAPE_FREQ_SCALE;
     freqScale = portrait ? PORTRAIT_FREQ_SCALE : landscapeFreq;
-    spacing = portrait ? PORTRAIT_SPACING : 1;
-    amplitudeScale = portrait ? PORTRAIT_AMPLITUDE : 1;
+    spacing = portrait ? PORTRAIT_SPACING : LANDSCAPE_SPACING;
+    amplitudeScale = portrait ? PORTRAIT_AMPLITUDE : LANDSCAPE_AMPLITUDE;
+    tilt = portrait ? PORTRAIT_TILT : 0;
+    portraitScreen = portrait === 1;
     for (const layer of layers) {
       layer.fillMesh.scale.x = aspect;
       layer.shadowMesh.scale.x = aspect;
@@ -254,6 +270,15 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       layer.fillMaterial.uniforms.uAspect.value = aspect;
       layer.shadowMaterial.uniforms.uPortrait.value = portrait;
     }
+  };
+
+  // See `LANDSCAPE_SIDE_LIFT`: how much an edge is lifted at `u`, past either end of the text; zero on a portrait screen.
+  const sideLift = (u: number) => {
+    if (portraitScreen) return 0;
+    const past = Math.abs(u) - Math.abs(textEdgeU);
+    if (past <= 0) return 0;
+    const t = Math.min(past / LANDSCAPE_SIDE_REACH, 1);
+    return (u < 0 ? LANDSCAPE_SIDE_LIFT.left : LANDSCAPE_SIDE_LIFT.right) * t * t * (3 - 2 * t);
   };
 
   /**
@@ -272,7 +297,9 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       const spec = specs[index] ?? LAYERS[index];
       for (let column = 0; column < fill.columns; column++) {
         const u = -OVERSCAN + (2 * OVERSCAN * column) / SEGMENTS;
-        const edge = edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale, spacing, amplitudeScale);
+        const edge =
+          edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale, spacing, amplitudeScale, tilt) +
+          sideLift(u);
         fill.positions[column * 6 + 1] = edge;
         fill.positions[column * 6 + 4] = FLOOR;
         fill.edges[column * 2] = fill.edges[column * 2 + 1] = edge;

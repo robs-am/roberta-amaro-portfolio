@@ -33,13 +33,19 @@ const SAFE_MARGIN = 24;
 // horizon under the CTAs the back ones fell below the mood field and the footer, and a mood had almost
 // nothing to show on. Raised, they sit behind the icons and the field (faint, and the field has its own
 // backdrop), while the highest crest of the first layer still stops short of the CTAs.
-const PORTRAIT_CLEAR = -24;
+// Pixels of clear space under the CTAs (the words) on a wide screen: the crest of the first layer rises about this
+// much above the horizon, so it stops just short of the links. The icons below them are not words and can sit on the
+// faint top of the waves (under the icons, as it was, the waves were pushed too low).
+const DESKTOP_CLEAR = 72;
+const PORTRAIT_CLEAR = 20;
+// (Now 20, from -24: the crest was touching the last row of the CTAs. The layers lean toward the bottom left, see
+// `PORTRAIT_TILT`, so the left edge keeps this clearance and the right drops away from it.)
 // On a short phone (the browser's bars eat the height) the strip under the CTAs is too thin, and the back
 // layers end up below the fold. So on portrait the horizon never sits lower than where the last layer's edge
 // is at `LAST_LAYER_FLOOR` (screen height units, -1 the bottom): on a short screen the waves rise behind the
 // CTAs instead of being cut off. The layers behind are faint, so the text stays readable over them.
 const LAST_LAYER_FLOOR = -0.65;
-const LAST_LAYER_BASE = LAYERS[0].base + (LAYERS[LAYERS.length - 1].base - LAYERS[0].base) * PORTRAIT_SPACING;
+const LAST_LAYER_BASE = LAYERS[0].base + (LAYERS.at(-1)!.base - LAYERS[0].base) * PORTRAIT_SPACING;
 const PORTRAIT_HORIZON_FLOOR = LAST_LAYER_FLOOR - LAST_LAYER_BASE;
 
 const SCENE_OPACITY = 1;
@@ -125,19 +131,18 @@ export function HeroShapes() {
       if (visible !== wasVisible) sync();
     };
 
-    // The waves start just under the name, so it stands clear above them; on a portrait phone, where the
-    // waves can't dodge sideways, they start under the CTAs instead, clearing the name, role and CTAs
-    // together. Either reference's place comes from the layout (offsetTop), which the entrance animation
+    // The waves start under the CTAs, so the name, role and links stand clear above them, and the waves keep their
+    // own shape (a valley bent around the text read as a bowl and flattened the middle; starting under the icons
+    // too put them too low). Either reference's place comes from the layout (offsetTop), which the entrance animation
     // does not move, so this can run at any time.
     const placeHorizon = (height: number, portrait: boolean) => {
-      const target = portrait
-        ? (document.querySelector<HTMLElement>("#hero [data-hero-cta]") ?? document.querySelector<HTMLElement>("#hero h1"))
-        : document.querySelector<HTMLElement>("#hero h1");
+      const target =
+        document.querySelector<HTMLElement>("#hero [data-hero-cta]") ?? document.querySelector<HTMLElement>("#hero h1");
       if (!target) return;
       let bottom = target.offsetHeight;
       for (let node: HTMLElement | null = target; node; node = node.offsetParent as HTMLElement | null) bottom += node.offsetTop;
-      const gap = NAME_GAP + (portrait ? PORTRAIT_CLEAR : 0);
-      const horizon = MathUtils.clamp(1 - (2 * (bottom + gap)) / height + HORIZON_LIFT, -0.6, 0.4);
+      const gap = NAME_GAP + (portrait ? PORTRAIT_CLEAR : DESKTOP_CLEAR);
+      const horizon = MathUtils.clamp(1 - (2 * (bottom + gap)) / height + (portrait ? HORIZON_LIFT : 0), -0.6, 0.4);
       waveHorizon.y = portrait ? Math.max(horizon, PORTRAIT_HORIZON_FLOOR) : horizon;
       waves.setHorizon(waveHorizon.y);
     };
@@ -242,7 +247,7 @@ export function HeroShapes() {
           shorter and translated by its entrance animation) so both line up and fade together with the canvas. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hidden dark:block dark:bg-[radial-gradient(ellipse_135%_100%_at_80%_82%,color-mix(in_oklab,var(--glow-1)_50%,transparent)_0%,transparent_82%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_55%_at_75%_100%,color-mix(in_oklab,var(--sun-glow)_var(--sun-glow-mix),transparent)_0%,transparent_100%)]"
       />
     </div>,
     document.body,
