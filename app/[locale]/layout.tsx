@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { BackgroundGlow } from "@/components/background/BackgroundGlow";
 import { Footer } from "@/components/layout/Footer";
 import { Grain } from "@/components/background/Grain";
+import { Sky } from "@/components/background/Sky";
 import { Header } from "@/components/header/Header";
 import { ScrollReset } from "@/components/layout/ScrollReset";
 import { ThemeSync } from "@/components/theme/ThemeSync";
@@ -94,12 +95,7 @@ export default async function LocaleLayout({
           <Header />
           {children}
           <Footer />
-          {/* Light theme only: a pale warm lavender at the top, fading into the page's cream, the sky before sunrise
-              (the cool blue read as an overcast day). It ties to the dark theme's violet. Behind the grain. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none fixed inset-0 -z-8 dark:hidden bg-[linear-gradient(to_bottom,var(--sky)_0%,color-mix(in_oklab,var(--sky)_40%,transparent)_35%,transparent_65%)]"
-          />
+          <Sky />
           <Grain layerClassName="-z-6" />
         </NextIntlClientProvider>
       </body>

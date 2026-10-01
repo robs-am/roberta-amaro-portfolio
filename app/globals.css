@@ -25,7 +25,7 @@
   --card: #f9f6f4;
   --elevated: #e8e2e1;
   --foreground: #2a2427;
-  --muted: #675d63;
+  --muted: #554c52;
   --accent: #5b3f8c;
   --accent-foreground: #ffffff;
   --border: rgba(42, 36, 39, 0.13);
@@ -55,10 +55,10 @@
     --accent: #ffa07a;
     --accent-foreground: #3a1a10;
     --border: rgba(255, 255, 255, 0.12);
-    --glow-1: #3b3068;
-    --glow-2: #54467f;
+    --glow-1: #25283f;
+    --glow-2: #333650;
     /* Hero text over the glow uses --foreground (not muted/accent) specifically so this can stay vivid; see docs/design-system.md. */
-    --glow-opacity: 0.32;
+    --glow-opacity: 0.2;
     --highlight: #ffe3d3;
     --sun-glow: #ff9a70;
     --sun-glow-mix: 32%;
@@ -75,9 +75,9 @@
   --accent: #ffa07a;
   --accent-foreground: #3a1a10;
   --border: rgba(255, 255, 255, 0.12);
-  --glow-1: #3b3068;
-  --glow-2: #54467f;
-  --glow-opacity: 0.32;
+  --glow-1: #25283f;
+  --glow-2: #333650;
+  --glow-opacity: 0.2;
   --highlight: #ffe3d3;
   --sun-glow: #ff9a70;
   --sun-glow-mix: 32%;

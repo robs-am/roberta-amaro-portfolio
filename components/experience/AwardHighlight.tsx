@@ -34,7 +34,7 @@ export async function AwardHighlight({
           key={item.id}
           className="rounded-xl border border-accent/40 bg-card p-6 sm:p-8"
         >
-          <h3 className="font-display text-2xl leading-[1.15] font-bold tracking-wide text-accent sm:text-3xl">
+          <h3 className="font-display text-2xl leading-[1.15] font-bold tracking-wide text-foreground sm:text-3xl">
             {localize(item.event, locale)}
           </h3>
           <p className="mt-3 text-base font-semibold">{localize(item.title, locale)}</p>

@@ -29,7 +29,7 @@ export async function EducationTimeline({
           <div>
             <p
               data-experience-year
-              className="w-fit font-display text-5xl leading-none font-bold tracking-wide text-accent"
+              className="w-fit font-display text-5xl leading-none font-bold tracking-wide text-muted"
             >
               {(item.end ?? item.start).slice(0, 4)}
             </p>
@@ -41,7 +41,7 @@ export async function EducationTimeline({
           </div>
           <div data-experience-body>
             <h3 className="text-lg font-semibold">{localize(item.course, locale)}</h3>
-            <p className="text-base font-medium text-accent">{item.institution}</p>
+            <p className="text-base font-medium text-muted">{item.institution}</p>
           </div>
         </li>
       ))}

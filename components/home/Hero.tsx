@@ -19,6 +19,7 @@ import { HERO_REENTER_EVENT, backTarget } from "@/components/header/menu/menuEve
 import { heroEntrance } from "@/components/shapes/shapesScene";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
+import { tooltipAboveClass } from "@/components/ui/tooltipStyles";
 
 // three.js is only loaded in the browser, after the hero text, so it never delays first paint.
 const HeroShapes = dynamic(() => import("@/components/home/HeroShapes").then((mod) => mod.HeroShapes), {
@@ -27,10 +28,6 @@ const HeroShapes = dynamic(() => import("@/components/home/HeroShapes").then((mo
 
 const linkClass =
   "group/link relative inline-flex size-16 items-center justify-center rounded-full text-foreground transition-colors hover:text-accent dark:hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
-
-// Visual label for the icon-only links (they already have an aria-label, so it is hidden from assistive tech).
-const tooltipClass =
-  "pointer-events-none absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground px-2.5 py-1 text-xs font-medium text-background opacity-0 transition-opacity duration-200 group-hover/link:opacity-100 group-focus-visible/link:opacity-100 motion-reduce:transition-none";
 
 // Pages opened from the hero go back to the home, not to the menu (see BackButton).
 const leaveToPage = () => {
@@ -166,7 +163,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
                       badge={false}
                       className="size-8 transition-transform duration-300 ease-expressive motion-safe:group-hover/link:-translate-y-0.5"
                     />
-                    <span aria-hidden="true" className={tooltipClass}>
+                    <span aria-hidden="true" className={tooltipAboveClass}>
                       {link.label}
                     </span>
                   </a>

@@ -28,7 +28,9 @@
     },
     "theme": {
       "toDark": "Switch to dark theme",
-      "toLight": "Switch to light theme"
+      "toLight": "Switch to light theme",
+      "dawn": "Dawn",
+      "dusk": "Dusk"
     }
   },
   "Hero": {
