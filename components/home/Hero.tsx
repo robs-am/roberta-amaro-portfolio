@@ -152,7 +152,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             </Link>
           </div>
           {links.length > 0 && (
-            <ul data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="flex justify-end gap-3">
+            <ul data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="-mr-4 flex justify-end gap-1">
               {links.map((link) => (
                 <li key={link.href} className="relative">
                   <a
@@ -162,9 +162,10 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
                     aria-label={link.external ? `${link.label} ${t("newTab")}` : link.label}
                     className={linkClass}
                   >
-                    <span className="inline-flex size-14 items-center justify-center rounded-full border border-border bg-foreground/14 transition-colors group-hover/link:border-accent dark:group-hover/link:border-foreground">
-                      <link.Icon badge={false} className="size-8" />
-                    </span>
+                    <link.Icon
+                      badge={false}
+                      className="size-8 transition-transform duration-300 ease-expressive motion-safe:group-hover/link:-translate-y-0.5"
+                    />
                     <span aria-hidden="true" className={tooltipClass}>
                       {link.label}
                     </span>
