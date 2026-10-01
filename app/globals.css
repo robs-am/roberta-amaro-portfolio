@@ -19,20 +19,21 @@
 
 :root {
   /* Neutrals (background, text, muted, borders) are near-grey with only a trace of warmth, so the
-     plum accent and the glow are the only pink on the page instead of tinting everything. */
-  --background: #ebe6e4;
-  --card: #f5f2f0;
-  --elevated: #e4dfdd;
+     violet accent and the glow (lavender and peach, the colours of the dawn waves) are the only colour
+     on the page instead of tinting everything. */
+  --background: #f1ece9;
+  --card: #f9f6f4;
+  --elevated: #e8e2e1;
   --foreground: #2a2427;
   --muted: #675d63;
-  --accent: #7a2e45;
+  --accent: #5b3f8c;
   --accent-foreground: #ffffff;
   --border: rgba(42, 36, 39, 0.13);
-  --glow-1: #f5d5e5;
-  --glow-2: #f9e4da;
+  --glow-1: #e2d9f3;
+  --glow-2: #fbe3d6;
   --glow-opacity: 0.32;
-  /* Darker plum for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
-  --highlight: #5a1f33;
+  /* Darker violet for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
+  --highlight: #3f2a6b;
   color-scheme: light;
 }
 

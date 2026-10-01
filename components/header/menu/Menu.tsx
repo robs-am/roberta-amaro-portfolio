@@ -91,6 +91,12 @@ export function Menu() {
             <Grain layerClassName="z-0" />
             {shapesMounted && <MenuShapes active={open && pendingHref === null} />}
 
+            {/* Light theme only: the same lavender sky as the page's (see the layout), since this panel covers it. */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 dark:hidden bg-[linear-gradient(to_bottom,#e2d9f3_0%,color-mix(in_oklab,#e2d9f3_40%,transparent)_35%,transparent_65%)]"
+            />
+
             {/* Same atmosphere as the hero's (see Hero.tsx): dark mode only, softens the empty sky above the
                 waves into the page's own glow so the wave's edge doesn't read as a stain against flat black.
                 No explicit z-index — DOM order alone puts it above the grain/waves and below the content. */}
