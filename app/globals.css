@@ -25,14 +25,14 @@
   --elevated: #e4dfdd;
   --foreground: #2a2427;
   --muted: #675d63;
-  --accent: #a8431f;
+  --accent: #7a2e45;
   --accent-foreground: #ffffff;
   --border: rgba(42, 36, 39, 0.13);
   --glow-1: #f5d5e5;
   --glow-2: #f9e4da;
   --glow-opacity: 0.32;
   /* Darker plum for text that sits on the glow, tuned to clear AA at its worst point; see docs/design-system.md. */
-  --highlight: #7f3014;
+  --highlight: #5a1f33;
   color-scheme: light;
 }
 

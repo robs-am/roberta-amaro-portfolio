@@ -32,10 +32,10 @@ const SAFE_FEATHER = 0.45;
 // How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
 // The dark page's layers from the sky down to the horizon: magenta, coral, gold, and a dark wine-brown silhouette in front.
 const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
-// The light page is the other end of the same horizon light: dawn. One warm family (peach-rose to gold), light all
-// the way to the front, so the text over it stays dark. The layers are translucent, so the colours are stronger
-// than they look on the page.
-const LIGHT_STOPS = [0xf2c4b4, 0xeea89a, 0xf0a878, 0xe8b76f];
+// The light page is the other end of the same horizon light: dawn. A pale-blue sky that warms to cream, apricot and
+// a soft peach at the horizon. The four are close in lightness and saturation so they read as one light, not four
+// colours, and light all the way to the front so the text over it stays dark.
+const LIGHT_STOPS = [0xbdd3e6, 0xf5e6b8, 0xf4d2a8, 0xf0bd8e];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.

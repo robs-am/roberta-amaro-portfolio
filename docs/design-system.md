@@ -41,10 +41,10 @@ O tema segue a preferência do navegador (`prefers-color-scheme`) até a visitan
 | `--elevated` | `bg-elevated` | `#e4dfdd` | `#272231` | superfícies internas e hover |
 | `--foreground` | `text-foreground` | `#2a2427` | `#f4e9e1` | texto principal |
 | `--muted` | `text-muted` | `#675d63` | `#c4bdcc` | texto secundário (datas, empresa, descrições) |
-| `--accent` | `text-accent`, `bg-accent` | `#a8431f` | `#ffa07a` | destaque: links, traço decorativo do hero, pills, botão principal |
+| `--accent` | `text-accent`, `bg-accent` | `#7a2e45` | `#ffa07a` | destaque: links, traço decorativo do hero, pills, botão principal |
 | `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1a10` | texto sobre fundo `bg-accent` |
 | `--border` | `border-border` | `rgba(42,36,39,0.13)` | `rgba(255,255,255,0.12)` | bordas e divisórias (decorativo, nunca texto) |
-| `--highlight` | `text-highlight` | `#7f3014` | `#ffe3d3` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
+| `--highlight` | `text-highlight` | `#5a1f33` | `#ffe3d3` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
 | `--glow-1` | `bg-glow-1` | `#f5d5e5` | `#3b3068` | brilho de fundo, primeira mancha (decorativo; violeta no escuro, rosa no claro) |
 | `--glow-2` | `bg-glow-2` | `#f9e4da` | `#54467f` | brilho de fundo, segunda mancha (decorativo; violeta mais claro no escuro, pêssego no claro) |
 | `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.32` | `0.32` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
@@ -63,12 +63,12 @@ Razão de contraste WCAG dos pares de texto usados hoje:
 | `foreground` / `card` | 13.65 | 15.05 |
 | `muted` / `background` | 5.11 | 9.71 |
 | `muted` / `card` | 5.67 | 8.95 |
-| `accent` / `background` | 4.87 | 9.26 |
-| `accent` / `card` | 5.40 | 8.58 |
-| `accent` / pill (`bg-accent/10` sobre `card`) | 4.70 | 7.13 |
-| `accent-foreground` / `accent` | 6.02 | 7.91 |
+| `accent` / `background` | 7.37 | 9.26 |
+| `accent` / `card` | 8.18 | 8.58 |
+| `accent` / pill (`bg-accent/10` sobre `card`) | 6.93 | 7.13 |
+| `accent-foreground` / `accent` | 9.11 | 7.91 |
 
-Todos os pares passam AA; no claro o accent fica mais apertado (4,7 a 5,4); sobre `elevated` dá 4,56, então evite. Ainda assim, não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
+Todos os pares passam AA; no claro o accent fica mais apertado (6,9 a 9,1); sobre `elevated` dá 6,90. Ainda assim, não use `accent` para texto sobre `elevated` ou sobre fundos com mais de 10% de `accent` sem recalcular.
 
 ### Texto sobre o brilho
 
