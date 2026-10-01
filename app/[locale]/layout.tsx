@@ -98,7 +98,7 @@ export default async function LocaleLayout({
               (the cool blue read as an overcast day). It ties to the dark theme's violet. Behind the grain. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none fixed inset-0 -z-8 dark:hidden bg-[linear-gradient(to_bottom,#e8ddef_0%,color-mix(in_oklab,#e8ddef_40%,transparent)_35%,transparent_65%)]"
+            className="pointer-events-none fixed inset-0 -z-8 dark:hidden bg-[linear-gradient(to_bottom,#e2d9f3_0%,color-mix(in_oklab,#e2d9f3_40%,transparent)_35%,transparent_65%)]"
           />
           <Grain layerClassName="-z-6" />
         </NextIntlClientProvider>

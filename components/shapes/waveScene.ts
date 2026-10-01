@@ -32,14 +32,13 @@ const SAFE_FEATHER = 0.45;
 // How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
 // The dark page's layers from the sky down to the horizon: magenta, coral, gold, and a dark wine-brown silhouette in front.
 const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
-// The light page is a sunrise (her reference photos). The two back layers are sky: the lavender mist, close to the
-// pale blue overlay at the top of the page. The two front ones are the sun coming up into it, low on the right with
-// the hero's gold glow: a pale cream-gold, then a pale peach. Both are kept very greyed: any real yellow or orange
-// here (even a soft one) floods the bottom half of the page. Light enough all the way to the front that the text
-// stays dark.
-// Rejected before it: lavender on all four (an overcast day), a lavender, rose, peach and gold set (too many
-// colours), and blue, yellow, gold and orange (the orange front read as a desert and was too strong).
-const LIGHT_STOPS = [0xd6d0e6, 0xc2b8dc, 0xeee0c8, 0xeccab6];
+// The light page is a sunrise (her reference photos), from the sky down: the lavender sky (the overlay at the top of the
+// page and the back layer), then a lit peach-pink, the sun coming through the morning haze, a buttery beige, and a
+// warm peach at the bottom. All kept soft: any real yellow or orange (even a pale one) floods the bottom half of the
+// page. Light enough all the way to the front that the text stays dark.
+// Rejected before it: lavender on all four (an overcast day), and blue, yellow, gold and orange (the orange front read
+// as a desert and was too strong).
+const LIGHT_STOPS = [0xd6d0e6, 0xf4c8c6, 0xf0dcba, 0xeccab6];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
