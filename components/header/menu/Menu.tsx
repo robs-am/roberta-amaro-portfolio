@@ -138,7 +138,9 @@ export function Menu() {
                 it, so it would otherwise never be seen while the menu is open. Not part of the row-enter
                 stagger on purpose — it already sits there under the hero too, so it should read as the
                 same fixed piece of the page, not as something the menu brings in. */}
-            <div className="py-8 short:py-4 text-base">
+            {/* `relative` so it paints above the fixed wave canvas, which is positioned (an unpositioned block
+                would be drawn under it and the waves would wash the credits out). */}
+            <div className="relative py-8 short:py-4 text-base">
               <div className="mx-auto max-w-7xl px-6 sm:px-8">
                 <Credits />
               </div>

@@ -147,12 +147,16 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
     const white = new Color(0xffffff);
     const accent = new Color(getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
-    const back = dark ? new Color(0xe08a9f).lerp(white, 0.1) : accent.clone().lerp(white, 0.4);
-    const front = dark ? new Color(0xb85a80) : accent.clone();
+    // The light page was read as too sweet (pastel back layers, a pale rim), so it is pulled toward a dark
+    // wine: less white mixed into the back and the rim, the front darkened toward the deep plum. The hue stays
+    // the accent's, since turning it toward red already read as too red.
+    const wine = new Color(0x2e0a20);
+    const back = dark ? new Color(0xe08a9f).lerp(white, 0.1) : accent.clone().lerp(white, 0.15);
+    const front = dark ? new Color(0xb85a80) : accent.clone().lerp(wine, 0.6);
     // The light page deepens toward a saturated plum, not toward black: black only greys it, and the front
     // layer, the biggest block of colour on the screen, came out a dusty mauve.
-    const deepen = dark ? new Color(0x2a1621) : new Color(0x4a0d33);
-    const rim = dark ? new Color(0xf7b8cb) : accent.clone().lerp(white, 0.7);
+    const deepen = dark ? new Color(0x2a1621) : wine;
+    const rim = dark ? new Color(0xf7b8cb) : accent.clone().lerp(white, 0.5);
     palette = { dark, back, front, deepen, rim };
     paint();
   };
@@ -192,7 +196,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
     const rim = recolor(palette.rim.clone());
-    const shadow = recolor(new Color(dark ? 0x14080f : 0x6b1f4d));
+    const shadow = recolor(new Color(dark ? 0x14080f : 0x3a0d2a));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the

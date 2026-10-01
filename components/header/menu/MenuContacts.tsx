@@ -2,7 +2,12 @@
 
 import { useTranslations } from "next-intl";
 import { ArrowIcon } from "@/components/ui/ArrowIcon";
-import { textLinkArrowLargeClass, textLinkLabelClass, textLinkLargeClass } from "@/components/ui/textLinkStyles";
+import {
+  onWaveTextClass,
+  textLinkArrowLargeClass,
+  textLinkLabelClass,
+  textLinkLargeClass,
+} from "@/components/ui/textLinkStyles";
 import { useContactLinks } from "@/components/layout/useContactLinks";
 import { menuRowEnter } from "./menuEnter";
 import { navItems } from "./navItems";
@@ -28,7 +33,7 @@ export function MenuContacts({ open }: Readonly<{ open: boolean }>) {
             target={link.external ? "_blank" : undefined}
             rel={link.external ? "noopener noreferrer" : undefined}
             aria-label={link.external ? `${link.label} ${tHero("newTab")}` : link.label}
-            className={textLinkLargeClass}
+            className={`${textLinkLargeClass} ${onWaveTextClass}`}
           >
             <ArrowIcon className={textLinkArrowLargeClass} />
             <span className={textLinkLabelClass}>{link.label}</span>

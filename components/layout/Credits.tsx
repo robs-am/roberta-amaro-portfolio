@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import { useLayoutEffect, useRef, useState } from 'react'
+import { onWaveTextClass } from '@/components/ui/textLinkStyles'
 
 // Shared between the home's own footer and the menu overlay: a short rule above the credits, sized to
 // track the text's own width (plus a bit) instead of a guessed fixed size, so it still fits when the
@@ -23,8 +24,12 @@ export function Credits() {
 
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      <div aria-hidden="true" style={ruleWidth ? { width: ruleWidth + 32 } : undefined} className="h-px w-12 bg-border" />
-      <p ref={ref} className="text-foreground/85 font-sans">
+      <div
+        aria-hidden="true"
+        style={ruleWidth ? { width: ruleWidth + 32 } : undefined}
+        className="h-px w-12 bg-border [@media(min-aspect-ratio:17/20)]:bg-white/25"
+      />
+      <p ref={ref} className={`text-foreground/85 font-sans ${onWaveTextClass}`}>
         {t('credits')} {t('copyright')}
       </p>
     </div>
