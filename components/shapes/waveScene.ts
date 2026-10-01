@@ -12,6 +12,7 @@ import {
   PORTRAIT_ASPECT,
   PORTRAIT_FREQ_SCALE,
   PORTRAIT_SPACING,
+  PORTRAIT_TILT,
   edgeAt,
   type LayerSpec,
 } from "@/components/shapes/waveLayers";
@@ -119,6 +120,8 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
   // See `PORTRAIT_SPACING`/`PORTRAIT_AMPLITUDE`: closer, taller layers on a portrait screen, 1 elsewhere.
   let spacing = 1;
   let amplitudeScale = 1;
+  // See `PORTRAIT_TILT`: the diagonal of the layers on a portrait screen, 0 elsewhere.
+  let tilt = 0;
   // Where the waves start, in screen height units (-1 bottom, 1 top). The home sets it from the name's position.
   let horizon = 0;
 
@@ -251,6 +254,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     freqScale = portrait ? PORTRAIT_FREQ_SCALE : landscapeFreq;
     spacing = portrait ? PORTRAIT_SPACING : 1;
     amplitudeScale = portrait ? PORTRAIT_AMPLITUDE : 1;
+    tilt = portrait ? PORTRAIT_TILT : 0;
     for (const layer of layers) {
       layer.fillMesh.scale.x = aspect;
       layer.shadowMesh.scale.x = aspect;
@@ -276,7 +280,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       const spec = specs[index] ?? LAYERS[index];
       for (let column = 0; column < fill.columns; column++) {
         const u = -OVERSCAN + (2 * OVERSCAN * column) / SEGMENTS;
-        const edge = edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale, spacing, amplitudeScale);
+        const edge = edgeAt(spec, u, seconds, horizon, pointerX * 0.5 * (index % 2 ? -1 : 1), freqScale, spacing, amplitudeScale, tilt);
         fill.positions[column * 6 + 1] = edge;
         fill.positions[column * 6 + 4] = FLOOR;
         fill.edges[column * 2] = fill.edges[column * 2 + 1] = edge;

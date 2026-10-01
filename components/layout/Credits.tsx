@@ -29,8 +29,9 @@ export function Credits() {
         style={ruleWidth ? { width: ruleWidth + 32 } : undefined}
         className="h-px w-12 bg-border [@media(min-aspect-ratio:17/20)]:dark:bg-white/25"
       />
-      <p ref={ref} className={`text-foreground/85 font-sans ${onWaveTextClass}`}>
-        {t('credits')} {t('copyright')}
+      <p ref={ref} className={`text-foreground/85 font-sans leading-7 tracking-wide ${onWaveTextClass}`}>
+        {/* Weight only, no colour of its own: on the dark page's front wave the paragraph's cream (onWaveTextClass) must reach it. */}
+        <span className="font-semibold">{t('credits')}</span> {t('copyright')}
       </p>
     </div>
   )

@@ -33,7 +33,9 @@ const SAFE_MARGIN = 24;
 // horizon under the CTAs the back ones fell below the mood field and the footer, and a mood had almost
 // nothing to show on. Raised, they sit behind the icons and the field (faint, and the field has its own
 // backdrop), while the highest crest of the first layer still stops short of the CTAs.
-const PORTRAIT_CLEAR = -24;
+const PORTRAIT_CLEAR = 20;
+// (Now 20, from -24: the crest was touching the last row of the CTAs. The layers lean toward the bottom left, see
+// `PORTRAIT_TILT`, so the left edge keeps this clearance and the right drops away from it.)
 // On a short phone (the browser's bars eat the height) the strip under the CTAs is too thin, and the back
 // layers end up below the fold. So on portrait the horizon never sits lower than where the last layer's edge
 // is at `LAST_LAYER_FLOOR` (screen height units, -1 the bottom): on a short screen the waves rise behind the
