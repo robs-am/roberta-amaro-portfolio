@@ -32,10 +32,14 @@ const SAFE_FEATHER = 0.45;
 // How far a full warm or cool mood pulls the colours toward its tint (1 would replace the rose entirely).
 // The dark page's layers from the sky down to the horizon: magenta, coral, gold, and a dark wine-brown silhouette in front.
 const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
-// The light page is the same landscape by day: the dark page's four colours (magenta, coral, gold, wine), in the same
-// order, each mixed with the page's cream (#f3ece8) so only the lightness changes: 50%, 50%, 55% and 35% of the dark
-// colour. Light all the way to the front, so the text over it stays dark.
-const LIGHT_STOPS = [0xdd99ba, 0xf9ab9b, 0xfacd8f, 0xb2a3a5];
+// The light page is a sunrise (her reference photos). The two back layers are sky: the lavender mist, close to the
+// pale blue overlay at the top of the page. The two front ones are the sun coming up into it, low on the right with
+// the hero's gold glow: a pale cream-gold, then a pale peach. Both are kept very greyed: any real yellow or orange
+// here (even a soft one) floods the bottom half of the page. Light enough all the way to the front that the text
+// stays dark.
+// Rejected before it: lavender on all four (an overcast day), a lavender, rose, peach and gold set (too many
+// colours), and blue, yellow, gold and orange (the orange front read as a desert and was too strong).
+const LIGHT_STOPS = [0xd6d0e6, 0xc2b8dc, 0xeee0c8, 0xead0c2];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
@@ -146,15 +150,15 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     // Dark page: a dusk sky with the glow at the horizon (her reference photos). Each layer has its own colour,
     // from the sky down to the horizon (see `DARK_STOPS`). A single back-to-front blend would go
     // muddy between the warm colours and the dark one, so the stops are set one by one.
-    // Light page: the same landscape by day (see `LIGHT_STOPS`), with a thin cream-gold light
-    // on each edge and a warm deep side. It replaced a slate-blue twilight. Earlier, flat pinks on this light ground
+    // Light page: sunrise (see `LIGHT_STOPS`), with a near-white warm light on each edge (the sun catching the
+    // clouds) and a greyed mauve deep side and shadows, like the shaded underside of a cloud. It replaced a slate-blue twilight. Earlier, flat pinks on this light ground
     // (pastel, dusty rose, burnt rose, plum, deep wine) read as sweet or childish: watch the rose layer for that.
     // It is built like the dark page: faint veils with a dark deep side and shadows between them (its opacities
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
     const back = dark ? new Color(0x8fa3c4) : new Color(0xa9b3c8);
     const front = dark ? new Color(0x4f6a96) : new Color(0x46597f);
-    const deepen = dark ? new Color(0x141c30) : new Color(0x9a5a5a);
-    const rim = dark ? new Color(0xff9a70) : new Color(0xfff1d6);
+    const deepen = dark ? new Color(0x141c30) : new Color(0xa08488);
+    const rim = dark ? new Color(0xff9a70) : new Color(0xfff6e0);
     palette = { dark, back, front, deepen, rim, stops: (dark ? DARK_STOPS : LIGHT_STOPS).map((hex) => new Color(hex)) };
     paint();
   };
@@ -194,7 +198,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
     const rim = recolor(palette.rim.clone());
-    const shadow = recolor(new Color(dark ? 0x0a0612 : 0x6a3a40));
+    const shadow = recolor(new Color(dark ? 0x0a0612 : 0x5a4450));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
