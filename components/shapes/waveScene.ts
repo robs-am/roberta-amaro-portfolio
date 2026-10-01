@@ -139,24 +139,16 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const dark = getTheme() === "dark";
     // Dark page: a soft pink at the back to a wine in front, deepening toward a near-black plum. Its colours are
     // bright to make up for its lower opacity: less of the layer shows, so what shows has to glow more.
-    // Light page: the site's own plum accent (the colour of the links and of the current item in the menu),
-    // lightened toward the back and darkened toward the deep side, so the waves and the text share one colour.
-    // Pinks (the dark page's pastel, then a dusty and a burnt rose) all read as childish on a light ground.
-    // A deep wine turned toward red was tried too, and read as too red on the screens that show colour true.
+    // Light page: a greyed blue-violet, from a pale lilac at the back to a deep violet in front, deepening toward an
+    // ink indigo. Every pink tried on the light ground (the dark page's pastel, a dusty rose, a burnt rose, a plum
+    // and a deep wine) read as sweet or childish; this violet is what her "azul profundo" mood gave, and she
+    // liked it better. The accent stays plum, so the links and the current item stand out against the waves.
     // It is built like the dark page: faint veils with a dark deep side and shadows between them (its opacities
     // are its own, `LIGHT_OPACITIES`). Each layer is a clear step from the last.
-    const white = new Color(0xffffff);
-    const accent = new Color(getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
-    // The light page was read as too sweet (pastel back layers, a pale rim), so it is pulled toward a dark
-    // wine: less white mixed into the back and the rim, the front darkened toward the deep plum. The hue stays
-    // the accent's, since turning it toward red already read as too red.
-    const wine = new Color(0x2e0a20);
-    const back = dark ? new Color(0xe08a9f).lerp(white, 0.1) : accent.clone().lerp(white, 0.15);
-    const front = dark ? new Color(0xb85a80) : accent.clone().lerp(wine, 0.6);
-    // The light page deepens toward a saturated plum, not toward black: black only greys it, and the front
-    // layer, the biggest block of colour on the screen, came out a dusty mauve.
-    const deepen = dark ? new Color(0x2a1621) : wine;
-    const rim = dark ? new Color(0xf7b8cb) : accent.clone().lerp(white, 0.5);
+    const back = dark ? new Color(0xb8a9dc) : new Color(0xb0a6c6);
+    const front = dark ? new Color(0x7a62b4) : new Color(0x5c4e82);
+    const deepen = dark ? new Color(0x1e1636) : new Color(0x241a3d);
+    const rim = dark ? new Color(0xd9d0f0) : new Color(0xd0c9e2);
     palette = { dark, back, front, deepen, rim };
     paint();
   };
@@ -196,7 +188,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const front = recolor(palette.front.clone().lerp(lean, tint));
     const deep = recolor(deepen.clone());
     const rim = recolor(palette.rim.clone());
-    const shadow = recolor(new Color(dark ? 0x14080f : 0x3a0d2a));
+    const shadow = recolor(new Color(dark ? 0x0b0716 : 0x1f1638));
     // How much of the layers shows on the left, where the text is: the dark page needs more of it, or its
     // lower left corner is left empty and black. Lower than before on purpose — the right side (untouched,
     // outside the fade zone) stays exactly as vivid; only the text side is pulled back further toward the
