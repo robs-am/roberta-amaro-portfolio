@@ -92,7 +92,7 @@ export type CaseSection = {
   body: Localized[];
 };
 
-/** The long-form page of a project (`/projects/[slug]`); lives in `data/cases.ts`, keyed by `Project["id"]`. */
+/** The long-form page of a project (`/projects/[slug]`); lives next to its project in `data/projects/<id>.ts`. */
 export type ProjectCase = {
   sections: CaseSection[];
 };

@@ -10,8 +10,7 @@ import {
   textLinkClass,
   textLinkLabelClass,
 } from "@/components/ui/textLinkStyles";
-import { cases } from "@/data/cases";
-import { projects } from "@/data/projects";
+import { cases, projects } from "@/data/projects";
 import { siteUrl } from "@/data/site";
 import { localize, type Project } from "@/data/types";
 import { alternatesFor } from "@/i18n/alternates";
@@ -20,7 +19,7 @@ import { routing } from "@/i18n/routing";
 
 const list: Project[] = projects;
 
-// Every project has a page; `data/cases.ts` only adds the long-form sections to it.
+// Every project has a page; each project's `data/projects/<id>.ts` only adds the long-form sections to it.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
