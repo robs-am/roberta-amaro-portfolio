@@ -36,7 +36,7 @@ const SAFE_MARGIN = 24;
 // Pixels of clear space under the CTAs (the words) on a wide screen: the crest of the first layer rises about this
 // much above the horizon, so it stops just short of the links. The icons below them are not words and can sit on the
 // faint top of the waves (under the icons, as it was, the waves were pushed too low).
-const DESKTOP_CLEAR = 72;
+const DESKTOP_CLEAR = 24;
 const PORTRAIT_CLEAR = 20;
 // (Now 20, from -24: the crest was touching the last row of the CTAs. The layers lean toward the bottom left, see
 // `PORTRAIT_TILT`, so the left edge keeps this clearance and the right drops away from it.)
