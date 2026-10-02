@@ -45,7 +45,7 @@ const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
 // as a desert and was too strong).
 // The third and fourth were a buttery beige and a warm peach (0xf0dcba, 0xeccab6); they read as yellow, so they are now a
 // rosy peach and a dusty pink-peach, the same lightness.
-const LIGHT_STOPS = [0xd6d0e6, 0xf4c8c6, 0xeed0d0, 0xe9c6c6];
+const LIGHT_STOPS = [0xc3b3e6, 0xd2bce4, 0xe2c6dc, 0xf0d2c4];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
@@ -169,7 +169,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const back = dark ? new Color(0x8fa3c4) : new Color(0xa9b3c8);
     const front = dark ? new Color(0x4f6a96) : new Color(0x46597f);
     const deepen = dark ? new Color(0x141c30) : new Color(0xb89ca4);
-    const rim = dark ? new Color(0xff9a70) : new Color(0xe8d0cc);
+    const rim = dark ? new Color(0xff9a70) : new Color(0xffdcc4);
     palette = { dark, back, front, deepen, rim, stops: (dark ? DARK_STOPS : LIGHT_STOPS).map((hex) => new Color(hex)) };
     paint();
   };
@@ -229,12 +229,12 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
       // The light page's deep side goes further toward the dark, so each layer has more body under its lit edge.
       fillMaterial.uniforms.uDeep.value.copy(edge).lerp(turnHue(deep.clone(), index), dark ? 0.18 : 0.45);
       // The lit edge: the layer's own colour pushed toward a soft pink-white.
-      fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), dark ? 0.55 : 0.4);
+      fillMaterial.uniforms.uRim.value.copy(edge).lerp(turnHue(rim.clone(), index), dark ? 0.55 : 0.55);
       shadowMaterial.uniforms.uColor.value.copy(turnHue(shadow.clone(), index));
       // A layer's shadow falls on the one behind it, so a faint layer casts a faint shadow: it follows the
       // opacity, keeping a floor so the edge of the faintest one is still drawn.
       const solidity = layerOpacities[index] / layerOpacities[LAYER_COUNT - 1];
-      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.36) * (0.35 + 0.65 * solidity);
+      shadowMaterial.uniforms.uStrength.value = (dark ? 0.5 : 0.46) * (0.35 + 0.65 * solidity);
     });
   };
 
