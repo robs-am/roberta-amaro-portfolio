@@ -55,7 +55,7 @@ export const PORTRAIT_FREQ_SCALE = 0.4;
 // lower at the right (`u` runs -1 to 1), so the waves gather in the bottom left and thin out in a diagonal toward the
 // bottom right. The left keeps the height the horizon was placed for, so the lean never brings a crest closer to the
 // text (which sits on the left); only the right drops. Landscape has no lean.
-export const PORTRAIT_TILT = -0.12;
+export const PORTRAIT_TILT = -0.28;
 export const PORTRAIT_SPACING = 0.75;
 export const PORTRAIT_AMPLITUDE = 1.25;
 
