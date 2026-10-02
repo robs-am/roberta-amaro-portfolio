@@ -27,10 +27,10 @@ export const textLinkArrowLargeClass = textLinkArrowClass.replace("size-4", "siz
 // The hero's calls to action: large from the smallest screen, since on a phone they are stacked and
 // are the main thing to tap. On a phone the size follows the width, to fill the line like the name does;
 // kept close to the role text's size (just above it) rather than ballooning past it.
-export const textLinkHeroClass = textLinkClass.replace(
-  "text-base",
-  "text-[clamp(1.25rem,5.5vw,1.5rem)] sm:text-[1.375rem] lg:text-2xl",
-);
+export const textLinkHeroClass = textLinkClass
+  .replace("text-base", "text-[clamp(1.25rem,5.5vw,1.5rem)] sm:text-[1.375rem] lg:text-2xl")
+  // The same soft charcoal as the name and the role on the light page (the dark page keeps the cream).
+  .replace("text-foreground", "text-[#3b3337] dark:text-foreground");
 export const textLinkArrowHeroClass = textLinkArrowClass.replace("size-4", "size-6 sm:size-5 lg:size-6");
 
 // Emphasised variant of the label: the underline is always drawn instead of growing on hover.

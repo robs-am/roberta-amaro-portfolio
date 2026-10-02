@@ -26,7 +26,7 @@ export function MenuNav({
                 aria-current={active ? "page" : undefined}
                 onClick={() => onNavigate(item.href)}
                 className={`menu-nav-link inline-flex rounded-sm font-display text-[clamp(2rem,10.5vw,3rem)] leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${
-                  active ? "text-accent" : "text-foreground"
+                  active ? "text-accent" : "text-[#3b3337] dark:text-[#e4d6cc]"
                 }`}
               >
                 {/* Absolute, not inline: the number used to push the word itself away from the link's own

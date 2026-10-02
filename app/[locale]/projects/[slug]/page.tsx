@@ -64,7 +64,7 @@ export default async function ProjectCasePage({
 
   return (
     <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 pt-8 pb-24 sm:px-8 sm:pt-12 short:pt-6 short:pb-6">
-      <header className="max-w-3xl">
+      <header>
         <Link href="/projects" className={textLinkClass}>
           <svg
             viewBox="0 0 16 16"
@@ -81,22 +81,39 @@ export default async function ProjectCasePage({
           <span className={textLinkLabelClass}>{t("back")}</span>
         </Link>
         <p className="mt-6 text-sm text-muted">{localize(project.category, locale)}</p>
-        <h1 className="mt-2 font-display text-4xl leading-tight font-semibold sm:text-5xl">
-          {localize(project.title, locale)}
-        </h1>
-        <p className="mt-4 text-lg leading-8 text-muted">{localize(project.description, locale)}</p>
-        {href && (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`mt-2 w-fit ${textLinkClass}`}
-          >
-            <span className={textLinkLabelClass}>{t("visit")}</span>
-            <ArrowIcon className={textLinkArrowClass} />
-            <span className="sr-only">{t("newTab")}</span>
-          </a>
-        )}
+        {/* The link to the site sits on the title's row, at the end of the full width (where the image ends); on a narrow
+            screen it wraps under the title. The text below keeps its narrower column. */}
+        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
+          <h1 className="font-display text-4xl leading-tight font-semibold sm:text-5xl">
+            {localize(project.title, locale)}
+          </h1>
+          {href && (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`w-fit ${textLinkClass}`}
+            >
+              <span className={textLinkLabelClass}>{t("visit")}</span>
+              <ArrowIcon className={textLinkArrowClass} />
+              <span className="sr-only">{t("newTab")}</span>
+            </a>
+          )}
+        </div>
+        <p className="mt-4 max-w-3xl text-lg leading-8 text-muted">{localize(project.description, locale)}</p>
+
+        <section aria-labelledby="tech-heading" className="mt-6 max-w-3xl">
+          <h2 id="tech-heading" className="text-sm font-medium tracking-wide text-muted uppercase">
+            {tProjects("tech")}
+          </h2>
+          <ul className="mt-3 flex flex-wrap gap-2">
+            {project.tech.map((tech) => (
+              <li key={tech} className="rounded-full border border-border px-3 py-1 text-sm text-muted">
+                {tech}
+              </li>
+            ))}
+          </ul>
+        </section>
       </header>
 
       {images.length > 0 && (
@@ -104,19 +121,6 @@ export default async function ProjectCasePage({
           <ProjectImages images={images} sizes="(min-width: 1280px) 1200px, 100vw" priority />
         </div>
       )}
-
-      <section aria-labelledby="tech-heading" className="mt-10 max-w-3xl">
-        <h2 id="tech-heading" className="text-sm font-medium tracking-wide text-muted uppercase">
-          {tProjects("tech")}
-        </h2>
-        <ul className="mt-3 flex flex-wrap gap-2">
-          {project.tech.map((tech) => (
-            <li key={tech} className="rounded-full border border-border px-3 py-1 text-sm text-muted">
-              {tech}
-            </li>
-          ))}
-        </ul>
-      </section>
 
       {sections.length > 0 && (
       <div className="mt-16 lg:grid lg:grid-cols-[14rem_minmax(0,48rem)] lg:gap-x-16">

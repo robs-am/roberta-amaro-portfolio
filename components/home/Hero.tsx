@@ -27,7 +27,7 @@ const HeroShapes = dynamic(() => import("@/components/home/HeroShapes").then((mo
 });
 
 const linkClass =
-  "group/link relative inline-flex size-16 items-center justify-center rounded-full text-foreground transition-colors hover:text-accent dark:hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+  "group/link relative inline-flex size-16 items-center justify-center rounded-full text-[#3b3337] dark:text-foreground transition-colors hover:text-accent dark:hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 // Pages opened from the hero go back to the home, not to the menu (see BackButton).
 const leaveToPage = () => {
@@ -111,7 +111,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     >
       <HeroShapes />
       <div className="mx-auto max-w-5xl px-6">
-        <h1 className="hero-lift text-foreground dark:text-[#e4d6cc] text-[clamp(3rem,14vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-5xl sm:whitespace-nowrap md:text-6xl lg:text-[min(4.5rem,10vh)] xl:text-[min(5rem,9vh)] 2xl:text-[min(6.5rem,10vh)]">
+        <h1 className="hero-lift text-[#3b3337] dark:text-[#e4d6cc] text-[clamp(3rem,14vw,4.25rem)] leading-[1.05] font-bold uppercase sm:text-5xl sm:whitespace-nowrap md:text-6xl lg:text-[min(4.5rem,10vh)] xl:text-[min(5rem,9vh)] 2xl:text-[min(6.5rem,10vh)]">
           {profile.name.split(" ").map((word, index) => (
             <span key={`${word}-${index}`} className="inline-block">
               <span
@@ -126,7 +126,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
           ))}
         </h1>
         <div className="hero-lift max-w-2xl">
-          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[clamp(1.25rem,5.5vw,1.375rem)] font-semibold tracking-wide text-balance text-foreground dark:text-[#ebded5] sm:mt-8 lg:text-3xl">
+          <p data-hero-item style={{ "--hero-index": 3 } as React.CSSProperties} className="mt-6 text-[clamp(1.25rem,5.5vw,1.375rem)] font-semibold tracking-wide text-balance text-[#3b3337] dark:text-[#ebded5] sm:mt-8 lg:text-3xl">
             {/* The size follows the width: the English role fits one line on a phone, the longer pt one wraps in two. */}
             {localize(profile.role, locale)}
           </p>
