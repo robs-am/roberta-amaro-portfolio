@@ -148,7 +148,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             </Link>
           </div>
           {links.length > 0 && (
-            <ul data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="-mr-4 flex justify-end gap-1">
+            <ul data-hero-item style={{ "--hero-index": 6 } as React.CSSProperties} className="-mr-4 flex justify-end gap-1 sm:hidden">
               {links.map((link) => (
                 <li key={link.href} className="relative">
                   <a
