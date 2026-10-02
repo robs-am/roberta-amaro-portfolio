@@ -45,7 +45,7 @@ const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
 // as a desert and was too strong).
 // The third and fourth were a buttery beige and a warm peach (0xf0dcba, 0xeccab6); they read as yellow, so they are now a
 // rosy peach and a dusty pink-peach, the same lightness.
-const LIGHT_STOPS = [0xc3b3e6, 0xd2bce4, 0xe2c6dc, 0xf0d2c4];
+const LIGHT_STOPS = [0xc3b3e6, 0xd3bcd7, 0xe2c5c7, 0xf2cdb8];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.

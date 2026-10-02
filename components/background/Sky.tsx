@@ -15,7 +15,7 @@ export function Sky() {
       aria-hidden="true"
       className={`pointer-events-none fixed inset-0 -z-8 dark:hidden ${
         isHome
-          ? "bg-[linear-gradient(to_bottom,var(--sky)_0%,color-mix(in_oklab,var(--sky)_40%,transparent)_35%,transparent_65%)]"
+          ? "bg-[linear-gradient(to_bottom,var(--sky)_0%,color-mix(in_oklab,var(--sky)_50%,transparent)_40%,color-mix(in_oklab,var(--sky)_20%,transparent)_65%,transparent_90%)]"
           : "bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--sky)_45%,transparent)_0%,color-mix(in_oklab,var(--sky)_15%,transparent)_20%,transparent_40%)]"
       }`}
     />
