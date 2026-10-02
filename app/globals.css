@@ -37,7 +37,7 @@
   /* The sky behind the page and the menu (light only, the dark page has none) and the sun's glow low on the right of
      the hero and the menu, with how much of it shows. */
   --sky: #e2d9f3;
-  --sun-glow: #ffd9a0;
+  --sun-glow: #ffd0bc;
   --sun-glow-mix: 58%;
   color-scheme: light;
 }

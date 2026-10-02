@@ -43,7 +43,9 @@ const DARK_STOPS = [0xc7458c, 0xff6a4d, 0xffb347, 0x3a1c28];
 // page. Light enough all the way to the front that the text stays dark.
 // Rejected before it: lavender on all four (an overcast day), and blue, yellow, gold and orange (the orange front read
 // as a desert and was too strong).
-const LIGHT_STOPS = [0xd6d0e6, 0xf4c8c6, 0xf0dcba, 0xeccab6];
+// The third and fourth were a buttery beige and a warm peach (0xf0dcba, 0xeccab6); they read as yellow, so they are now a
+// rosy peach and a dusty pink-peach, the same lightness.
+const LIGHT_STOPS = [0xd6d0e6, 0xf4c8c6, 0xeed0d0, 0xe9c6c6];
 const MAX_TINT = 0.4;
 // How far a full colour request turns the hue toward the one asked for (1 is exactly it), and the least
 // saturation a coloured layer gets: the rose is soft, and a colour at the same softness stays easy on the text.
@@ -167,7 +169,7 @@ export function createWaveScene(canvas: HTMLCanvasElement) {
     const back = dark ? new Color(0x8fa3c4) : new Color(0xa9b3c8);
     const front = dark ? new Color(0x4f6a96) : new Color(0x46597f);
     const deepen = dark ? new Color(0x141c30) : new Color(0xb89ca4);
-    const rim = dark ? new Color(0xff9a70) : new Color(0xe6cdbd);
+    const rim = dark ? new Color(0xff9a70) : new Color(0xe8d0cc);
     palette = { dark, back, front, deepen, rim, stops: (dark ? DARK_STOPS : LIGHT_STOPS).map((hex) => new Color(hex)) };
     paint();
   };
