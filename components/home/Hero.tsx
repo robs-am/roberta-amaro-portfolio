@@ -11,7 +11,6 @@ import { WaveMoodInput } from "@/components/home/WaveMoodInput";
 import {
   textLinkArrowHeroClass,
   textLinkHeroClass,
-  textLinkLabelActiveClass,
   textLinkLabelClass,
 } from "@/components/ui/textLinkStyles";
 import { profile } from "@/data/profile";
@@ -141,7 +140,7 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
             </Link>
             <Link href="/projects" onClick={leaveToPage} className={`${textLinkHeroClass} order-1 sm:order-2`}>
               <ArrowIcon className={textLinkArrowHeroClass} />
-              <span className={textLinkLabelActiveClass}>{t("projectsCta")}</span>
+              <span className={textLinkLabelClass}>{t("projectsCta")}</span>
             </Link>
             <Link href="/about" onClick={leaveToPage} className={`${textLinkHeroClass} order-3`}>
               <ArrowIcon className={textLinkArrowHeroClass} />

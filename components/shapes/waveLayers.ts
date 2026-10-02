@@ -16,7 +16,7 @@ export const DARK_OPACITIES = [0.32, 0.52, 0.64, 0.95];
 // The wine palette needs more body than the pink did: at the old 0.46 and 0.64 a dark colour over the light page
 // washed out to the same pastel, so the two front layers are higher while the back ones stay faint veils.
 // The steps are even (about 0.14 each), like the dark page's, so the change from one layer to the next reads the same.
-export const LIGHT_OPACITIES = [0.3, 0.42, 0.54, 0.62];
+export const LIGHT_OPACITIES = [0.26, 0.37, 0.48, 0.55];
 
 // Below this aspect the screen is narrower than it is tall (a phone in portrait): the same amplitude that
 // reads as a calm, wide swell on a landscape screen gets squeezed into a much narrower width there, so every

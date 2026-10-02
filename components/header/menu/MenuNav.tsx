@@ -25,7 +25,7 @@ export function MenuNav({
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 onClick={() => onNavigate(item.href)}
-                className={`menu-nav-link inline-flex rounded-sm font-display text-[clamp(2rem,10.5vw,3rem)] leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${
+                className={`menu-nav-link group inline-flex rounded-sm font-display text-[clamp(2rem,10.5vw,3rem)] leading-[1.1] font-bold tracking-wide uppercase transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:text-7xl lg:text-8xl ${
                   active ? "text-accent" : "text-[#3b3337] dark:text-[#e4d6cc]"
                 }`}
               >
@@ -37,7 +37,17 @@ export function MenuNav({
                 >
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                {t(`nav.${item.key}`)}
+                {/* The underline marks the page you are on (always drawn) and grows on hover/focus for the others, as
+                    the hero's links do; the colour alone was too close to the text's in the light theme. */}
+                <span
+                  className={`bg-[linear-gradient(currentColor,currentColor)] bg-left-bottom bg-no-repeat pb-1 transition-[background-size] duration-300 ease-expressive motion-reduce:transition-none ${
+                    active
+                      ? "bg-[length:100%_3px]"
+                      : "bg-[length:0%_3px] group-hover:bg-[length:100%_3px] group-focus-visible:bg-[length:100%_3px]"
+                  }`}
+                >
+                  {t(`nav.${item.key}`)}
+                </span>
               </Link>
             </li>
           );
