@@ -29,7 +29,11 @@ export function Credits() {
         style={ruleWidth ? { width: ruleWidth + 32 } : undefined}
         className="h-px w-12 bg-border [@media(min-aspect-ratio:17/20)]:dark:bg-white/25"
       />
-      <p ref={ref} className={`text-foreground/85 font-sans leading-7 tracking-wide ${onWaveTextClass}`}>
+      {/* The soft dark shadow darkens the wave just behind the letters, so the credits keep AAA contrast where the wave is lightest. */}
+      <p
+        ref={ref}
+        className={`text-foreground/85 font-sans leading-7 tracking-wide [@media(min-aspect-ratio:17/20)]:dark:[text-shadow:0_0_6px_rgba(0,0,0,0.45),0_1px_2px_rgba(0,0,0,0.3)] ${onWaveTextClass}`}
+      >
         {/* Weight only, no colour of its own: on the dark page's front wave the paragraph's cream (onWaveTextClass) must reach it. */}
         <span className="font-semibold">{t('credits')}</span> {t('copyright')}
       </p>

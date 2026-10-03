@@ -2,6 +2,10 @@
 
 import { useEffect, type RefObject } from "react";
 
+// How far the list sits above the hero name's top, as a share of the viewport height, so the last links
+// stay clear of the waves' crests. Small on purpose: the more it is, the less the opening matches the hero.
+const LIFT = 0.07;
+
 // On the home page (sm and up), the list's top and left are measured to match the hero name's,
 // instead of trusting two independently-centered boxes (of different content and max-widths) to land
 // in the same place — in practice they don't: the two "same" `max-w-5xl px-6` columns render dozens of
@@ -50,7 +54,7 @@ export function useMenuHomeAlignment({
       menuBody.style.transform = "";
       const heroRect = heroTitle.getBoundingClientRect();
       const menuRect = menuBody.getBoundingClientRect();
-      const verticalOffset = heroRect.top - controlRow.getBoundingClientRect().bottom;
+      const verticalOffset = heroRect.top - controlRow.getBoundingClientRect().bottom - window.innerHeight * LIFT;
 
       menuBody.style.justifyContent = "flex-start";
       menuBody.style.paddingTop = `${Math.max(verticalOffset, 0)}px`;

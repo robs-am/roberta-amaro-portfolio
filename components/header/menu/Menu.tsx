@@ -7,7 +7,7 @@ import { Grain } from "@/components/background/Grain";
 import { Credits } from "@/components/layout/Credits";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { usePathname } from "@/i18n/navigation";
-import { ControlDock, DockDivider, dockButtonClass } from "../ControlDock";
+import { ControlDock, DockDivider, dockButtonClass, dockMenuButtonClass } from "../ControlDock";
 import { LocaleSwitcher } from "../LocaleSwitcher";
 import { CloseIcon, OpenIcon } from "./MenuIcons";
 import { MenuContacts } from "./MenuContacts";
@@ -69,9 +69,12 @@ export function Menu() {
         aria-controls={panelId}
         aria-label={t("menu.open")}
         onClick={openMenu}
-        className={dockButtonClass}
+        className={dockMenuButtonClass}
       >
         <OpenIcon />
+        <span aria-hidden="true" className="hidden text-sm font-semibold sm:inline">
+          {t("menu.label")}
+        </span>
       </button>
 
       {mounted &&

@@ -36,17 +36,17 @@ O tema segue a preferência do navegador (`prefers-color-scheme`) até a visitan
 
 | Token | Classe Tailwind | Claro | Escuro | Uso |
 |---|---|---|---|---|
-| `--background` | `bg-background` | `#f1ece9` | `#15131a` | fundo da página |
-| `--card` | `bg-card` | `#f9f6f4` | `#1e1a26` | cards e blocos de conteúdo |
-| `--elevated` | `bg-elevated` | `#e8e2e1` | `#272231` | superfícies internas e hover |
+| `--background` | `bg-background` | `#f1ece9` | `#161211` | fundo da página |
+| `--card` | `bg-card` | `#f9f6f4` | `#201a18` | cards e blocos de conteúdo |
+| `--elevated` | `bg-elevated` | `#e8e2e1` | `#2b2320` | superfícies internas e hover |
 | `--foreground` | `text-foreground` | `#2a2427` | `#f4e9e1` | texto principal |
-| `--muted` | `text-muted` | `#554c52` | `#c4bdcc` | texto secundário (datas, empresa, descrições) |
+| `--muted` | `text-muted` | `#554c52` | `#cbbfb8` | texto secundário (datas, empresa, descrições) |
 | `--accent` | `text-accent`, `bg-accent` | `#5b3f8c` | `#ffa07a` | destaque: estado do hover dos links, item ativo do menu, anos e empresas da timeline, traço decorativo do hero, pills, botão principal |
 | `--accent-foreground` | `text-accent-foreground` | `#ffffff` | `#3a1a10` | texto sobre fundo `bg-accent` |
 | `--border` | `border-border` | `rgba(42,36,39,0.13)` | `rgba(255,255,255,0.12)` | bordas e divisórias (decorativo, nunca texto) |
 | `--highlight` | `text-highlight` | `#3f2a6b` | `#ffe3d3` | tom de texto do accent, mais escuro, para passar AA sobre o brilho (o `--accent` fica apertado lá); usado no botão principal do hero, só no tema claro (no escuro os botões do hero são neutros, veja abaixo) |
-| `--glow-1` | `bg-glow-1` | `#e2d9f3` | `#25283f` | brilho de fundo, primeira mancha (decorativo; lavanda no claro, azul-marinho acinzentado no escuro; o violeta `#3b3068` foi trocado porque o topo das páginas internas chamava mais atenção que o conteúdo) |
-| `--glow-2` | `bg-glow-2` | `#fbe3d6` | `#333650` | brilho de fundo, segunda mancha (decorativo; pêssego no claro, azul-ardósia no escuro) |
+| `--glow-1` | `bg-glow-1` | `#e2d9f3` | `#4a2230` | brilho de fundo, primeira mancha (decorativo; lavanda no claro, vinho no escuro, da cor das ondas do hero; o violeta `#3b3068` foi trocado porque o topo das páginas internas chamava mais atenção que o conteúdo) |
+| `--glow-2` | `bg-glow-2` | `#fbe3d6` | `#5a3326` | brilho de fundo, segunda mancha (decorativo; pêssego no claro, terracota no escuro) |
 | `--glow-opacity` | — (usado só via `.glow-blob` em `globals.css`) | `0.32` | `0.2` | opacidade das manchas do brilho; ver "Texto sobre o brilho" abaixo |
 | `--sky` | — (usado via `var(--sky)` no gradiente do `Sky.tsx` e do `Menu.tsx`) | `#e2d9f3` | — | céu lavanda no topo da página e do menu, só no claro (o escuro não tem). Na home e no menu o gradiente é forte; nas páginas internas (`Sky.tsx`) ele é mais curto e bem mais pálido, para a cor não pesar mais que o conteúdo. O menu repete o gradiente porque o painel é opaco e cobre o do layout |
 | `--sun-glow` | — (usado via `var(--sun-glow)` no brilho do hero e do menu) | `#ffd9a0` | `#ff9a70` | cor do brilho do sol, embaixo à direita: dourado ao amanhecer, coral ao entardecer |
@@ -102,7 +102,7 @@ O fundo da home e do menu são camadas de onda de papel recortado (Three.js, `co
 | Camadas, do céu ao horizonte | magenta `#c7458c`, coral `#ff6a4d`, dourado `#ffb347`, silhueta vinho `#3a1c28` | lavanda `#d6d0e6`, rosa-pêssego `#f4c8c6`, bege amanteigado `#f0dcba`, pêssego `#eccab6` |
 | Opacidades | `[0.32, 0.52, 0.64, 0.95]` | `[0.3, 0.42, 0.54, 0.62]` |
 | Brilho do sol | `--sun-glow` coral a 32% | `--sun-glow` dourado a 58% |
-| Céu | fundo `#15131a` | gradiente `--sky` lavanda no topo |
+| Céu | fundo `#161211` | gradiente `--sky` lavanda no topo |
 | Texto sobre as ondas | creme `#f3e4da` (só em telas largas) | segue o `--foreground` |
 
 Regras que custaram tentativas:
