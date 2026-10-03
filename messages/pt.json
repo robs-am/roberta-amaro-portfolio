@@ -90,7 +90,11 @@
     "intro": "Sou Engenheira de Software e atuo nas diferentes camadas de um produto, das interfaces em React aos serviços de back-end e às integrações com IA. Comecei minha carreira como Designer 3D, e essa bagagem ainda influencia o meu jeito de construir: me importo tanto com a sensação de usar uma interface quanto com o funcionamento por trás dela.",
     "curiosity": "Tenho interesse especial em creative coding, performance e em como a IA pode se integrar a experiências visuais construídas em código. É onde gosto de experimentar: na interseção entre código, design e produto.",
     "stack": "Tecnologias",
-    "alsoWorking": "Back-end e cloud"
+    "alsoWorking": "Back-end e cloud",
+    "site": {
+      "body": "Este site é um exemplo: as ondas da página inicial são desenhadas em código, com Three.js e shaders, e mudam com uma frase sua, como “domingo chuvoso”, traduzida pela IA dentro de limites que defini à mão.",
+      "try": "Experimente na página inicial."
+    }
   },
   "AboutPage": {
     "title": "Sobre | Roberta Amaro",

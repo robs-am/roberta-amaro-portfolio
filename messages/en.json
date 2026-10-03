@@ -90,7 +90,11 @@
     "intro": "I'm a Software Engineer who works across the layers of a product, from React interfaces to back-end services and AI integrations. I started my career as a 3D Designer, and that background still shapes how I build: I care as much about how an interface feels as about what works behind it.",
     "curiosity": "I have a special interest in creative coding, performance, and how AI can be woven into visual experiences built with code. This is where I like to experiment: at the intersection of code, design, and product.",
     "stack": "Technologies",
-    "alsoWorking": "Back-end & cloud"
+    "alsoWorking": "Back-end & cloud",
+    "site": {
+      "body": "This site is one example: the waves on the home page are drawn in code, with Three.js and shaders, and they change with a phrase of yours, like “a rainy Sunday”, translated by AI within limits I set by hand.",
+      "try": "Try it on the home page."
+    }
   },
   "AboutPage": {
     "title": "About | Roberta Amaro",

@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { alsoWorkingWith, mainStack } from "@/data/skills";
 import { siteUrl } from "@/data/site";
 import { alternatesFor } from "@/i18n/alternates";
+import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 // The entrance's timing (see `about-body` and `about-wipe` in globals.css): the title, the text and the "Technologies"
@@ -49,6 +50,15 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
       <div data-about-body style={delay(100)} className="mt-10 max-w-3xl space-y-6 text-lg leading-8 short:mt-4 short:max-w-4xl short:space-y-3 short:text-base short:leading-7">
         <p>{t("intro")}</p>
         <p>{t("curiosity")}</p>
+        <p>
+          {t("site.body")}{" "}
+          <Link
+            href="/"
+            className="font-semibold text-foreground underline decoration-1 underline-offset-4 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+          >
+            {t("site.try")}
+          </Link>
+        </p>
       </div>
 
       <section aria-labelledby="stack-heading" className="mt-16 short:mt-6">
