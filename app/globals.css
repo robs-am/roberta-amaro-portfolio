@@ -266,6 +266,60 @@
   }
 }
 
+/* The about page's entrance is CSS too, so it starts at the first paint instead of waiting for React to hydrate. The
+   title is wiped in from the left (the experience list's gesture), and everything else rises right behind it, each
+   piece at its own --about-delay (set in the page), so the text lands in step with the title instead of after it. */
+@keyframes about-title {
+  from {
+    opacity: 0;
+    clip-path: inset(0% 100% 0% 0%);
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0% 0% 0% 0%);
+    transform: none;
+  }
+}
+
+@keyframes about-body {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Each stack list is wiped in from the top down, so its rows of words come in one after another as a whole row. The
+   end state overshoots the box a little so descenders are never clipped. */
+@keyframes about-wipe {
+  from {
+    opacity: 0;
+    clip-path: inset(0% 0% 100% 0%);
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(-10% -10% -10% -10%);
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-about-wipe] {
+    animation: about-wipe 800ms cubic-bezier(0.4, 0, 0.2, 1) var(--about-delay, 0ms) both;
+  }
+  [data-about-title] {
+    animation: about-title 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  [data-about-body] {
+    animation: about-body 700ms cubic-bezier(0.16, 1, 0.3, 1) var(--about-delay, 0ms) both;
+  }
+}
+
 @keyframes show-fallback {
   to {
     opacity: 1;

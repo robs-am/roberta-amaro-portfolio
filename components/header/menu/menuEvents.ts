@@ -10,3 +10,7 @@ export const HERO_REENTER_EVENT = "hero-reenter";
 // Where the in-page back arrow leads: the home when the page was reached from a link on the home
 // (the hero's), the menu otherwise, since the menu is how every other page is reached.
 export const backTarget = { toHome: false };
+
+// Set by the hero's links while its text drifts out, and consumed by the page that opens (see PageEnter): that page
+// then fades in, so the change is not a hard cut. One shot, so no other navigation picks it up.
+export const heroNavigation = { pending: false };

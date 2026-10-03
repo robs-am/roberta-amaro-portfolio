@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
@@ -6,6 +7,17 @@ import { alsoWorkingWith, mainStack } from "@/data/skills";
 import { siteUrl } from "@/data/site";
 import { alternatesFor } from "@/i18n/alternates";
 import { routing } from "@/i18n/routing";
+
+// The entrance's timing (see `about-body` and `about-wipe` in globals.css): the title, the text and the "Technologies"
+// heading come first; then each list is wiped in from the top down, a row of words at a time, and the second list
+// follows the first.
+const delay = (ms: number) => ({ "--about-delay": `${ms}ms` }) as CSSProperties;
+const FIRST_HEADING_START = 250;
+const SECOND_HEADING_START = 900;
+// How long after its heading a list starts: short, so the heading and the words read as one piece.
+const LIST_GAP = 80;
+const FIRST_LIST_START = FIRST_HEADING_START + LIST_GAP;
+const SECOND_LIST_START = SECOND_HEADING_START + LIST_GAP;
 
 export async function generateMetadata({
   params,
@@ -33,8 +45,8 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
 
   return (
     <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 pt-8 pb-16 sm:px-8 sm:pt-12 short:pt-6 short:pb-6">
-      <h1 className="text-3xl font-semibold">{t("title")}</h1>
-      <div className="mt-10 max-w-3xl space-y-6 text-lg leading-8 short:mt-4 short:max-w-4xl short:space-y-3 short:text-base short:leading-7">
+      <h1 data-about-title className="text-3xl font-semibold">{t("title")}</h1>
+      <div data-about-body style={delay(100)} className="mt-10 max-w-3xl space-y-6 text-lg leading-8 short:mt-4 short:max-w-4xl short:space-y-3 short:text-base short:leading-7">
         <p>{t("intro")}</p>
         <p>{t("curiosity")}</p>
       </div>
@@ -42,20 +54,22 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
       <section aria-labelledby="stack-heading" className="mt-16 short:mt-6">
         <h2
           id="stack-heading"
+          data-about-body
+          style={delay(FIRST_HEADING_START)}
           className="border-b border-border pb-3 text-sm font-medium tracking-wide text-muted uppercase"
         >
           {t("stack")}
         </h2>
-        <ul className="mt-6 short:mt-4 flex flex-wrap gap-x-6 gap-y-1 font-display text-2xl leading-[1.1] font-bold tracking-wide uppercase sm:text-3xl">
+        <ul data-about-wipe style={delay(FIRST_LIST_START)} className="mt-6 short:mt-4 flex flex-wrap gap-x-6 gap-y-1 font-display text-2xl leading-[1.1] font-bold tracking-wide uppercase sm:text-3xl">
           {mainStack.map((tech) => (
             <li key={tech}>{tech}</li>
           ))}
         </ul>
 
-        <h3 className="mt-8 short:mt-5 text-sm font-medium tracking-wide text-muted uppercase">
+        <h3 data-about-body style={delay(SECOND_HEADING_START)} className="mt-8 short:mt-5 text-sm font-medium tracking-wide text-muted uppercase">
           {t("alsoWorking")}
         </h3>
-        <ul className="mt-4 short:mt-3 flex flex-wrap gap-x-6 gap-y-1 text-base font-semibold text-accent sm:text-lg">
+        <ul data-about-wipe style={delay(SECOND_LIST_START)} className="mt-4 short:mt-3 flex flex-wrap gap-x-6 gap-y-1 text-base font-semibold text-accent sm:text-lg">
           {alsoWorkingWith.map((tech) => (
             <li key={tech}>{tech}</li>
           ))}

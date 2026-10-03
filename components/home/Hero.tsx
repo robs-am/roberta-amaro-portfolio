@@ -14,7 +14,7 @@ import {
   textLinkLabelClass,
 } from "@/components/ui/textLinkStyles";
 import { profile } from "@/data/profile";
-import { HERO_REENTER_EVENT, backTarget } from "@/components/header/menu/menuEvents";
+import { HERO_REENTER_EVENT, backTarget, heroNavigation } from "@/components/header/menu/menuEvents";
 import { heroEntrance } from "@/components/shapes/shapesScene";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
@@ -28,10 +28,6 @@ const HeroShapes = dynamic(() => import("@/components/home/HeroShapes").then((mo
 const linkClass =
   "group/link relative inline-flex size-16 items-center justify-center rounded-full text-[#3b3337] dark:text-foreground transition-colors hover:text-accent dark:hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
-// Pages opened from the hero go back to the home, not to the menu (see BackButton).
-const leaveToPage = () => {
-  backTarget.toHome = true;
-};
 
 export function Hero({ locale }: Readonly<{ locale: Locale }>) {
   const t = useTranslations("Hero");
@@ -65,6 +61,32 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
       animation.cancel();
     };
   }, []);
+
+  // Pages opened from the hero go back to the home, not to the menu (see BackButton). The navigation starts with the
+  // click, as for any link: this only lets the hero's text drift up and out while the page loads (the reverse of its
+  // entrance), so the change of page is not a hard cut. Opening in a new tab or with reduced motion leaves it as is.
+  const leavingRef = useRef(false);
+  const leaveToPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    backTarget.toHome = true;
+    const section = sectionRef.current;
+    if (!section || leavingRef.current) return;
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (!window.matchMedia("(prefers-reduced-motion: no-preference)").matches) return;
+    leavingRef.current = true;
+    heroNavigation.pending = true;
+
+    // Releases the name's CSS keyframe so the inline styles can drive it (same as the re-entrance below).
+    const words = section.querySelectorAll<HTMLElement>("[data-hero-word]");
+    for (const word of words) word.style.animation = "none";
+    const items = section.querySelectorAll<HTMLElement>("[data-hero-item]");
+    animate([...words, ...items], {
+      opacity: [1, 0],
+      translateY: [0, -12],
+      duration: 300,
+      delay: stagger(40),
+      ease: cubicBezier(0.2, 0, 0, 1),
+    });
+  };
 
   // Menu closing back onto an already-mounted hero (see Menu.tsx): the name's CSS wipe already played
   // once at first paint and (with `both`) is still holding its finished state — with nothing driving it

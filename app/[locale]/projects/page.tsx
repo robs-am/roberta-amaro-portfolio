@@ -9,6 +9,7 @@ import { localize, type Project } from "@/data/types";
 import { siteUrl } from "@/data/site";
 import { alternatesFor } from "@/i18n/alternates";
 import { routing } from "@/i18n/routing";
+import { PageEnter } from "@/components/layout/PageEnter";
 
 export async function generateMetadata({
   params,
@@ -60,6 +61,7 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
 
   return (
     <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-6 pt-8 pb-16 sm:px-8 sm:pt-12 short:pt-6 short:pb-6">
+      <PageEnter />
       <ProjectShowcase
         title={t("title")}
         intro={t("intro")}

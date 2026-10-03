@@ -40,6 +40,7 @@ export function ProjectCard({
   return (
     <li
       data-showcase-item
+      data-page-enter
       className="group/card relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors duration-500 ease-soft hover:border-muted motion-reduce:transition-none"
     >
       <div data-showcase-image className="relative aspect-video overflow-hidden bg-elevated">
