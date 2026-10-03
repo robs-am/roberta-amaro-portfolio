@@ -14,7 +14,7 @@ export async function Header() {
 
   return (
     <HeaderShell>
-      <div className="mx-auto flex min-h-11 max-w-7xl items-center gap-6 px-6 py-3 sm:px-8">
+      <div className="mx-auto flex min-h-11 max-w-7xl items-center gap-2 px-4 py-3 sm:gap-6 sm:px-8">
         <HideOnHome>
           <div className="flex items-center gap-1">
             <HomeLink label={t("home")} />

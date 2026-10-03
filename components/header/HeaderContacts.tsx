@@ -7,7 +7,7 @@ import { ControlDock, DockDivider, dockButtonClass } from "./ControlDock";
 import { ShowOnHome } from "./ShowOnHome";
 
 // The home's contacts (email, LinkedIn, GitHub), on the header's free left side where the inner pages put home/back,
-// in the same capsule as the controls opposite. From sm up only: on a phone the row would crowd the dock, so the
+// in the same capsule as the controls opposite. On a phone the buttons are smaller; below 360px the row would crowd the dock, so the
 // hero keeps its own list there (see Hero).
 export async function HeaderContacts() {
   const t = await getTranslations("Hero");
@@ -22,7 +22,7 @@ export async function HeaderContacts() {
 
   return (
     <ShowOnHome>
-      <div className="hidden sm:block">
+      <div className="hidden min-[360px]:block">
         <ControlDock>
           {links.map((link, index) => (
             <Fragment key={link.href}>
@@ -32,9 +32,9 @@ export async function HeaderContacts() {
                 target={link.external ? "_blank" : undefined}
                 rel={link.external ? "noopener noreferrer" : undefined}
                 aria-label={link.external ? `${link.label} ${t("newTab")}` : link.label}
-                className={`${dockButtonClass} group/tip relative`}
+                className={`${dockButtonClass} group/tip relative max-sm:size-8`}
               >
-                <link.Icon badge={false} className="size-6" />
+                <link.Icon badge={false} className="size-6 max-sm:size-5" />
                 <span aria-hidden="true" className={tooltipBelowClass}>
                   {link.label}
                 </span>
