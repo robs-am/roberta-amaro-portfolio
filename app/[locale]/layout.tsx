@@ -53,6 +53,15 @@ export async function generateMetadata({
     title: t("title"),
     description: t("description"),
     alternates: alternatesFor(locale, ""),
+    // One favicon per browser theme (the tab bar is light or dark with the browser, not with the site's own toggle).
+    // /favicon.ico and the apple icon, in app/, stay the dark one as the fallback for browsers that ignore `media`.
+    icons: {
+      icon: [
+        { url: "/icon-light.png", media: "(prefers-color-scheme: light)" },
+        { url: "/icon-dark.png", media: "(prefers-color-scheme: dark)" },
+      ],
+      apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+    },
     openGraph: {
       type: "website",
       siteName: profile.name,

@@ -24,8 +24,8 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ loc
           flexDirection: "column",
           justifyContent: "center",
           padding: "0 96px",
-          background: "radial-gradient(circle at 70% 30%, #3a1c28 0%, #171416 60%)",
-          color: "#f5f1f3",
+          background: "radial-gradient(circle at 70% 30%, #3a1c28 0%, #161211 60%)",
+          color: "#f4e9e1",
         }}
       >
         <div style={{ fontSize: 112, fontWeight: 700, lineHeight: 1.05 }}>{profile.name}</div>
