@@ -62,6 +62,8 @@ export type ProjectImage = {
   href?: string;
   /** CSS `object-position` for the crop when the frame is a different shape than the screenshot; centered when omitted. */
   focus?: string;
+  /** "contain" shows the whole image instead of cropping it, filling the leftover bars with a blurred copy of itself; for very wide banners. */
+  fit?: "cover" | "contain";
 };
 
 export type Project = {

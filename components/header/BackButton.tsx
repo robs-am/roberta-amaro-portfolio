@@ -8,7 +8,9 @@ import { OPEN_MENU_EVENT, backTarget } from "./menu/menuEvents";
 
 // Back arrow in the header, next to the home icon, drawn like the menu's buttons. The menu is how every page
 // is reached, so it reopens the menu. When the page was opened from a link on the home (the hero's) the
-// way back is the home, which the icon beside it already is, so the arrow is not shown.
+// way back is the home, which the icon beside it already is, so the arrow is not shown. Nor is it inside a project
+// (`/projects/<id>`): the page has its own "all projects" link, and a second way back that opens the menu instead
+// would only confuse.
 export function BackButton() {
   const t = useTranslations("Header");
   const pathname = usePathname();
@@ -21,7 +23,7 @@ export function BackButton() {
     setToHome(backTarget.toHome);
   }
 
-  if (toHome) return null;
+  if (toHome || pathname.startsWith("/projects/")) return null;
 
   return (
     <button

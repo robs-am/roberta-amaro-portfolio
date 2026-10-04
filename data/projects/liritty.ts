@@ -1,4 +1,4 @@
-import type { Project } from "../types";
+import type { Project, ProjectCase } from "../types";
 
 export const project = {
   id: "liritty",
@@ -28,3 +28,40 @@ export const project = {
     },
   },
 } satisfies Project;
+
+/** Long-form sections of the project's page (`/projects/[id]`); without it the page shows only the header, image and technologies. */
+// TODO: first draft from short notes, with no numbers or before/after yet. Fill the gaps flagged below before publishing.
+export const projectCase = {
+  sections: [
+    {
+      id: "banner",
+      label: { pt: "Banner", en: "Banner" },
+      // TODO: finish what the link over the banner is for (a collection, a product, a campaign?), and say who uses it and how often.
+      title: {
+        pt: "Um componente inédito deu ao cliente o controle dos vídeos do banner, com link incluso",
+        en: "A first-of-its-kind component gave the client control of the banner videos, link included",
+      },
+      body: [
+        {
+          pt: "Fiquei responsável por criar, em React, um componente customizado inédito: o cliente sobe os vídeos do banner e, ao mesmo tempo, define o link que fica sobre eles. Publicar ou trocar um banner deixou de depender de um desenvolvedor.",
+          en: "I was responsible for building a first-of-its-kind custom component in React: the client uploads the banner videos and, at the same time, sets the link that sits over them. Publishing or swapping a banner no longer depends on a developer.",
+        },
+      ],
+    },
+    {
+      id: "redesign",
+      label: { pt: "Redesign", en: "Redesign" },
+      // TODO: say what changed in the home (which components, what the goal was), and any effect.
+      title: {
+        pt: "A home inteira ganhou um novo visual, componente por componente",
+        en: "The whole home page got a new look, component by component",
+      },
+      body: [
+        {
+          pt: "Assumi todo o redesign dos componentes da home. Não foi um ajuste pontual: a página inteira foi repensada.",
+          en: "I took on the redesign of all the home page's components. It was not a one-off tweak: the whole page was rethought.",
+        },
+      ],
+    },
+  ],
+} satisfies ProjectCase;

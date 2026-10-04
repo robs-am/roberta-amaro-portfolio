@@ -17,13 +17,13 @@ export const project = {
   tech: ["React", "TypeScript", "SASS", "VTEX"],
   demoUrl: "https://www.skelt.com.br",
   image: {
-    src: "/projects/skelt-thumb.webp",
-    width: 1433,
-    height: 552,
-    focus: "50% 50%",
+    src: "/projects/skelt-banner.webp",
+    width: 1920,
+    height: 618,
+    fit: "contain",
     alt: {
-      pt: "Página inicial do e-commerce da Skelt, com banner em degradê coral do perfume capilar Amalfi Sunset, frasco entre flores e uma mecha de cabelo ondulado ao fundo",
-      en: "Skelt e-commerce home page, with a coral-gradient banner for the Amalfi Sunset hair perfume, the bottle framed by flowers with a strand of wavy hair behind it",
+      pt: "Banner do e-commerce da Skelt para o lançamento do perfume para cabelo Amalfi Sunset, com o frasco entre flores sobre um pedestal coral, uma mecha de cabelo ondulado ao fundo, a frase \"A fragrância mais amada de Skelt, agora para o seu cabelo\" e o botão Comprar Agora",
+      en: "Skelt e-commerce banner for the launch of the Amalfi Sunset hair perfume, with the bottle among flowers on a coral pedestal, a strand of wavy hair behind it, the line \"The most loved fragrance from Skelt, now for your hair\" and a Buy Now button",
     },
   },
 } satisfies Project;

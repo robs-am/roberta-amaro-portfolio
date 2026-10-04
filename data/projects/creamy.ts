@@ -18,13 +18,13 @@ export const project = {
   tech: ["React", "TypeScript", "Tailwind CSS", "VTEX"],
   demoUrl: "https://www.creamy.com.br",
   image: {
-    src: "/projects/creamy-thumb.webp",
+    src: "/projects/creamy-skincare.webp",
     width: 1440,
-    height: 807,
-    focus: "50% 33%",
+    height: 514,
+    focus: "50% 50%",
     alt: {
-      pt: "Página inicial do e-commerce da Creamy Skincare, com banner de 15% de desconto no Pix e foto de uma mulher se olhando no espelho segurando produtos da linha",
-      en: "Creamy Skincare e-commerce home page, with a 15%-off banner and a photo of a woman looking in a mirror holding products from the line",
+      pt: "Logo da Creamy Skincare em branco, centralizado sobre um fundo azul com bolhas translúcidas",
+      en: "Creamy Skincare logo in white, centred on a blue background with translucent bubbles",
     },
   },
 } satisfies Project;

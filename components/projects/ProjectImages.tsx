@@ -12,6 +12,32 @@ export function ProjectImages({
 
   if (images.length === 1) {
     const [image] = images;
+    if (image.fit === "contain") {
+      // The whole image, however wide: a blurred, enlarged copy behind it fills the bars the frame leaves, so they
+      // carry the image's own colours instead of a flat fill.
+      return (
+        <span className="relative block h-full w-full overflow-hidden">
+          <Image
+            src={image.src}
+            width={image.width}
+            height={image.height}
+            alt=""
+            aria-hidden="true"
+            sizes="64px"
+            className="absolute inset-0 h-full w-full scale-125 object-cover blur-2xl"
+          />
+          <Image
+            src={image.src}
+            width={image.width}
+            height={image.height}
+            alt={image.alt}
+            sizes={sizes}
+            priority={priority}
+            className="relative h-full w-full object-contain"
+          />
+        </span>
+      );
+    }
     return (
       <Image
         src={image.src}

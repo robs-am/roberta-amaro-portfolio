@@ -4,6 +4,7 @@ export type ShowcaseImage = {
   height: number;
   alt: string;
   focus?: string;
+  fit?: "cover" | "contain";
 };
 
 export type ShowcaseItem = {

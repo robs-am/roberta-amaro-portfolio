@@ -54,6 +54,7 @@ export default async function ProjectsPage({ params }: PageProps<"/[locale]/proj
         width: image.width,
         height: image.height,
         focus: image.focus,
+        fit: image.fit,
         alt: localize(image.alt, locale),
       })),
     };

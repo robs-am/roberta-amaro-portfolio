@@ -1,7 +1,7 @@
 import type { Project, ProjectCase } from "../types";
-import { project as candide } from "./candide";
+import { project as candide, projectCase as candideCase } from "./candide";
 import { project as creamy, projectCase as creamyCase } from "./creamy";
-import { project as liritty } from "./liritty";
+import { project as liritty, projectCase as lirittyCase } from "./liritty";
 import { project as pegaVisao, projectCase as pegaVisaoCase } from "./pega-visao";
 import { project as skelt } from "./skelt";
 import { project as tommyHilfiger } from "./tommy-hilfiger";
@@ -14,6 +14,8 @@ export const projects: Project[] = [pegaVisao, tommyHilfiger, liritty, candide, 
  * an entry shows only the header, image and technologies. Each file exports its own `projectCase`.
  */
 export const cases: Partial<Record<Project["id"], ProjectCase>> = {
+  [candide.id]: candideCase,
   [creamy.id]: creamyCase,
+  [liritty.id]: lirittyCase,
   [pegaVisao.id]: pegaVisaoCase,
 };
