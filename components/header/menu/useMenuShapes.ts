@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { OPEN_MENU_EVENT } from "./menuEvents";
 
 // Matches the overlay's `duration-700` reveal transition.
 const CLOSE_DURATION_MS = 700;
@@ -18,12 +17,6 @@ export function useMenuShapes(open: boolean, setOpen: (open: boolean) => void) {
     setOpen(true);
     requestAnimationFrame(() => setShapesMounted(true));
   }, [setOpen]);
-
-  // The in-page back arrow (see BackButton) reopens the menu from outside the header.
-  useEffect(() => {
-    window.addEventListener(OPEN_MENU_EVENT, openMenu);
-    return () => window.removeEventListener(OPEN_MENU_EVENT, openMenu);
-  }, [openMenu]);
 
   useEffect(() => {
     if (open) return;

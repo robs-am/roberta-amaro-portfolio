@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { backTarget } from "./menuEvents";
 
 // A nav link only closes the menu once the router has actually landed on its route: closing on the
 // click itself reveals whatever page the menu was opened on for the last stretch of navigation, which
@@ -32,7 +31,6 @@ export function useMenuNavigation({
   }, [open]);
 
   const navigate = (href: string) => {
-    backTarget.toHome = false;
     if (href === pathname) setOpen(false);
     else setPendingHref(href);
   };

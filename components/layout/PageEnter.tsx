@@ -6,7 +6,7 @@ import { heroNavigation } from "@/components/header/menu/menuEvents";
 
 // Renders nothing: when the page was opened from one of the hero's links, it enters. The page's blocks marked
 // `data-page-enter` rise and fade in one after another (the pace of the experience list's own entrance); a page with
-// none marked fades its whole <main> instead. Any other way of arriving (menu, back arrow, a direct visit) leaves the
+// none marked fades its whole <main> instead. Any other way of arriving (the menu, a direct visit) leaves the
 // page alone, since the menu has its own transition.
 export function PageEnter() {
   useLayoutEffect(() => {

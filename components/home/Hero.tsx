@@ -14,7 +14,7 @@ import {
   textLinkLabelClass,
 } from "@/components/ui/textLinkStyles";
 import { profile } from "@/data/profile";
-import { HERO_REENTER_EVENT, backTarget, heroNavigation } from "@/components/header/menu/menuEvents";
+import { HERO_REENTER_EVENT, heroNavigation } from "@/components/header/menu/menuEvents";
 import { heroEntrance } from "@/components/shapes/shapesScene";
 import { localize, type Locale } from "@/data/types";
 import { Link } from "@/i18n/navigation";
@@ -62,12 +62,10 @@ export function Hero({ locale }: Readonly<{ locale: Locale }>) {
     };
   }, []);
 
-  // Pages opened from the hero go back to the home, not to the menu (see BackButton). The navigation starts with the
-  // click, as for any link: this only lets the hero's text drift up and out while the page loads (the reverse of its
+  // The navigation starts with the click, as for any link: this only lets the hero's text drift up and out while the page loads (the reverse of its
   // entrance), so the change of page is not a hard cut. Opening in a new tab or with reduced motion leaves it as is.
   const leavingRef = useRef(false);
   const leaveToPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    backTarget.toHome = true;
     const section = sectionRef.current;
     if (!section || leavingRef.current) return;
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;

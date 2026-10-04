@@ -1,5 +1,4 @@
 import { getTranslations } from "next-intl/server";
-import { BackButton } from "./BackButton";
 import { ControlDock, DockDivider } from "./ControlDock";
 import { HeaderContacts } from "./HeaderContacts";
 import { HeaderShell } from "./HeaderShell";
@@ -16,10 +15,7 @@ export async function Header() {
     <HeaderShell>
       <div className="mx-auto flex min-h-11 max-w-7xl items-center gap-2 px-4 py-3 sm:gap-6 sm:px-8">
         <HideOnHome>
-          <div className="flex items-center gap-1">
-            <HomeLink label={t("home")} />
-            <BackButton />
-          </div>
+          <HomeLink label={t("home")} />
         </HideOnHome>
         <HeaderContacts />
         {/* Targeted by useMenuControlAlignment so the menu's own dock can match this row's exact

@@ -51,15 +51,15 @@ export const projectCase = {
     {
       id: "redesign",
       label: { pt: "Redesign", en: "Redesign" },
-      // TODO: say what changed in the home (which components, what the goal was), and any effect.
+      // TODO: say what was wrong with the old showcases and recommendations and what the new ones do better, and any effect.
       title: {
-        pt: "A home inteira ganhou um novo visual, componente por componente",
-        en: "The whole home page got a new look, component by component",
+        pt: "As vitrines, as recomendações e os demais componentes da home ganharam um novo visual",
+        en: "The showcases, the recommendations and the rest of the home page's components got a new look",
       },
       body: [
         {
-          pt: "Assumi todo o redesign dos componentes da home. Não foi um ajuste pontual: a página inteira foi repensada.",
-          en: "I took on the redesign of all the home page's components. It was not a one-off tweak: the whole page was rethought.",
+          pt: "Fiquei responsável pelo redesign dos componentes da home, das vitrines às recomendações, passando por todos os demais componentes da página.",
+          en: "I was responsible for redesigning the home page's components, from the showcases to the recommendations and every other component on the page.",
         },
       ],
     },

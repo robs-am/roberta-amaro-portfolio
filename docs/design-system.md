@@ -183,7 +183,7 @@ O hero completo leva cerca de 2,7s (`HERO_ENTRANCE_MS` em `shapesScene.ts`; mudo
 
 **A entrada completa só toca na primeira visita e no reload.** `heroEntrance.played` (módulo, em `shapesScene.ts`) marca que ela já rodou; ao voltar pra home por navegação interna, o `Hero` monta com `data-settled` e usa a entrada curta: nome e itens sobem e aparecem em cascata (`hero-settle-in`, 700ms, 250ms + 80ms por item, os mesmos números do menu), e os shapes fazem fade no mesmo passo.
 
-**A seta de voltar** (`BackButton`) leva à home quando a página foi aberta por um link do hero (`backTarget.toHome` em `header/menuEvents.ts`) e abre o menu nos demais casos.
+**Não há seta de voltar no header.** Ela existia (`BackButton`) e abria o menu, o que contradizia o desenho de "voltar" e duplicava o botão Menu; saiu. O caminho de volta é o ícone de casa, o Menu e os links de cada página ("Todos os projetos" nos cases).
 
 #### Pendência: volta à home pelo menu
 

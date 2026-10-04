@@ -43,7 +43,7 @@ app/
   sitemap.ts
   robots.ts
 components/
-  header/                 Header, HeaderShell, HideOnHome, HomeLink, BackButton, LocaleSwitcher,
+  header/                 Header, HeaderShell, HideOnHome, HomeLink, LocaleSwitcher,
                           Menu, MenuShapes, menuEvents, navItems, capsuleIcon
   theme/                  theme.ts (lógica do tema), ThemeSync, ThemeToggle
   home/                   Hero, HeroShapes, ContactIcons
